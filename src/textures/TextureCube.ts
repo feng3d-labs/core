@@ -1,10 +1,9 @@
 import { FS } from "@feng3d/filesystem";
 import { oav } from "@feng3d/objectview";
-import { objectIsEmpty } from '@feng3d/polyfill';
+import { deleteItem, objectIsEmpty } from '@feng3d/polyfill';
 import { TextureType } from "@feng3d/renderer";
 import { serialization, serialize } from "@feng3d/serialization";
 import { watch } from "@feng3d/watcher";
-import { deleteItem } from "packages/polyfill/src/Array";
 import { AssetType } from "../assets/AssetType";
 import { AssetData } from "../core/AssetData";
 import { HideFlags } from "../core/HideFlags";

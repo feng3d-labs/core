@@ -1,7 +1,7 @@
 import { loader } from "@feng3d/filesystem";
+import { deleteItem } from "@feng3d/polyfill";
 import { TextureFormat, TextureType } from "@feng3d/renderer";
 import { serialization, serialize } from "@feng3d/serialization";
-import { deleteItem } from "packages/polyfill/src/Array";
 import { AssetType } from "../assets/AssetType";
 import { AssetData } from "../core/AssetData";
 import { HideFlags } from "../core/HideFlags";
