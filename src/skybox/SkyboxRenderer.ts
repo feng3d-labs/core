@@ -1,10 +1,5 @@
+import { Attribute, CullFace, GL, Index, RenderAtomic, Shader } from '@feng3d/renderer';
 import { Camera } from '../cameras/Camera';
-import { Attribute } from '@feng3d/renderer';
-import { Index } from '@feng3d/renderer';
-import { RenderAtomic } from '@feng3d/renderer';
-import { Shader } from '@feng3d/renderer';
-import { CullFace } from '@feng3d/renderer';
-import { GL } from '@feng3d/renderer';
 import { Scene } from '../scene/Scene';
 import { SkyBox } from './SkyBox';
 

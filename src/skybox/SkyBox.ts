@@ -1,12 +1,12 @@
+import { oav } from '@feng3d/objectview';
+import { RenderAtomic } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { RegisterComponent } from '../component/Component';
 import { Component3D } from '../component/Component3D';
 import { AddComponentMenu } from '../Menu';
-import { RenderAtomic } from '@feng3d/renderer';
 import { Scene } from '../scene/Scene';
 import { TextureCube } from '../textures/TextureCube';
-import { oav } from '@feng3d/objectview';
-import { serialize } from '@feng3d/serialization';
 
 declare global
 {
@@ -24,7 +24,7 @@ export class SkyBox extends Component3D
 
     @serialize
     @oav({ component: 'OAVPick', componentParam: { accepttype: 'texturecube', datatype: 'texturecube' } })
-        s_skyboxTexture: TextureCube = TextureCube.default;
+    s_skyboxTexture: TextureCube = TextureCube.default;
 
     beforeRender(renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {
