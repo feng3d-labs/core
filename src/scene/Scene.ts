@@ -1,23 +1,23 @@
-import { Color4, Ray3 } from "@feng3d/math";
-import { oav } from "@feng3d/objectview";
-import { RenderMode } from "@feng3d/renderer";
-import { serialize } from "@feng3d/serialization";
-import { Animation } from "../animation/Animation";
-import { Camera } from "../cameras/Camera";
-import { Behaviour } from "../component/Behaviour";
-import { Component, RegisterComponent } from "../component/Component";
-import { Component3D } from "../component/Component3D";
-import { Entity } from "../core/Entity";
-import { HideFlags } from "../core/HideFlags";
-import { Node3D } from "../core/Node3D";
-import { Renderable } from "../core/Renderable";
-import { RunEnvironment } from "../core/RunEnvironment";
-import { DirectionalLight } from "../light/DirectionalLight";
-import { PointLight } from "../light/PointLight";
-import { SpotLight } from "../light/SpotLight";
-import { SkyBox } from "../skybox/SkyBox";
-import { ticker } from "../utils/Ticker";
-import { ScenePickCache } from "./ScenePickCache";
+import { Color4, Ray3 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { RenderMode } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
+import { Animation } from '../animation/Animation';
+import { Camera } from '../cameras/Camera';
+import { Behaviour } from '../component/Behaviour';
+import { Component, RegisterComponent } from '../component/Component';
+import { Component3D } from '../component/Component3D';
+import { Entity } from '../core/Entity';
+import { HideFlags } from '../core/HideFlags';
+import { Node3D } from '../core/Node3D';
+import { Renderable } from '../core/Renderable';
+import { RunEnvironment } from '../core/RunEnvironment';
+import { DirectionalLight } from '../light/DirectionalLight';
+import { PointLight } from '../light/PointLight';
+import { SpotLight } from '../light/SpotLight';
+import { SkyBox } from '../skybox/SkyBox';
+import { ticker } from '../utils/Ticker';
+import { ScenePickCache } from './ScenePickCache';
 
 declare global
 {
@@ -39,28 +39,27 @@ declare global
 @RegisterComponent({ name: 'Scene', single: true })
 export class Scene extends Component3D
 {
-
-    __class__: "feng3d.Scene";
+    __class__: 'feng3d.Scene';
 
     /**
      * 背景颜色
      */
     @serialize
     @oav()
-    background = new Color4(0, 0, 0, 1);
+        background = new Color4(0, 0, 0, 1);
 
     /**
      * 环境光强度
      */
     @serialize
     @oav()
-    ambientColor = new Color4();
+        ambientColor = new Color4();
 
     /**
      * 指定所运行环境
-     * 
+     *
      * 控制运行符合指定环境场景中所有 Behaviour.update 方法
-     * 
+     *
      * 用于处理某些脚本只在在feng3d引擎或者编辑器中运行的问题。例如 FPSController 默认只在feng3d中运行，在编辑器模式下不会运行。
      */
     runEnvironment = RunEnvironment.feng3d;
@@ -100,12 +99,12 @@ export class Scene extends Component3D
         this._activeBehaviours = null;
 
         // 每帧清理拾取缓存
-        this._pickMap.forEach(item => item.clear());
+        this._pickMap.forEach((item) => item.clear());
 
-        this.behaviours.forEach(element =>
+        this.behaviours.forEach((element) =>
         {
             if (element.isVisibleAndEnabled && Boolean(this.runEnvironment & element.runEnvironment))
-                element.update(interval);
+            { element.update(interval); }
         });
     }
 
@@ -115,7 +114,8 @@ export class Scene extends Component3D
     get models()
     {
         this._models = this._models || this.node3d.getComponentsInChildren(Renderable);
-        return this._models
+
+        return this._models;
     }
 
     /**
@@ -123,7 +123,7 @@ export class Scene extends Component3D
      */
     get visibleAndEnabledModels()
     {
-        return this._visibleAndEnabledModels = this._visibleAndEnabledModels || this.models.filter(i => i.isVisibleAndEnabled)
+        return this._visibleAndEnabledModels = this._visibleAndEnabledModels || this.models.filter((i) => i.isVisibleAndEnabled);
     }
 
     /**
@@ -132,12 +132,13 @@ export class Scene extends Component3D
     get skyBoxs()
     {
         this._skyBoxs = this._skyBoxs || this.node3d.getComponentsInChildren(SkyBox);
+
         return this._skyBoxs;
     }
 
     get activeSkyBoxs()
     {
-        return this._activeSkyBoxs = this._activeSkyBoxs || this.skyBoxs.filter(i => i.node3d.globalVisible);
+        return this._activeSkyBoxs = this._activeSkyBoxs || this.skyBoxs.filter((i) => i.node3d.globalVisible);
     }
 
     get directionalLights()
@@ -147,7 +148,7 @@ export class Scene extends Component3D
 
     get activeDirectionalLights()
     {
-        return this._activeDirectionalLights = this._activeDirectionalLights || this.directionalLights.filter(i => i.isVisibleAndEnabled);
+        return this._activeDirectionalLights = this._activeDirectionalLights || this.directionalLights.filter((i) => i.isVisibleAndEnabled);
     }
 
     get pointLights()
@@ -157,7 +158,7 @@ export class Scene extends Component3D
 
     get activePointLights()
     {
-        return this._activePointLights = this._activePointLights || this.pointLights.filter(i => i.isVisibleAndEnabled);
+        return this._activePointLights = this._activePointLights || this.pointLights.filter((i) => i.isVisibleAndEnabled);
     }
 
     get spotLights()
@@ -167,7 +168,7 @@ export class Scene extends Component3D
 
     get activeSpotLights()
     {
-        return this._activeSpotLights = this._activeSpotLights || this.spotLights.filter(i => i.isVisibleAndEnabled);
+        return this._activeSpotLights = this._activeSpotLights || this.spotLights.filter((i) => i.isVisibleAndEnabled);
     }
 
     get animations()
@@ -177,32 +178,33 @@ export class Scene extends Component3D
 
     get activeAnimations()
     {
-        return this._activeAnimations = this._activeAnimations || this.animations.filter(i => i.isVisibleAndEnabled);
+        return this._activeAnimations = this._activeAnimations || this.animations.filter((i) => i.isVisibleAndEnabled);
     }
 
     get behaviours()
     {
         this._behaviours = this._behaviours || this.node3d.getComponentsInChildren(Behaviour);
+
         return this._behaviours;
     }
 
     get activeBehaviours()
     {
-        return this._activeBehaviours = this._activeBehaviours || this.behaviours.filter(i => i.isVisibleAndEnabled);
+        return this._activeBehaviours = this._activeBehaviours || this.behaviours.filter((i) => i.isVisibleAndEnabled);
     }
 
     get mouseCheckObjects(): Node3D[]
     {
         if (this._mouseCheckTransforms)
-            return this._mouseCheckTransforms;
+        { return this._mouseCheckTransforms; }
 
-        var checkList = this.node3d.getChildren();
+        let checkList = this.node3d.getChildren();
         this._mouseCheckTransforms = [];
-        var i = 0;
-        //获取所有需要拾取的对象并分层存储
+        let i = 0;
+        // 获取所有需要拾取的对象并分层存储
         while (i < checkList.length)
         {
-            var checkObject = checkList[i++];
+            const checkObject = checkList[i++];
             if (checkObject.mouseEnabled)
             {
                 if (checkObject.getComponents(Renderable))
@@ -212,35 +214,37 @@ export class Scene extends Component3D
                 checkList = checkList.concat(checkObject.getChildren());
             }
         }
+
         return this._mouseCheckTransforms;
     }
 
     /**
      * 获取拾取缓存
-     * @param camera 
+     * @param camera
      */
     getPickCache(camera: Camera)
     {
         if (this._pickMap.get(camera))
-            return this._pickMap.get(camera);
-        var pick = new ScenePickCache(this, camera);
+        { return this._pickMap.get(camera); }
+        const pick = new ScenePickCache(this, camera);
         this._pickMap.set(camera, pick);
+
         return pick;
     }
 
     /**
      * 获取接收光照渲染对象列表
-     * @param light 
+     * @param light
      */
     getPickByDirectionalLight(light: DirectionalLight)
     {
-        var openlist = [this.node3d];
-        var targets: Renderable[] = [];
+        const openlist = [this.node3d];
+        const targets: Renderable[] = [];
         while (openlist.length > 0)
         {
-            var item = openlist.shift();
+            const item = openlist.shift();
             if (!item.visible) continue;
-            var model = item.getComponent(Renderable);
+            const model = item.getComponent(Renderable);
             if (model && (model.castShadows || model.receiveShadows)
                 && !model.material.renderParams.enableBlend
                 && model.material.renderParams.renderMode === RenderMode.TRIANGLES
@@ -248,32 +252,35 @@ export class Scene extends Component3D
             {
                 targets.push(model);
             }
-            item.children.forEach(element =>
+            item.children.forEach((element) =>
             {
                 openlist.push(element);
             });
         }
+
         return targets;
     }
 
     /**
      * 获取 可被摄像机看见的 Model 列表
-     * @param camera 
+     * @param camera
      */
     getModelsByCamera(camera: Camera)
     {
-        var frustum = camera.frustum;
+        const frustum = camera.frustum;
 
-        var results = this.visibleAndEnabledModels.filter(i =>
+        const results = this.visibleAndEnabledModels.filter((i) =>
         {
-            var model = i.getComponent(Renderable);
+            const model = i.getComponent(Renderable);
             if (model.selfWorldBounds)
             {
                 if (frustum.intersectsBox(model.selfWorldBounds))
-                    return true;
+                { return true; }
             }
+
             return false;
         });
+
         return results;
     }
 

@@ -1,9 +1,9 @@
-import { Entity } from "../core/Entity";
-import { MeshRenderer } from "../core/MeshRenderer";
-import { Geometry } from "../geometry/Geometry";
-import { oav } from "@feng3d/objectview";
-import { serialize } from "@feng3d/serialization";
-import { watch } from "@feng3d/watcher";
+import { Entity } from '../core/Entity';
+import { MeshRenderer } from '../core/MeshRenderer';
+import { Geometry } from '../geometry/Geometry';
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 
 declare global
 {
@@ -19,81 +19,81 @@ declare global
  */
 export class SphereGeometry extends Geometry
 {
-
-    __class__: "feng3d.SphereGeometry";
+    __class__: 'feng3d.SphereGeometry';
 
     /**
      * 球体半径
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    radius = 0.5;
+    @watch('invalidateGeometry')
+        radius = 0.5;
 
     /**
      * 横向分割数
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    segmentsW = 16;
+    @watch('invalidateGeometry')
+        segmentsW = 16;
 
     /**
      * 纵向分割数
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    segmentsH = 12;
+    @watch('invalidateGeometry')
+        segmentsH = 12;
 
     /**
      * 是否朝上
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    yUp = true;
+    @watch('invalidateGeometry')
+        yUp = true;
 
-    protected _name = "Sphere";
+    protected _name = 'Sphere';
 
     /**
      * 构建几何体数据
      */
     protected buildGeometry()
     {
-        var vertexPositionData: number[] = [];
-        var vertexNormalData: number[] = [];
-        var vertexTangentData: number[] = [];
+        const vertexPositionData: number[] = [];
+        const vertexNormalData: number[] = [];
+        const vertexTangentData: number[] = [];
 
-        var startIndex: number;
-        var index = 0;
-        var comp1: number, comp2: number, t1: number, t2: number;
-        for (var yi = 0; yi <= this.segmentsH; ++yi)
+        let startIndex: number;
+        let index = 0;
+        let comp1: number; let comp2: number; let t1: number; let
+            t2: number;
+        for (let yi = 0; yi <= this.segmentsH; ++yi)
         {
             startIndex = index;
 
-            var horangle = Math.PI * yi / this.segmentsH;
-            var z = -this.radius * Math.cos(horangle);
-            var ringradius = this.radius * Math.sin(horangle);
+            const horangle = Math.PI * yi / this.segmentsH;
+            const z = -this.radius * Math.cos(horangle);
+            const ringradius = this.radius * Math.sin(horangle);
 
-            for (var xi = 0; xi <= this.segmentsW; ++xi)
+            for (let xi = 0; xi <= this.segmentsW; ++xi)
             {
-                var verangle = 2 * Math.PI * xi / this.segmentsW;
-                var x = ringradius * Math.cos(verangle);
-                var y = ringradius * Math.sin(verangle);
-                var normLen = 1 / Math.sqrt(x * x + y * y + z * z);
-                var tanLen = Math.sqrt(y * y + x * x);
+                const verangle = 2 * Math.PI * xi / this.segmentsW;
+                const x = ringradius * Math.cos(verangle);
+                const y = ringradius * Math.sin(verangle);
+                const normLen = 1 / Math.sqrt(x * x + y * y + z * z);
+                const tanLen = Math.sqrt(y * y + x * x);
 
                 if (this.yUp)
                 {
                     t1 = 0;
-                    t2 = tanLen > .007 ? x / tanLen : 0;
+                    t2 = tanLen > 0.007 ? x / tanLen : 0;
                     comp1 = -z;
                     comp2 = y;
                 }
                 else
                 {
-                    t1 = tanLen > .007 ? x / tanLen : 0;
+                    t1 = tanLen > 0.007 ? x / tanLen : 0;
                     t2 = 0;
                     comp1 = y;
                     comp2 = z;
@@ -109,7 +109,7 @@ export class SphereGeometry extends Geometry
                     vertexNormalData[index + 1] = vertexNormalData[startIndex + 1] + comp1 * normLen * 0.5;
                     vertexNormalData[index + 2] = vertexNormalData[startIndex + 2] + comp2 * normLen * 0.5;
 
-                    vertexTangentData[index] = tanLen > .007 ? -y / tanLen : 1;
+                    vertexTangentData[index] = tanLen > 0.007 ? -y / tanLen : 1;
                     vertexTangentData[index + 1] = t1;
                     vertexTangentData[index + 2] = t2;
                 }
@@ -123,14 +123,13 @@ export class SphereGeometry extends Geometry
                     vertexNormalData[index + 1] = comp1 * normLen;
                     vertexNormalData[index + 2] = comp2 * normLen;
 
-                    vertexTangentData[index] = tanLen > .007 ? -y / tanLen : 1;
+                    vertexTangentData[index] = tanLen > 0.007 ? -y / tanLen : 1;
                     vertexTangentData[index + 1] = t1;
                     vertexTangentData[index + 2] = t2;
                 }
 
                 if (xi > 0 && yi > 0)
                 {
-
                     if (yi === this.segmentsH)
                     {
                         vertexPositionData[index] = vertexPositionData[startIndex];
@@ -147,10 +146,10 @@ export class SphereGeometry extends Geometry
         this.normals = vertexNormalData;
         this.tangents = vertexTangentData;
 
-        var uvData = this.buildUVs();
+        const uvData = this.buildUVs();
         this.uvs = uvData;
 
-        var indices = this.buildIndices();
+        const indices = this.buildIndices();
         this.indices = indices;
     }
 
@@ -159,19 +158,19 @@ export class SphereGeometry extends Geometry
      */
     private buildIndices()
     {
-        var indices: number[] = [];
+        const indices: number[] = [];
 
-        var numIndices = 0;
-        for (var yi = 0; yi <= this.segmentsH; ++yi)
+        let numIndices = 0;
+        for (let yi = 0; yi <= this.segmentsH; ++yi)
         {
-            for (var xi = 0; xi <= this.segmentsW; ++xi)
+            for (let xi = 0; xi <= this.segmentsW; ++xi)
             {
                 if (xi > 0 && yi > 0)
                 {
-                    var a = (this.segmentsW + 1) * yi + xi;
-                    var b = (this.segmentsW + 1) * yi + xi - 1;
-                    var c = (this.segmentsW + 1) * (yi - 1) + xi - 1;
-                    var d = (this.segmentsW + 1) * (yi - 1) + xi;
+                    const a = (this.segmentsW + 1) * yi + xi;
+                    const b = (this.segmentsW + 1) * yi + xi - 1;
+                    const c = (this.segmentsW + 1) * (yi - 1) + xi - 1;
+                    const d = (this.segmentsW + 1) * (yi - 1) + xi;
 
                     if (yi === this.segmentsH)
                     {
@@ -206,12 +205,12 @@ export class SphereGeometry extends Geometry
      */
     private buildUVs()
     {
-        var data: number[] = [];
-        var index = 0;
+        const data: number[] = [];
+        let index = 0;
 
-        for (var yi = 0; yi <= this.segmentsH; ++yi)
+        for (let yi = 0; yi <= this.segmentsH; ++yi)
         {
-            for (var xi = 0; xi <= this.segmentsW; ++xi)
+            for (let xi = 0; xi <= this.segmentsW; ++xi)
             {
                 data[index++] = xi / this.segmentsW;
                 data[index++] = yi / this.segmentsH;
@@ -233,9 +232,9 @@ declare global
         Sphere: Entity;
     }
 }
-Geometry.setDefault("Sphere", new SphereGeometry());
+Geometry.setDefault('Sphere', new SphereGeometry());
 
-Entity.registerPrimitive("Sphere", (g) =>
+Entity.registerPrimitive('Sphere', (g) =>
 {
-    g.addComponent(MeshRenderer).geometry = Geometry.getDefault("Sphere");
+    g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Sphere');
 });

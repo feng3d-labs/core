@@ -1,11 +1,11 @@
-import { Color4, Vector4 } from "@feng3d/math";
-import { oav } from "@feng3d/objectview";
-import { RenderAtomic, Uniforms } from "@feng3d/renderer";
-import { serialize } from "@feng3d/serialization";
-import { Camera } from "../cameras/Camera";
-import { AddComponentMenu } from "../Menu";
-import { Scene } from "../scene/Scene";
-import { Component, RegisterComponent } from "./Component";
+import { Color4, Vector4 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { RenderAtomic, Uniforms } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
+import { Camera } from '../cameras/Camera';
+import { AddComponentMenu } from '../Menu';
+import { Scene } from '../scene/Scene';
+import { Component, RegisterComponent } from './Component';
 
 declare global
 {
@@ -15,41 +15,40 @@ declare global
 /**
  * 参考
  */
-@AddComponentMenu("Rendering/CartoonComponent")
+@AddComponentMenu('Rendering/CartoonComponent')
 @RegisterComponent({ name: 'CartoonComponent' })
 export class CartoonComponent extends Component
 {
-
-    __class__: "feng3d.CartoonComponent";
-
-    @oav()
-    @serialize
-    outlineSize = 1;
+    __class__: 'feng3d.CartoonComponent';
 
     @oav()
     @serialize
-    outlineColor = new Color4(0.2, 0.2, 0.2, 1.0);
+        outlineSize = 1;
 
     @oav()
     @serialize
-    outlineMorphFactor = 0.0;
+        outlineColor = new Color4(0.2, 0.2, 0.2, 1.0);
+
+    @oav()
+    @serialize
+        outlineMorphFactor = 0.0;
 
     /**
      * 半兰伯特值diff，分段值 4个(0.0,1.0)
      */
     @oav()
     @serialize
-    diffuseSegment = new Vector4(0.1, 0.3, 0.6, 1.0);
+        diffuseSegment = new Vector4(0.1, 0.3, 0.6, 1.0);
     /**
      * 半兰伯特值diff，替换分段值 4个(0.0,1.0)
      */
     @oav()
     @serialize
-    diffuseSegmentValue = new Vector4(0.1, 0.3, 0.6, 1.0);
+        diffuseSegmentValue = new Vector4(0.1, 0.3, 0.6, 1.0);
 
     @oav()
     @serialize
-    specularSegment = 0.5;
+        specularSegment = 0.5;
 
     @oav()
     @serialize
@@ -73,9 +72,7 @@ export class CartoonComponent extends Component
         renderAtomic.uniforms.u_outlineColor = this.outlineColor;
         renderAtomic.uniforms.u_outlineMorphFactor = this.outlineMorphFactor;
     }
-
 }
-
 
 declare global
 {

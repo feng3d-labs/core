@@ -1,9 +1,9 @@
-import { Entity } from "../core/Entity";
-import { MeshRenderer } from "../core/MeshRenderer";
-import { Geometry } from "../geometry/Geometry";
-import { oav } from "@feng3d/objectview";
-import { serialize } from "@feng3d/serialization";
-import { watch } from "@feng3d/watcher";
+import { Entity } from '../core/Entity';
+import { MeshRenderer } from '../core/MeshRenderer';
+import { Geometry } from '../geometry/Geometry';
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 
 declare global
 {
@@ -19,100 +19,105 @@ declare global
  */
 export class CylinderGeometry extends Geometry
 {
-    __class__: "feng3d.CylinderGeometry" | "feng3d.ConeGeometry";
+    __class__: 'feng3d.CylinderGeometry' | 'feng3d.ConeGeometry';
 
     /**
      * 顶部半径
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    topRadius = 0.5;
+    @watch('invalidateGeometry')
+        topRadius = 0.5;
 
     /**
      * 底部半径
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    bottomRadius = 0.5;
+    @watch('invalidateGeometry')
+        bottomRadius = 0.5;
 
     /**
      * 高度
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    height = 2;
+    @watch('invalidateGeometry')
+        height = 2;
 
     /**
      * 横向分割数
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    segmentsW = 16;
+    @watch('invalidateGeometry')
+        segmentsW = 16;
 
     /**
      * 纵向分割数
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    segmentsH = 1;
+    @watch('invalidateGeometry')
+        segmentsH = 1;
 
     /**
      * 顶部是否封口
      */
     @oav()
     @serialize
-    @watch("invalidateGeometry")
-    topClosed = true;
+    @watch('invalidateGeometry')
+        topClosed = true;
 
     /**
      * 底部是否封口
      */
     @oav()
     @serialize
-    @watch("invalidateGeometry")
-    bottomClosed = true;
+    @watch('invalidateGeometry')
+        bottomClosed = true;
 
     /**
      * 侧面是否封口
      */
     @oav()
     @serialize
-    @watch("invalidateGeometry")
-    surfaceClosed = true;
+    @watch('invalidateGeometry')
+        surfaceClosed = true;
 
     /**
      * 是否朝上
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    yUp = true;
+    @watch('invalidateGeometry')
+        yUp = true;
 
-    protected _name = "Cylinder";
+    protected _name = 'Cylinder';
 
     /**
      * 构建几何体数据
      */
     protected buildGeometry()
     {
-        var i: number, j: number, index = 0;
-        var x: number, y: number, z: number, radius: number, revolutionAngle = 0;
-        var dr: number, latNormElev: number, latNormBase: number;
+        let i: number; let j: number; let
+            index = 0;
+        let x: number; let y: number; let z: number; let radius: number; let
+            revolutionAngle = 0;
+        let dr: number; let latNormElev: number; let
+            latNormBase: number;
 
-        var comp1: number, comp2: number;
-        var startIndex = 0;
-        var t1: number, t2: number;
+        let comp1: number; let
+            comp2: number;
+        let startIndex = 0;
+        let t1: number; let
+            t2: number;
 
-        var vertexPositionData: number[] = [];
-        var vertexNormalData: number[] = [];
-        var vertexTangentData: number[] = [];
+        const vertexPositionData: number[] = [];
+        const vertexNormalData: number[] = [];
+        const vertexTangentData: number[] = [];
 
-        var revolutionAngleDelta = 2 * Math.PI / this.segmentsW;
+        const revolutionAngleDelta = 2 * Math.PI / this.segmentsW;
 
         // 顶部
         if (this.topClosed && this.topRadius > 0)
@@ -229,8 +234,10 @@ export class CylinderGeometry extends Geometry
 
         if (this.surfaceClosed)
         {
-            var a: number, b: number, c: number, d: number;
-            var na0: number, na1: number, naComp1: number, naComp2: number;
+            let a: number; let b: number; let c: number; let
+                d: number;
+            let na0: number; let na1: number; let naComp1: number; let
+                naComp2: number;
 
             for (j = 0; j <= this.segmentsH; ++j)
             {
@@ -303,10 +310,10 @@ export class CylinderGeometry extends Geometry
         }
 
         //
-        var uvData = this.buildUVs();
+        const uvData = this.buildUVs();
         this.uvs = uvData;
 
-        var indices = this.buildIndices();
+        const indices = this.buildIndices();
         this.indices = indices;
     }
 
@@ -315,10 +322,11 @@ export class CylinderGeometry extends Geometry
      */
     private buildIndices()
     {
-        var i: number, j: number, index = 0;
+        let i: number; let j: number; let
+            index = 0;
 
-        var indices: number[] = [];
-        var numIndices = 0;
+        const indices: number[] = [];
+        let numIndices = 0;
         // 顶部
         if (this.topClosed && this.topRadius > 0)
         {
@@ -326,7 +334,7 @@ export class CylinderGeometry extends Geometry
             {
                 index += 2;
                 if (i > 0)
-                    addTriangleClockWise(index - 1, index - 3, index - 2);
+                { addTriangleClockWise(index - 1, index - 3, index - 2); }
             }
         }
 
@@ -337,14 +345,15 @@ export class CylinderGeometry extends Geometry
             {
                 index += 2;
                 if (i > 0)
-                    addTriangleClockWise(index - 2, index - 3, index - 1);
+                { addTriangleClockWise(index - 2, index - 3, index - 1); }
             }
         }
 
         // 侧面
         if (this.surfaceClosed)
         {
-            var a: number, b: number, c: number, d: number;
+            let a: number; let b: number; let c: number; let
+                d: number;
             for (j = 0; j <= this.segmentsH; ++j)
             {
                 for (i = 0; i <= this.segmentsW; ++i)
@@ -379,12 +388,14 @@ export class CylinderGeometry extends Geometry
      */
     private buildUVs()
     {
-        var i: number, j: number;
-        var x: number, y: number, revolutionAngle: number;
+        let i: number; let
+            j: number;
+        let x: number; let y: number; let
+            revolutionAngle: number;
 
-        var data: number[] = [];
-        var revolutionAngleDelta = 2 * Math.PI / this.segmentsW;
-        var index = 0;
+        const data: number[] = [];
+        const revolutionAngleDelta = 2 * Math.PI / this.segmentsW;
+        let index = 0;
 
         // 顶部
         if (this.topClosed)
@@ -450,9 +461,9 @@ declare global
     }
 }
 
-Geometry.setDefault("Cylinder", new CylinderGeometry());
+Geometry.setDefault('Cylinder', new CylinderGeometry());
 
-Entity.registerPrimitive("Cylinder", (g) =>
+Entity.registerPrimitive('Cylinder', (g) =>
 {
-    g.addComponent(MeshRenderer).geometry = Geometry.getDefault("Cylinder");
+    g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cylinder');
 });

@@ -1,27 +1,27 @@
-import { PerspectiveLens } from "../cameras/lenses/PerspectiveLens";
-import { RegisterComponent } from "../component/Component";
-import { Entity } from "../core/Entity";
-import { Vector2 } from "@feng3d/math";
-import { AddComponentMenu } from "../Menu";
-import { oav } from "@feng3d/objectview";
-import { serialize } from "@feng3d/serialization";
-import { Light } from "./Light";
-import { LightType } from "./LightType";
+import { PerspectiveLens } from '../cameras/lenses/PerspectiveLens';
+import { RegisterComponent } from '../component/Component';
+import { Entity } from '../core/Entity';
+import { Vector2 } from '@feng3d/math';
+import { AddComponentMenu } from '../Menu';
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { Light } from './Light';
+import { LightType } from './LightType';
 
 declare global
 {
-    interface MixinsPrimitiveEntity { "Point light": Entity; }
+    interface MixinsPrimitiveEntity { 'Point light': Entity; }
     interface MixinsComponentMap { PointLight: PointLight; }
 }
 
 /**
  * 点光源
  */
-@AddComponentMenu("Rendering/PointLight")
+@AddComponentMenu('Rendering/PointLight')
 @RegisterComponent({ name: 'PointLight' })
 export class PointLight extends Light
 {
-    __class__: "feng3d.PointLight";
+    __class__: 'feng3d.PointLight';
 
     lightType = LightType.Point;
 
@@ -59,11 +59,11 @@ export class PointLight extends Light
     private invalidRange()
     {
         if (this.shadowCamera)
-            this.shadowCamera.lens.far = this.range;
+        { this.shadowCamera.lens.far = this.range; }
     }
 }
 
-Entity.registerPrimitive("Point light", (g) =>
+Entity.registerPrimitive('Point light', (g) =>
 {
     g.addComponent(PointLight);
 });

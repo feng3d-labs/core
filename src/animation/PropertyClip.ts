@@ -1,5 +1,5 @@
-import { Quaternion, Vector3 } from "@feng3d/math";
-import { serialize } from "@feng3d/serialization";
+import { Quaternion, Vector3 } from '@feng3d/math';
+import { serialize } from '@feng3d/serialization';
 
 export class PropertyClip
 {
@@ -7,38 +7,36 @@ export class PropertyClip
      * 属性路径
      */
     @serialize
-    path: PropertyClipPath;
+        path: PropertyClipPath;
 
     @serialize
-    propertyName: string;
+        propertyName: string;
 
     @serialize
-    type: "Number" | "Vector3" | "Quaternion";
+        type: 'Number' | 'Vector3' | 'Quaternion';
 
     @serialize
-    propertyValues: [number, number[]][];
+        propertyValues: [number, number[]][];
 
     private _cacheValues = {};
     private _propertyValues: [number, number | Vector3 | Quaternion][];
 
     getValue(cliptime: number, fps: number)
     {
-        var frame = Math.round(fps * cliptime / 1000);
+        const frame = Math.round(fps * cliptime / 1000);
         if (this._cacheValues[frame] !== undefined)
-            return this._cacheValues[frame];
+        { return this._cacheValues[frame]; }
 
-        this._propertyValues = this._propertyValues || this.propertyValues.map(v =>
-        {
-            return [v[0], this.getpropertyValue(v[1])];
-        });
-        var propertyValues = this._propertyValues;
-        var propertyValue = propertyValues[0][1];
+        this._propertyValues = this._propertyValues || this.propertyValues.map((v) =>
+            [v[0], this.getpropertyValue(v[1])]);
+        const propertyValues = this._propertyValues;
+        let propertyValue = propertyValues[0][1];
         if (cliptime <= propertyValues[0][0]) { }
         else if (cliptime >= propertyValues[propertyValues.length - 1][0])
-            propertyValue = propertyValues[propertyValues.length - 1][1];
+        { propertyValue = propertyValues[propertyValues.length - 1][1]; }
         else
         {
-            for (var j = 0; j < propertyValues.length - 1; j++)
+            for (let j = 0; j < propertyValues.length - 1; j++)
             {
                 if (propertyValues[j][0] <= cliptime && cliptime < propertyValues[j + 1][0])
                 {
@@ -52,38 +50,42 @@ export class PropertyClip
             }
         }
         this._cacheValues[frame] = propertyValue;
+
         return propertyValue;
     }
 
     private interpolation(prevalue: ClipPropertyType, nextValue: ClipPropertyType, factor: number)
     {
-        var propertyValue: ClipPropertyType;
+        let propertyValue: ClipPropertyType;
         if (prevalue instanceof Quaternion)
         {
             propertyValue = prevalue.clone();
             propertyValue.lerp(prevalue, nextValue as Quaternion, factor);
-        } else if (prevalue instanceof Vector3)
+        }
+        else if (prevalue instanceof Vector3)
         {
             propertyValue = new Vector3(
                 prevalue.x * (1 - factor) + (nextValue as Vector3).x * factor,
                 prevalue.y * (1 - factor) + (nextValue as Vector3).y * factor,
                 prevalue.z * (1 - factor) + (nextValue as Vector3).z * factor,
             );
-        } else
+        }
+        else
         {
             propertyValue = prevalue * (1 - factor) + (nextValue as number) * factor;
         }
+
         return propertyValue;
     }
 
     private getpropertyValue(value: number[])
     {
-        if (this.type === "Number")
-            return value[0]
-        if (this.type === "Vector3")
-            return Vector3.fromArray(value);
-        if (this.type === "Quaternion")
-            return Quaternion.fromArray(value);
+        if (this.type === 'Number')
+        { return value[0]; }
+        if (this.type === 'Vector3')
+        { return Vector3.fromArray(value); }
+        if (this.type === 'Quaternion')
+        { return Quaternion.fromArray(value); }
 
         console.error(`未处理 动画数据类型 ${this.type}`);
         console.error(``);

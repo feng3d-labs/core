@@ -1,10 +1,10 @@
-import { Color4 } from "@feng3d/math";
-import { Vector2 } from "@feng3d/math";
-import { Vector3 } from "@feng3d/math";
-import { oav } from "@feng3d/objectview";
-import { serialize } from "@feng3d/serialization";
-import { watch } from "@feng3d/watcher";
-import { Geometry } from "./Geometry";
+import { Color4 } from '@feng3d/math';
+import { Vector2 } from '@feng3d/math';
+import { Vector3 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
+import { Geometry } from './Geometry';
 
 declare global
 {
@@ -19,8 +19,7 @@ declare global
  */
 export class PointGeometry extends Geometry
 {
-
-    __class__: "feng3d.PointGeometry";
+    __class__: 'feng3d.PointGeometry';
 
     /**
      * 点数据列表
@@ -28,30 +27,30 @@ export class PointGeometry extends Geometry
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    points: PointInfo[] = [];
+    @watch('invalidateGeometry')
+        points: PointInfo[] = [];
 
     /**
      * 构建几何体
      */
     buildGeometry()
     {
-        var numPoints = this.points.length;
-        var indices: number[] = [];
-        var positionData: number[] = [];
-        var normalData: number[] = [];
-        var uvData: number[] = [];
-        var colors: number[] = [];
+        let numPoints = this.points.length;
+        const indices: number[] = [];
+        const positionData: number[] = [];
+        const normalData: number[] = [];
+        const uvData: number[] = [];
+        const colors: number[] = [];
 
         numPoints = Math.max(1, numPoints);
 
-        for (var i = 0; i < numPoints; i++)
+        for (let i = 0; i < numPoints; i++)
         {
-            var element = this.points[i];
-            var position = (element && element.position) || Vector3.ZERO;
-            var color = (element && element.color) || Color4.WHITE;
-            var normal = (element && element.normal) || Vector3.ZERO;
-            var uv = (element && element.uv) || Vector2.ZERO;
+            const element = this.points[i];
+            const position = (element && element.position) || Vector3.ZERO;
+            const color = (element && element.color) || Color4.WHITE;
+            const normal = (element && element.normal) || Vector3.ZERO;
+            const uv = (element && element.uv) || Vector2.ZERO;
             indices[i] = i;
             positionData.push(position.x, position.y, position.z);
             normalData.push(normal.x, normal.y, normal.z);

@@ -1,8 +1,8 @@
-import { RunEnvironment } from "../core/RunEnvironment";
-import { oav } from "@feng3d/objectview";
-import { serialize } from "@feng3d/serialization";
-import { RegisterComponent } from "./Component";
-import { Component3D } from "./Component3D";
+import { RunEnvironment } from '../core/RunEnvironment';
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { RegisterComponent } from './Component';
+import { Component3D } from './Component3D';
 
 declare global
 {
@@ -11,7 +11,7 @@ declare global
 
 /**
  * 行为
- * 
+ *
  * 可以控制开关的组件
  */
 @RegisterComponent({ name: 'Behaviour' })
@@ -22,7 +22,7 @@ export class Behaviour extends Component3D
      */
     @oav()
     @serialize
-    enabled = true;
+        enabled = true;
 
     /**
      * 可运行环境
@@ -35,7 +35,8 @@ export class Behaviour extends Component3D
      */
     get isVisibleAndEnabled()
     {
-        var v = this.enabled && this.node3d?.globalVisible;
+        const v = this.enabled && this.node3d?.globalVisible;
+
         return v;
     }
 

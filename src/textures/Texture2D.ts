@@ -1,11 +1,11 @@
-import { loader } from "@feng3d/filesystem";
-import { deleteItem } from "@feng3d/polyfill";
-import { TextureFormat, TextureType } from "@feng3d/renderer";
-import { serialization, serialize } from "@feng3d/serialization";
-import { AssetType } from "../assets/AssetType";
-import { AssetData } from "../core/AssetData";
-import { HideFlags } from "../core/HideFlags";
-import { ImageDatas, TextureInfo } from "../render/data/TextureInfo";
+import { loader } from '@feng3d/filesystem';
+import { deleteItem } from '@feng3d/polyfill';
+import { TextureFormat, TextureType } from '@feng3d/renderer';
+import { serialization, serialize } from '@feng3d/serialization';
+import { AssetType } from '../assets/AssetType';
+import { AssetData } from '../core/AssetData';
+import { HideFlags } from '../core/HideFlags';
+import { ImageDatas, TextureInfo } from '../render/data/TextureInfo';
 
 export interface Texture2DEventMap
 {
@@ -20,7 +20,7 @@ export interface Texture2DEventMap
  */
 export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends TextureInfo<T>
 {
-    __class__: "feng3d.Texture2D";
+    __class__: 'feng3d.Texture2D';
 
     /**
      * 纹理类型
@@ -60,6 +60,7 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
         {
             this._pixels = null;
             this.invalidate();
+
             return;
         }
         if (v.url)
@@ -72,12 +73,12 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
                 deleteItem(this._loadings, v.url);
                 this.onItemLoadCompleted();
             }, null,
-                (e) =>
-                {
-                    console.error(e);
-                    deleteItem(this._loadings, v.url);
-                    this.onItemLoadCompleted();
-                });
+            (e) =>
+            {
+                console.error(e);
+                deleteItem(this._loadings, v.url);
+                this.onItemLoadCompleted();
+            });
         }
     }
 
@@ -88,7 +89,7 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
 
     private onItemLoadCompleted()
     {
-        if (this._loadings.length === 0) this.emit("loadCompleted");
+        if (this._loadings.length === 0) this.emit('loadCompleted');
     }
 
     /**
@@ -97,8 +98,13 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
      */
     onLoadCompleted(callback: () => void)
     {
-        if (this.isLoaded) { callback(); return; }
-        this.once("loadCompleted", callback);
+        if (this.isLoaded)
+        {
+            callback();
+
+            return;
+        }
+        this.once('loadCompleted', callback);
     }
 
     private _source: { url: string };
@@ -125,23 +131,24 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
 
     /**
      * 从url初始化纹理
-     * 
+     *
      * @param url 路径
      */
     static fromUrl(url: string)
     {
-        var texture = new Texture2D();
-        texture.source = { url: url };
+        const texture = new Texture2D();
+        texture.source = { url };
+
         return texture;
     }
 }
 
-Texture2D.white = serialization.setValue(new Texture2D(), { name: "white-Texture", noPixels: ImageDatas.white, hideFlags: HideFlags.NotEditable })
-Texture2D.default = serialization.setValue(new Texture2D(), { name: "Default-Texture", hideFlags: HideFlags.NotEditable })
-Texture2D.defaultNormal = serialization.setValue(new Texture2D(), { name: "Default-NormalTexture", noPixels: ImageDatas.defaultNormal, hideFlags: HideFlags.NotEditable })
-Texture2D.defaultParticle = serialization.setValue(new Texture2D(), { name: "Default-ParticleTexture", noPixels: ImageDatas.defaultParticle, format: TextureFormat.RGBA, hideFlags: HideFlags.NotEditable })
+Texture2D.white = serialization.setValue(new Texture2D(), { name: 'white-Texture', noPixels: ImageDatas.white, hideFlags: HideFlags.NotEditable });
+Texture2D.default = serialization.setValue(new Texture2D(), { name: 'Default-Texture', hideFlags: HideFlags.NotEditable });
+Texture2D.defaultNormal = serialization.setValue(new Texture2D(), { name: 'Default-NormalTexture', noPixels: ImageDatas.defaultNormal, hideFlags: HideFlags.NotEditable });
+Texture2D.defaultParticle = serialization.setValue(new Texture2D(), { name: 'Default-ParticleTexture', noPixels: ImageDatas.defaultParticle, format: TextureFormat.RGBA, hideFlags: HideFlags.NotEditable });
 
-AssetData.addAssetData("white-Texture", Texture2D.white);
-AssetData.addAssetData("Default-Texture", Texture2D.default);
-AssetData.addAssetData("Default-NormalTexture", Texture2D.defaultNormal);
-AssetData.addAssetData("Default-ParticleTexture", Texture2D.defaultParticle);
+AssetData.addAssetData('white-Texture', Texture2D.white);
+AssetData.addAssetData('Default-Texture', Texture2D.default);
+AssetData.addAssetData('Default-NormalTexture', Texture2D.defaultNormal);
+AssetData.addAssetData('Default-ParticleTexture', Texture2D.defaultParticle);

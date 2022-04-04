@@ -1,34 +1,34 @@
-import { Color4 } from "@feng3d/math";
-import { oav } from "@feng3d/objectview";
-import { RenderAtomic } from "@feng3d/renderer";
-import { serialize } from "@feng3d/serialization";
-import { Camera } from "../cameras/Camera";
-import { AddComponentMenu } from "../Menu";
-import { Scene } from "../scene/Scene";
-import { Component, RegisterComponent } from "./Component";
+import { Color4 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { RenderAtomic } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
+import { Camera } from '../cameras/Camera';
+import { AddComponentMenu } from '../Menu';
+import { Scene } from '../scene/Scene';
+import { Component, RegisterComponent } from './Component';
 
 declare global
 {
     interface MixinsComponentMap { OutLineComponent: OutLineComponent; }
 }
 
-@AddComponentMenu("Rendering/OutLineComponent")
+@AddComponentMenu('Rendering/OutLineComponent')
 @RegisterComponent({ name: 'OutLineComponent' })
 export class OutLineComponent extends Component
 {
-    __class__: "feng3d.OutLineComponent";
+    __class__: 'feng3d.OutLineComponent';
 
     @oav()
     @serialize
-    size = 1;
+        size = 1;
 
     @oav()
     @serialize
-    color = new Color4(0.2, 0.2, 0.2, 1.0);
+        color = new Color4(0.2, 0.2, 0.2, 1.0);
 
     @oav()
     @serialize
-    outlineMorphFactor = 0.0;
+        outlineMorphFactor = 0.0;
 
     beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
     {

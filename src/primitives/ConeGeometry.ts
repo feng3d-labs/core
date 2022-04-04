@@ -1,7 +1,7 @@
-import { Entity } from "../core/Entity";
-import { MeshRenderer } from "../core/MeshRenderer";
-import { Geometry } from "../geometry/Geometry";
-import { CylinderGeometry } from "./CylinderGeometry";
+import { Entity } from '../core/Entity';
+import { MeshRenderer } from '../core/MeshRenderer';
+import { Geometry } from '../geometry/Geometry';
+import { CylinderGeometry } from './CylinderGeometry';
 
 /**
  * 圆锥体
@@ -9,9 +9,9 @@ import { CylinderGeometry } from "./CylinderGeometry";
  */
 export class ConeGeometry extends CylinderGeometry
 {
-    __class__: "feng3d.ConeGeometry" = "feng3d.ConeGeometry";
+    __class__: 'feng3d.ConeGeometry' = 'feng3d.ConeGeometry';
 
-    protected _name = "Cone";
+    protected _name = 'Cone';
 
     /**
      * 底部半径 private
@@ -29,11 +29,11 @@ export class ConeGeometry extends CylinderGeometry
     surfaceClosed = true;
 }
 
-Geometry.setDefault("Cone", new ConeGeometry());
+Geometry.setDefault('Cone', new ConeGeometry());
 
-Entity.registerPrimitive("Cone", (g) =>
+Entity.registerPrimitive('Cone', (g) =>
 {
-    g.addComponent(MeshRenderer).geometry = Geometry.getDefault("Cone");
+    g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cone');
 });
 
 declare global

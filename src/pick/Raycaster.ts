@@ -1,14 +1,14 @@
-import { Ray3, Vector2, Vector3 } from "@feng3d/math";
+import { Ray3, Vector2, Vector3 } from '@feng3d/math';
 import { objectIsEmpty } from '@feng3d/polyfill';
-import { CullFace } from "@feng3d/renderer";
-import { Node3D } from "../core/Node3D";
-import { RayCastable } from "../core/RayCastable";
-import { Geometry } from "../geometry/Geometry";
+import { CullFace } from '@feng3d/renderer';
+import { Node3D } from '../core/Node3D';
+import { RayCastable } from '../core/RayCastable';
+import { Geometry } from '../geometry/Geometry';
 
 /**
  * 射线投射拾取器
  */
-export class Raycaster 
+export class Raycaster
 {
     /**
      * 获取射线穿过的实体
@@ -20,11 +20,12 @@ export class Raycaster
     {
         if (transforms.length === 0) return null;
 
-        var pickingCollisionVOs = transforms.reduce((pv: PickingCollisionVO[], node3d) =>
+        const pickingCollisionVOs = transforms.reduce((pv: PickingCollisionVO[], node3d) =>
         {
-            var model = node3d.getComponent(RayCastable);
-            var pickingCollisionVO = model && model.worldRayIntersection(ray3D);
+            const model = node3d.getComponent(RayCastable);
+            const pickingCollisionVO = model && model.worldRayIntersection(ray3D);
             if (pickingCollisionVO) pv.push(pickingCollisionVO);
+
             return pv;
         }, []);
 
@@ -33,16 +34,16 @@ export class Raycaster
         // 根据与包围盒距离进行排序
         pickingCollisionVOs.sort((a, b) => a.rayEntryDistance - b.rayEntryDistance);
 
-        var shortestCollisionDistance = Number.MAX_VALUE;
-        var bestCollisionVO: PickingCollisionVO = null;
-        var collisionVOs: PickingCollisionVO[] = [];
+        let shortestCollisionDistance = Number.MAX_VALUE;
+        let bestCollisionVO: PickingCollisionVO = null;
+        const collisionVOs: PickingCollisionVO[] = [];
 
-        for (var i = 0; i < pickingCollisionVOs.length; ++i)
+        for (let i = 0; i < pickingCollisionVOs.length; ++i)
         {
-            var pickingCollisionVO = pickingCollisionVOs[i];
+            const pickingCollisionVO = pickingCollisionVOs[i];
             if (objectIsEmpty(bestCollisionVO) || pickingCollisionVO.rayEntryDistance < bestCollisionVO.rayEntryDistance)
             {
-                var result = pickingCollisionVO.geometry.raycast(pickingCollisionVO.localRay, shortestCollisionDistance, pickingCollisionVO.cullFace);
+                const result = pickingCollisionVO.geometry.raycast(pickingCollisionVO.localRay, shortestCollisionDistance, pickingCollisionVO.cullFace);
                 if (result)
                 {
                     pickingCollisionVO.rayEntryDistance = result.rayEntryDistance;
@@ -71,19 +72,20 @@ export class Raycaster
     {
         if (node3ds.length === 0) return [];
 
-        var pickingCollisionVOs = node3ds.reduce((pv: PickingCollisionVO[], node3d) =>
+        const pickingCollisionVOs = node3ds.reduce((pv: PickingCollisionVO[], node3d) =>
         {
-            var model = node3d.getComponent(RayCastable);
-            var pickingCollisionVO = model && model.worldRayIntersection(ray3D);
+            const model = node3d.getComponent(RayCastable);
+            const pickingCollisionVO = model && model.worldRayIntersection(ray3D);
             if (pickingCollisionVO) pv.push(pickingCollisionVO);
+
             return pv;
         }, []);
 
         if (pickingCollisionVOs.length === 0) return [];
 
-        var collisionVOs = pickingCollisionVOs.filter(v =>
+        const collisionVOs = pickingCollisionVOs.filter((v) =>
         {
-            var result = v.geometry.raycast(v.localRay, Number.MAX_VALUE, v.cullFace);
+            const result = v.geometry.raycast(v.localRay, Number.MAX_VALUE, v.cullFace);
             if (result)
             {
                 v.rayEntryDistance = result.rayEntryDistance;
@@ -91,8 +93,10 @@ export class Raycaster
                 v.localNormal = result.localNormal;
                 v.localPosition = result.localPosition;
                 v.uv = result.uv;
+
                 return true;
             }
+
             return false;
         });
 
@@ -160,7 +164,4 @@ export interface PickingCollisionVO
      */
     cullFace: CullFace;
 }
-
-
-
 

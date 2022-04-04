@@ -1,9 +1,9 @@
-import { Color4 } from "@feng3d/math";
-import { RenderMode } from "@feng3d/renderer";
-import { shaderlib } from "@feng3d/renderer";
-import { oav } from "@feng3d/objectview";
-import { serialize } from "@feng3d/serialization";
-import { Material } from "./Material";
+import { Color4 } from '@feng3d/math';
+import { RenderMode } from '@feng3d/renderer';
+import { shaderlib } from '@feng3d/renderer';
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { Material } from './Material';
 
 declare global
 {
@@ -17,7 +17,7 @@ declare global
 
     export interface MixinsDefaultMaterial
     {
-        "Segment-Material": Material;
+        'Segment-Material': Material;
     }
 }
 
@@ -27,18 +27,17 @@ declare global
  */
 export class SegmentUniforms
 {
-    __class__: "feng3d.SegmentUniforms";
+    __class__: 'feng3d.SegmentUniforms';
 
-    /** 
+    /**
      * 颜色
      */
     @serialize
     @oav()
-    u_segmentColor = new Color4();
+        u_segmentColor = new Color4();
 }
 
-shaderlib.shaderConfig.shaders["segment"].cls = SegmentUniforms;
-shaderlib.shaderConfig.shaders["segment"].renderParams = { renderMode: RenderMode.LINES, enableBlend: true };
+shaderlib.shaderConfig.shaders.segment.cls = SegmentUniforms;
+shaderlib.shaderConfig.shaders.segment.renderParams = { renderMode: RenderMode.LINES, enableBlend: true };
 
-
-Material.setDefault("Segment-Material", { shaderName: "segment" });
+Material.setDefault('Segment-Material', { shaderName: 'segment' });

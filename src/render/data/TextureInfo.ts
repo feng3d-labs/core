@@ -1,21 +1,21 @@
-import { Color4, ColorKeywords, Vector2 } from "@feng3d/math";
-import { oav } from "@feng3d/objectview";
-import { dataTransform, mathUtil } from "@feng3d/polyfill";
-import { Texture, TextureDataType, TextureFormat, TextureMagFilter, TextureMinFilter, TextureType, TextureWrap } from "@feng3d/renderer";
-import { serialize } from "@feng3d/serialization";
-import { watch } from "@feng3d/watcher";
-import { Feng3dObject } from "../../core/Feng3dObject";
-import { ImageUtil } from "../../utils/ImageUtil";
+import { Color4, ColorKeywords, Vector2 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { dataTransform, mathUtil } from '@feng3d/polyfill';
+import { Texture, TextureDataType, TextureFormat, TextureMagFilter, TextureMinFilter, TextureType, TextureWrap } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
+import { Feng3dObject } from '../../core/Feng3dObject';
+import { ImageUtil } from '../../utils/ImageUtil';
 
 export enum ImageDatas
 {
-    black = "black",
-    white = "white",
-    red = "red",
-    green = "green",
-    blue = "blue",
-    defaultNormal = "defaultNormal",
-    defaultParticle = "defaultParticle",
+    black = 'black',
+    white = 'white',
+    red = 'red',
+    green = 'green',
+    blue = 'blue',
+    defaultNormal = 'defaultNormal',
+    defaultParticle = 'defaultParticle',
 }
 
 export const imageDatas: {
@@ -34,7 +34,7 @@ export const imageDatas: {
     blue: new ImageUtil(1, 1, Color4.fromUnit24(ColorKeywords.blue)).imageData,
     defaultNormal: new ImageUtil(1, 1, Color4.fromUnit24(0x8080ff)).imageData,
     defaultParticle: new ImageUtil().drawDefaultParticle().imageData,
-}
+};
 
 /**
  * 纹理信息
@@ -50,58 +50,59 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
      * 格式
      */
     @serialize
-    @oav({ component: "OAVEnum", componentParam: { enumClass: TextureFormat } })
-    @watch("invalidate")
-    format = TextureFormat.RGBA;
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureFormat } })
+    @watch('invalidate')
+        format = TextureFormat.RGBA;
 
     /**
      * 数据类型
      */
     @serialize
-    @oav({ component: "OAVEnum", componentParam: { enumClass: TextureDataType } })
-    @watch("invalidate")
-    type = TextureDataType.UNSIGNED_BYTE;
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureDataType } })
+    @watch('invalidate')
+        type = TextureDataType.UNSIGNED_BYTE;
 
     /**
      * 是否生成mipmap
      */
     @serialize
     @oav()
-    @watch("invalidate")
-    generateMipmap = false;
+    @watch('invalidate')
+        generateMipmap = false;
 
     /**
      * 对图像进行Y轴反转。默认值为false
      */
     @serialize
     @oav()
-    @watch("invalidate")
-    flipY = false;
+    @watch('invalidate')
+        flipY = false;
 
     /**
      * 将图像RGB颜色值得每一个分量乘以A。默认为false
      */
     @serialize
     @oav()
-    @watch("invalidate")
-    premulAlpha = false;
+    @watch('invalidate')
+        premulAlpha = false;
 
     @serialize
-    @oav({ component: "OAVEnum", componentParam: { enumClass: TextureMinFilter } })
-    minFilter = TextureMinFilter.LINEAR;
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureMinFilter } })
+        minFilter = TextureMinFilter.LINEAR;
 
     @serialize
-    @oav({ component: "OAVEnum", componentParam: { enumClass: TextureMagFilter } })
-    magFilter = TextureMagFilter.LINEAR;
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureMagFilter } })
+        magFilter = TextureMagFilter.LINEAR;
     /**
      * 表示x轴的纹理的回环方式，就是当纹理的宽度小于需要贴图的平面的宽度的时候，平面剩下的部分应该p以何种方式贴图的问题。
      */
     @serialize
-    @oav({ component: "OAVEnum", componentParam: { enumClass: TextureWrap } })
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureWrap } })
     get wrapS()
     {
         if (!this.isPowerOfTwo)
-            return TextureWrap.CLAMP_TO_EDGE;
+        { return TextureWrap.CLAMP_TO_EDGE; }
+
         return this._wrapS;
     }
     set wrapS(v)
@@ -114,11 +115,12 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
      * 表示y轴的纹理回环方式。 magFilter和minFilter表示过滤的方式，这是OpenGL的基本概念，我将在下面讲一下，目前你不用担心它的使用。当您不设置的时候，它会取默认值，所以，我们这里暂时不理睬他。
      */
     @serialize
-    @oav({ component: "OAVEnum", componentParam: { enumClass: TextureWrap } })
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureWrap } })
     get wrapT()
     {
         if (!this.isPowerOfTwo)
-            return TextureWrap.CLAMP_TO_EDGE;
+        { return TextureWrap.CLAMP_TO_EDGE; }
+
         return this._wrapT;
     }
     set wrapT(v)
@@ -132,7 +134,7 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
      */
     @serialize
     @oav()
-    anisotropy = 0;
+        anisotropy = 0;
 
     invalid = true;
 
@@ -156,11 +158,11 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
      */
     isRenderTarget = false;
 
-    @watch("invalidate")
-    OFFSCREEN_WIDTH = 1024;
+    @watch('invalidate')
+        OFFSCREEN_WIDTH = 1024;
 
-    @watch("invalidate")
-    OFFSCREEN_HEIGHT = 1024;
+    @watch('invalidate')
+        OFFSCREEN_HEIGHT = 1024;
 
     /**
      * 是否为2的幂贴图
@@ -170,23 +172,25 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
         if (this.isRenderTarget)
         {
             if (this.OFFSCREEN_WIDTH === 0 || !mathUtil.isPowerOfTwo(this.OFFSCREEN_WIDTH))
-                return false;
+            { return false; }
             if (this.OFFSCREEN_HEIGHT === 0 || !mathUtil.isPowerOfTwo(this.OFFSCREEN_HEIGHT))
-                return false;
+            { return false; }
+
             return true;
         }
-        var pixels = this.activePixels;
+        let pixels = this.activePixels;
         if (!pixels) return false;
         if (!Array.isArray(pixels))
-            pixels = [pixels];
+        { pixels = [pixels]; }
         for (let i = 0; i < pixels.length; i++)
         {
             const element = pixels[i];
             if (element.width === 0 || !mathUtil.isPowerOfTwo(element.width))
-                return false;
+            { return false; }
             if (element.height === 0 || !mathUtil.isPowerOfTwo(element.height))
-                return false;
+            { return false; }
         }
+
         return true;
     }
 
@@ -199,13 +203,14 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
         {
             return new Vector2(this.OFFSCREEN_WIDTH, this.OFFSCREEN_HEIGHT);
         }
-        var pixels = this.activePixels;
+        let pixels = this.activePixels;
         if (!pixels) new Vector2(1, 1);
         if (!Array.isArray(pixels))
-            pixels = [pixels];
+        { pixels = [pixels]; }
         if (pixels.length === 0)
-            return new Vector2(1, 1);
-        var pixel = pixels[0];
+        { return new Vector2(1, 1); }
+        const pixel = pixels[0];
+
         return new Vector2(pixel.width, pixel.height);
     }
 
@@ -216,7 +221,7 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
     {
         if (!pixels) return false;
         if (!Array.isArray(pixels))
-            pixels = [pixels];
+        { pixels = [pixels]; }
 
         if (pixels.length === 0) return false;
         for (let i = 0; i < pixels.length; i++)
@@ -224,10 +229,11 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
             const element = pixels[i];
             if (!element) return false;
             if (element.width === 0)
-                return false;
+            { return false; }
             if (element.height === 0)
-                return false;
+            { return false; }
         }
+
         return true;
     }
 
@@ -242,11 +248,12 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
     get activePixels()
     {
         this.updateActivePixels();
+
         return this._activePixels;
     }
 
     /**
-     * 
+     *
      */
     get dataURL()
     {
@@ -254,31 +261,32 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
         if (!this._dataURL)
         {
             if (this._activePixels instanceof ImageData)
-                this._dataURL = dataTransform.imageDataToDataURL(this._activePixels)
+            { this._dataURL = dataTransform.imageDataToDataURL(this._activePixels); }
             else if (this._activePixels instanceof HTMLImageElement)
-                this._dataURL = dataTransform.imageToDataURL(this._activePixels);
+            { this._dataURL = dataTransform.imageToDataURL(this._activePixels); }
             else if (this._activePixels instanceof HTMLCanvasElement)
-                this._dataURL = dataTransform.canvasToDataURL(this._activePixels);
+            { this._dataURL = dataTransform.canvasToDataURL(this._activePixels); }
         }
+
         return this._dataURL;
     }
     private _dataURL: string;
 
     private updateActivePixels()
     {
-        var old = this._activePixels;
+        const old = this._activePixels;
         if (this.checkRenderData(this._pixels))
         {
             this._activePixels = this._pixels;
-        } else
+        }
+        else
+        if (Array.isArray(this.noPixels))
         {
-            if (Array.isArray(this.noPixels))
-            {
-                this._activePixels = this.noPixels.map(v => imageDatas[v]);
-            } else
-            {
-                this._activePixels = imageDatas[this.noPixels];
-            }
+            this._activePixels = this.noPixels.map((v) => imageDatas[v]);
+        }
+        else
+        {
+            this._activePixels = imageDatas[this.noPixels];
         }
         if (old !== this._activePixels) this._dataURL = null;
     }

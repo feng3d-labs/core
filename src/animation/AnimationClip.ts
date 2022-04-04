@@ -1,8 +1,8 @@
-import { AssetType } from "../assets/AssetType";
-import { Feng3dObject } from "../core/Feng3dObject";
-import { oav } from "@feng3d/objectview";
-import { serialize } from "@feng3d/serialization";
-import { PropertyClip } from "./PropertyClip";
+import { AssetType } from '../assets/AssetType';
+import { Feng3dObject } from '../core/Feng3dObject';
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { PropertyClip } from './PropertyClip';
 
 export class AnimationClip extends Feng3dObject
 {
@@ -24,12 +24,12 @@ export class AnimationClip extends Feng3dObject
      * 动画时长，单位ms
      */
     @serialize
-    length: number;
+        length: number;
 
     @oav()
     @serialize
-    loop = true;
+        loop = true;
 
     @serialize
-    propertyClips: PropertyClip[];
+        propertyClips: PropertyClip[];
 }

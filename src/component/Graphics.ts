@@ -1,14 +1,14 @@
-import { dataTransform } from "@feng3d/polyfill";
-import { Component } from "./Component";
+import { dataTransform } from '@feng3d/polyfill';
+import { Component } from './Component';
 
 /**
  * Graphics 类包含一组可用来创建矢量形状的方法。
  */
-export class Graphics extends Component 
+export class Graphics extends Component
 {
-    __class__: "feng3d.Graphics";
+    __class__: 'feng3d.Graphics';
 
-    private image: HTMLImageElement
+    private image: HTMLImageElement;
     private context2D: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
     private width: number;
@@ -18,7 +18,7 @@ export class Graphics extends Component
     {
         super();
 
-        this.canvas = document.createElement("canvas");
+        this.canvas = document.createElement('canvas');
         this.canvas.width = this.width;
         this.canvas.height = this.height;
         this.context2D = this.canvas.getContext('2d');
@@ -29,30 +29,31 @@ export class Graphics extends Component
 
     draw(width: number, height: number, callback: (context2D: CanvasRenderingContext2D) => void)
     {
-        var canvas = document.createElement("canvas");
+        const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
-        var ctxt = canvas.getContext('2d');
+        const ctxt = canvas.getContext('2d');
         callback(ctxt);
-        dataTransform.canvasToImage(canvas, "png", 1, (img) =>
+        dataTransform.canvasToImage(canvas, 'png', 1, (img) =>
         {
             this.image = img;
         });
+
         return this;
     }
 }
 
-export function watchContext2D(context2D: CanvasRenderingContext2D, watchFuncs = ["rect"])
+export function watchContext2D(context2D: CanvasRenderingContext2D, watchFuncs = ['rect'])
 {
-    watchFuncs.forEach(v =>
+    watchFuncs.forEach((v) =>
     {
-        var oldFunc = context2D[v];
+        const oldFunc = context2D[v];
         context2D[v] = function (...args): void
         {
             oldFunc.apply(context2D, args);
             // 标记更改
-            context2D["__changed"] = true;
-        }
+            context2D.__changed = true;
+        };
     });
 }
 

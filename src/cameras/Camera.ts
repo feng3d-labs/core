@@ -1,14 +1,14 @@
-import { Box3, Frustum, Matrix4x4, Ray3, Vector2, Vector3 } from "@feng3d/math";
-import { RegisterComponent } from "../component/Component";
-import { Component3D } from "../component/Component3D";
-import { Entity } from "../core/Entity";
-import { AddComponentMenu } from "../Menu";
-import { oav } from "@feng3d/objectview";
-import { serialization, serialize } from "@feng3d/serialization";
-import { LensBase } from "./lenses/LensBase";
-import { OrthographicLens } from "./lenses/OrthographicLens";
-import { PerspectiveLens } from "./lenses/PerspectiveLens";
-import { Projection } from "./Projection";
+import { Box3, Frustum, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
+import { RegisterComponent } from '../component/Component';
+import { Component3D } from '../component/Component3D';
+import { Entity } from '../core/Entity';
+import { AddComponentMenu } from '../Menu';
+import { oav } from '@feng3d/objectview';
+import { serialization, serialize } from '@feng3d/serialization';
+import { LensBase } from './lenses/LensBase';
+import { OrthographicLens } from './lenses/OrthographicLens';
+import { PerspectiveLens } from './lenses/PerspectiveLens';
+import { Projection } from './Projection';
 
 declare global
 {
@@ -32,32 +32,33 @@ declare global
 /**
  * 摄像机
  */
-@AddComponentMenu("Rendering/Camera")
+@AddComponentMenu('Rendering/Camera')
 @RegisterComponent({ name: 'Camera', single: true })
 export class Camera extends Component3D
 {
-    static create(name = "Camera")
+    static create(name = 'Camera')
     {
-        var entity = new Entity();
+        const entity = new Entity();
         entity.name = name;
-        var camera = entity.addComponent(Camera);
+        const camera = entity.addComponent(Camera);
+
         return camera;
     }
-    __class__: "feng3d.Camera";
+    __class__: 'feng3d.Camera';
 
-    @oav({ component: "OAVEnum", componentParam: { enumClass: Projection } })
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: Projection } })
     get projection()
     {
         return this.lens && this.lens.projectionType;
     }
     set projection(v)
     {
-        var projectionType = this.projection;
+        const projectionType = this.projection;
         if (projectionType === v) return;
         //
-        var aspect = 1;
-        var near = 0.3;
-        var far = 1000;
+        let aspect = 1;
+        let near = 0.3;
+        let far = 1000;
         if (this.lens)
         {
             aspect = this.lens.aspect;
@@ -65,12 +66,13 @@ export class Camera extends Component3D
             far = this.lens.far;
             serialization.setValue(this._backups, this.lens as any);
         }
-        var fov = this._backups ? this._backups.fov : 60;
-        var size = this._backups ? this._backups.size : 1;
+        const fov = this._backups ? this._backups.fov : 60;
+        const size = this._backups ? this._backups.size : 1;
         if (v === Projection.Perspective)
         {
             this.lens = new PerspectiveLens(fov, aspect, near, far);
-        } else
+        }
+        else
         {
             this.lens = new OrthographicLens(size, aspect, near, far);
         }
@@ -80,7 +82,7 @@ export class Camera extends Component3D
      * 镜头
      */
     @serialize
-    @oav({ component: "OAVObjectView" })
+    @oav({ component: 'OAVObjectView' })
     get lens()
     {
         return this._lens;
@@ -91,18 +93,18 @@ export class Camera extends Component3D
 
         if (this._lens)
         {
-            this._lens.off("lensChanged", this.invalidateViewProjection, this);
+            this._lens.off('lensChanged', this.invalidateViewProjection, this);
         }
         this._lens = v;
         if (this._lens)
         {
-            this._lens.on("lensChanged", this.invalidateViewProjection, this);
+            this._lens.on('lensChanged', this.invalidateViewProjection, this);
         }
 
         this.invalidateViewProjection();
 
-        this.emit("refreshView");
-        this.emit("lensChanged");
+        this.emit('refreshView');
+        this.emit('lensChanged');
     }
     private _lens: LensBase;
 
@@ -113,9 +115,9 @@ export class Camera extends Component3D
     {
         if (this._viewProjectionInvalid)
         {
-            //场景空间转摄像机空间
+            // 场景空间转摄像机空间
             this._viewProjection.copy(this.node3d.worldToLocalMatrix);
-            //+摄像机空间转投影空间 = 场景空间转投影空间
+            // +摄像机空间转投影空间 = 场景空间转投影空间
             this._viewProjection.append(this.lens.matrix);
             this._viewProjectionInvalid = false;
         }
@@ -133,6 +135,7 @@ export class Camera extends Component3D
             this._frustum.fromMatrix(this.viewProjection);
             this._frustumInvalid = false;
         }
+
         return this._frustum;
     }
 
@@ -144,7 +147,7 @@ export class Camera extends Component3D
         super.init();
         this.lens = this.lens || new PerspectiveLens();
         //
-        this.on("scenetransformChanged", this.invalidateViewProjection, this);
+        this.on('scenetransformChanged', this.invalidateViewProjection, this);
         this.invalidateViewProjection();
     }
 
@@ -166,7 +169,8 @@ export class Camera extends Component3D
      */
     project(point3d: Vector3): Vector3
     {
-        var v: Vector3 = this.lens.project(this.node3d.worldToLocalMatrix.transformPoint3(point3d));
+        const v: Vector3 = this.lens.project(this.node3d.worldToLocalMatrix.transformPoint3(point3d));
+
         return v;
     }
 
@@ -185,14 +189,15 @@ export class Camera extends Component3D
 
     /**
      * 获取摄像机能够在指定深度处的视野；镜头在指定深度的尺寸。
-     * 
+     *
      * @param depth 深度
      */
     getScaleByDepth(depth: number, dir = new Vector2(0, 1))
     {
-        var lt = this.unproject(- 0.5 * dir.x, - 0.5 * dir.y, depth);
-        var rb = this.unproject(+ 0.5 * dir.x, + 0.5 * dir.y, depth);
-        var scale = lt.subTo(rb).length;
+        const lt = this.unproject(-0.5 * dir.x, -0.5 * dir.y, depth);
+        const rb = this.unproject(+0.5 * dir.x, +0.5 * dir.y, depth);
+        const scale = lt.subTo(rb).length;
+
         return scale;
     }
 
@@ -209,14 +214,13 @@ export class Camera extends Component3D
     private _viewProjection: Matrix4x4 = new Matrix4x4();
     private _viewProjectionInvalid = true;
     private _backups = { fov: 60, size: 1 };
-    private _frustum = new Frustum()
+    private _frustum = new Frustum();
     private _frustumInvalid = true;
-
 }
 // 投影后可视区域
-var visibleBox = new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
+const visibleBox = new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
 
-Entity.registerPrimitive("Camera", (g) =>
+Entity.registerPrimitive('Camera', (g) =>
 {
     g.addComponent(Camera);
 });

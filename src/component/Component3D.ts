@@ -1,10 +1,10 @@
-import { Constructor } from "@feng3d/polyfill";
-import { Node3D } from "../core/Node3D";
-import { Component, RegisterComponent } from "./Component";
+import { Constructor } from '@feng3d/polyfill';
+import { Node3D } from '../core/Node3D';
+import { Component, RegisterComponent } from './Component';
 
 /**
  * 3D组件
- * 
+ *
  * 所有基于3D空间的组件均可继承于该组件。
  */
 @RegisterComponent({ name: 'Component3D', dependencies: [Node3D] })
@@ -12,7 +12,7 @@ export class Component3D extends Component
 {
     /**
      * The Node3D attached to this Entity (null if there is none attached).
-     * 
+     *
      * 附加到此 Entity 的 Node3D。
      */
     get node3d()
@@ -22,9 +22,9 @@ export class Component3D extends Component
 
     /**
      * Returns all components of Type type in the Entity.
-     * 
+     *
      * 返回 Entity 或其任何子项中类型为 type 的所有组件。
-     * 
+     *
      * @param type 类定义
      * @returns         返回与给出类定义一致的组件
      */

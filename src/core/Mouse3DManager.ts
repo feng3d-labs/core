@@ -1,21 +1,21 @@
-import { IEvent, EventEmitter } from "@feng3d/event";
-import { Rectangle } from "@feng3d/math";
-import { Lazy, lazy } from "@feng3d/polyfill";
-import { windowEventProxy } from "@feng3d/shortcut";
-import { watch } from "@feng3d/watcher";
-import { Camera } from "../cameras/Camera";
-import { raycaster } from "../pick/Raycaster";
-import { Scene } from "../scene/Scene";
-import { Node3D } from "./Node3D";
-import { View } from "./View";
+import { IEvent, EventEmitter } from '@feng3d/event';
+import { Rectangle } from '@feng3d/math';
+import { Lazy, lazy } from '@feng3d/polyfill';
+import { windowEventProxy } from '@feng3d/shortcut';
+import { watch } from '@feng3d/watcher';
+import { Camera } from '../cameras/Camera';
+import { raycaster } from '../pick/Raycaster';
+import { Scene } from '../scene/Scene';
+import { Node3D } from './Node3D';
+import { View } from './View';
 
 /**
  * 鼠标事件管理
  */
 export class Mouse3DManager
 {
-    @watch("_mouseInputChanged")
-    mouseInput: MouseInput;
+    @watch('_mouseInputChanged')
+        mouseInput: MouseInput;
 
     get selectedTransform()
     {
@@ -39,10 +39,11 @@ export class Mouse3DManager
     pick(view: View, scene: Scene, camera: Camera)
     {
         if (this._mouseEventTypes.length === 0) return;
-        //计算得到鼠标射线相交的物体
-        var pickingCollisionVO = raycaster.pick(view.mouseRay3D, scene.mouseCheckObjects);
+        // 计算得到鼠标射线相交的物体
+        const pickingCollisionVO = raycaster.pick(view.mouseRay3D, scene.mouseCheckObjects);
 
-        var node3d = pickingCollisionVO?.node3d;
+        const node3d = pickingCollisionVO?.node3d;
+
         return node3d;
     }
 
@@ -69,14 +70,14 @@ export class Mouse3DManager
     {
         if (oldValue)
         {
-            mouseEventTypes.forEach(element =>
+            mouseEventTypes.forEach((element) =>
             {
                 oldValue.off(element, this.onMouseEvent, this);
             });
         }
         if (newValue)
         {
-            mouseEventTypes.forEach(element =>
+            mouseEventTypes.forEach((element) =>
             {
                 newValue.on(element, this.onMouseEvent, this);
             });
@@ -87,13 +88,13 @@ export class Mouse3DManager
     {
         if (this.viewport)
         {
-            var bound = lazy.getvalue(this.viewport);
+            const bound = lazy.getvalue(this.viewport);
             if (!bound.contains(windowEventProxy.clientX, windowEventProxy.clientY))
-                return;
+            { return; }
         }
 
         if (this._mouseEventTypes.indexOf(type) === -1)
-            this._mouseEventTypes.push(type);
+        { this._mouseEventTypes.push(type); }
     }
 
     /**
@@ -112,16 +113,16 @@ export class Mouse3DManager
         if (this._selectedTransform !== value)
         {
             if (this._selectedTransform)
-                this._selectedTransform.emit("mouseout", null, true);
+            { this._selectedTransform.emit('mouseout', null, true); }
             if (value)
-                value.emit("mouseover", null, true);
+            { value.emit('mouseover', null, true); }
         }
         this._selectedTransform = value;
-        this._mouseEventTypes.forEach(element =>
+        this._mouseEventTypes.forEach((element) =>
         {
             switch (element)
             {
-                case "mousedown":
+                case 'mousedown':
                     if (this.preMouseDownNode3D !== this._selectedTransform)
                     {
                         this.node3DClickNum = 0;
@@ -129,25 +130,26 @@ export class Mouse3DManager
                     }
                     this._selectedTransform && this._selectedTransform.emit(element, null, true);
                     break;
-                case "mouseup":
+                case 'mouseup':
                     if (this._selectedTransform === this.preMouseDownNode3D)
                     {
                         this.node3DClickNum++;
-                    } else
+                    }
+                    else
                     {
                         this.node3DClickNum = 0;
                         this.preMouseDownNode3D = null;
                     }
                     this._selectedTransform && this._selectedTransform.emit(element, null, true);
                     break;
-                case "mousemove":
+                case 'mousemove':
                     this._selectedTransform && this._selectedTransform.emit(element, null, true);
                     break;
-                case "click":
+                case 'click':
                     if (this.node3DClickNum > 0)
-                        this._selectedTransform && this._selectedTransform.emit(element, null, true);
+                    { this._selectedTransform && this._selectedTransform.emit(element, null, true); }
                     break;
-                case "dblclick":
+                case 'dblclick':
                     if (this.node3DClickNum > 1)
                     {
                         this._selectedTransform && this._selectedTransform.emit(element, null, true);
@@ -184,9 +186,10 @@ export class MouseInput<T = MouseEventMap> extends EventEmitter<T>
     emit<K extends keyof T & string>(type: K, data?: T[K], bubbles = false)
     {
         if (!this.enable)
-            return null;
-        if (!this.catchMouseMove && type === "mousemove")
-            return null;
+        { return null; }
+        if (!this.catchMouseMove && type === 'mousemove')
+        { return null; }
+
         return super.emit(type, data, bubbles);
     }
 
@@ -197,9 +200,10 @@ export class MouseInput<T = MouseEventMap> extends EventEmitter<T>
     emitEvent<K extends keyof T & string>(event: IEvent<T[K]>)
     {
         if (!this.enable)
-            return false;
-        if (!this.catchMouseMove && event.type === "mousemove")
-            return false;
+        { return false; }
+        if (!this.catchMouseMove && event.type === 'mousemove')
+        { return false; }
+
         return super.emitEvent(event);
     }
 }
@@ -207,21 +211,21 @@ export class MouseInput<T = MouseEventMap> extends EventEmitter<T>
 /**
  * 鼠标事件列表
  */
-var mouseEventTypes: (keyof MouseEventMap)[] =
-    [
-        "mouseout",
-        "mouseover",
-        "mousemove",
-        "mousedown",
-        "mouseup",
-        "click",
-        "middlemousedown",
-        "middlemouseup",
-        "middleclick",
-        "rightmousedown",
-        "rightmouseup",
-        "rightclick",
-        "dblclick",
+var mouseEventTypes: (keyof MouseEventMap)[]
+    = [
+        'mouseout',
+        'mouseover',
+        'mousemove',
+        'mousedown',
+        'mouseup',
+        'click',
+        'middlemousedown',
+        'middlemouseup',
+        'middleclick',
+        'rightmousedown',
+        'rightmouseup',
+        'rightclick',
+        'dblclick',
     ];
 
 /**
@@ -232,11 +236,11 @@ export class WindowMouseInput extends MouseInput
     constructor()
     {
         super();
-        windowEventProxy.on("click", this.onMouseEvent, this);
-        windowEventProxy.on("dblclick", this.onMouseEvent, this);
-        windowEventProxy.on("mousedown", this.onMouseEvent, this);
-        windowEventProxy.on("mouseup", this.onMouseEvent, this);
-        windowEventProxy.on("mousemove", this.onMouseEvent, this);
+        windowEventProxy.on('click', this.onMouseEvent, this);
+        windowEventProxy.on('dblclick', this.onMouseEvent, this);
+        windowEventProxy.on('mousedown', this.onMouseEvent, this);
+        windowEventProxy.on('mouseup', this.onMouseEvent, this);
+        windowEventProxy.on('mousemove', this.onMouseEvent, this);
     }
 
     /**
@@ -244,13 +248,13 @@ export class WindowMouseInput extends MouseInput
      */
     private onMouseEvent(event: IEvent<MouseEvent>)
     {
-        var type = event.type;
+        let type = event.type;
         // 处理鼠标中键与右键
         if (event.data instanceof MouseEvent)
         {
-            if (["click", "mousedown", "mouseup"].indexOf(event.type) !== -1)
+            if (['click', 'mousedown', 'mouseup'].indexOf(event.type) !== -1)
             {
-                type = ["", "middle", "right"][event.data.button] + event.type;
+                type = ['', 'middle', 'right'][event.data.button] + event.type;
             }
         }
 

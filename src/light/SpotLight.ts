@@ -1,23 +1,23 @@
-import { oav } from "@feng3d/objectview";
-import { mathUtil } from "@feng3d/polyfill";
-import { serialize } from "@feng3d/serialization";
-import { watch } from "@feng3d/watcher";
-import { PerspectiveLens } from "../cameras/lenses/PerspectiveLens";
-import { RegisterComponent } from "../component/Component";
-import { Entity } from "../core/Entity";
-import { Light } from "./Light";
-import { LightType } from "./LightType";
+import { oav } from '@feng3d/objectview';
+import { mathUtil } from '@feng3d/polyfill';
+import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
+import { PerspectiveLens } from '../cameras/lenses/PerspectiveLens';
+import { RegisterComponent } from '../component/Component';
+import { Entity } from '../core/Entity';
+import { Light } from './Light';
+import { LightType } from './LightType';
 
 declare global
 {
-    interface MixinsPrimitiveEntity { "Spot light": Entity; }
+    interface MixinsPrimitiveEntity { 'Spot light': Entity; }
     interface MixinsComponentMap { SpotLight: SpotLight; }
 }
 
 /**
  * 聚光灯光源
  */
-@RegisterComponent({ name: "SpotLight" })
+@RegisterComponent({ name: 'SpotLight' })
 export class SpotLight extends Light
 {
     lightType = LightType.Spot;
@@ -27,23 +27,23 @@ export class SpotLight extends Light
      */
     @oav()
     @serialize
-    @watch("_invalidRange")
-    range = 10;
+    @watch('_invalidRange')
+        range = 10;
 
     /**
-     * 
+     *
      */
     @oav()
     @serialize
-    @watch("_invalidAngle")
-    angle = 60;
+    @watch('_invalidAngle')
+        angle = 60;
 
     /**
      * 半影.
      */
     @oav()
     @serialize
-    penumbra = 0;
+        penumbra = 0;
 
     /**
      * 椎体cos值
@@ -69,17 +69,17 @@ export class SpotLight extends Light
     private _invalidRange()
     {
         if (this.shadowCamera)
-            this.shadowCamera.lens.far = this.range;
+        { this.shadowCamera.lens.far = this.range; }
     }
 
     private _invalidAngle()
     {
         if (this.perspectiveLens)
-            this.perspectiveLens.fov = this.angle;
+        { this.perspectiveLens.fov = this.angle; }
     }
 }
 
-Entity.registerPrimitive("Spot light", (g) =>
+Entity.registerPrimitive('Spot light', (g) =>
 {
     g.addComponent(SpotLight);
 });

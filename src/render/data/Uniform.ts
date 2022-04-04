@@ -1,10 +1,10 @@
-import { Color3, Color4, Matrix3x3, Matrix4x4, Vector2, Vector3, Vector4 } from "@feng3d/math";
-import { DirectionalLight } from "../../light/DirectionalLight";
-import { LightType } from "../../light/LightType";
-import { PointLight } from "../../light/PointLight";
-import { SpotLight } from "../../light/SpotLight";
-import { Texture2D } from "../../textures/Texture2D";
-import { TextureCube } from "../../textures/TextureCube";
+import { Color3, Color4, Matrix3x3, Matrix4x4, Vector2, Vector3, Vector4 } from '@feng3d/math';
+import { DirectionalLight } from '../../light/DirectionalLight';
+import { LightType } from '../../light/LightType';
+import { PointLight } from '../../light/PointLight';
+import { SpotLight } from '../../light/SpotLight';
+import { Texture2D } from '../../textures/Texture2D';
+import { TextureCube } from '../../textures/TextureCube';
 
 declare global
 {
@@ -292,4 +292,4 @@ declare global
     }
 }
 
-export { }
+export { };

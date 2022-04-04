@@ -1,8 +1,8 @@
-import { Behaviour } from "../component/Behaviour";
-import { RegisterComponent } from "../component/Component";
-import { Box3 } from "@feng3d/math";
-import { Ray3 } from "@feng3d/math";
-import { PickingCollisionVO } from "../pick/Raycaster";
+import { Behaviour } from '../component/Behaviour';
+import { RegisterComponent } from '../component/Component';
+import { Box3 } from '@feng3d/math';
+import { Ray3 } from '@feng3d/math';
+import { PickingCollisionVO } from '../pick/Raycaster';
 
 declare global
 {
@@ -24,7 +24,7 @@ export class RayCastable extends Behaviour
     get selfLocalBounds()
     {
         if (!this._selfLocalBounds)
-            this._updateBounds();
+        { this._updateBounds(); }
 
         return this._selfLocalBounds;
     }
@@ -35,21 +35,21 @@ export class RayCastable extends Behaviour
     get selfWorldBounds()
     {
         if (!this._selfWorldBounds)
-            this._updateWorldBounds();
+        { this._updateWorldBounds(); }
 
         return this._selfWorldBounds;
     }
 
     /**
      * 与世界空间射线相交
-     * 
+     *
      * @param worldRay 世界空间射线
-     * 
+     *
      * @returns 相交信息
      */
     worldRayIntersection(worldRay: Ray3): PickingCollisionVO
     {
-        throw "请在子类中实现！";
+        throw '请在子类中实现！';
     }
 
     protected _onScenetransformChanged()
@@ -73,11 +73,11 @@ export class RayCastable extends Behaviour
         this._selfLocalBounds = null;
         this._selfWorldBounds = null;
 
-        this.emit("selfBoundsChanged", this);
+        this.emit('selfBoundsChanged', this);
     }
 
     protected _updateBounds()
     {
-        throw "请在子类中实现！";
+        throw '请在子类中实现！';
     }
 }

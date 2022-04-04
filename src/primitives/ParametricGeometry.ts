@@ -1,6 +1,6 @@
-import { Geometry } from "../geometry/Geometry";
-import { geometryUtils } from "../geometry/GeometryUtils";
-import { Vector3 } from "@feng3d/math";
+import { Geometry } from '../geometry/Geometry';
+import { geometryUtils } from '../geometry/GeometryUtils';
+import { Vector3 } from '@feng3d/math';
 
 declare global
 {
@@ -24,31 +24,31 @@ export class ParametricGeometry extends Geometry
     {
         super();
 
-        var positions: number[] = [];
-        var indices: number[] = [];
-        var uvs: number[] = [];
+        let positions: number[] = [];
+        const indices: number[] = [];
+        let uvs: number[] = [];
 
-        var sliceCount = slices + 1;
+        const sliceCount = slices + 1;
 
-        for (var i = 0; i <= stacks; i++)
+        for (let i = 0; i <= stacks; i++)
         {
-            var v = i / stacks;
+            const v = i / stacks;
 
-            for (var j = 0; j <= slices; j++)
+            for (let j = 0; j <= slices; j++)
             {
-                var u = j / slices;
+                const u = j / slices;
                 //
                 uvs.push(u, v);
                 //
-                var p = func(u, v);
+                const p = func(u, v);
                 positions.push(p.x, p.y, p.z);
                 //
                 if (i < stacks && j < slices)
                 {
-                    var a = i * sliceCount + j;
-                    var b = i * sliceCount + j + 1;
-                    var c = (i + 1) * sliceCount + j + 1;
-                    var d = (i + 1) * sliceCount + j;
+                    const a = i * sliceCount + j;
+                    const b = i * sliceCount + j + 1;
+                    const c = (i + 1) * sliceCount + j + 1;
+                    const d = (i + 1) * sliceCount + j;
                     indices.push(a, b, d);
                     indices.push(b, c, d);
                 }
@@ -59,7 +59,7 @@ export class ParametricGeometry extends Geometry
         {
             positions = positions.concat(positions);
             uvs = uvs.concat(uvs);
-            var start = (stacks + 1) * (slices + 1);
+            const start = (stacks + 1) * (slices + 1);
             for (let i = 0, n = indices.length; i < n; i += 3)
             {
                 indices.push(start + indices[i], start + indices[i + 2], start + indices[i + 1]);
@@ -77,13 +77,13 @@ export class ParametricGeometry extends Geometry
      */
     protected buildGeometry()
     {
-        var positions = this.positions;
+        const positions = this.positions;
         for (let i = 0, half = positions.length / 2; i < half; i++)
         {
             positions[i + half] = positions[i];
         }
         this.positions = positions;
         this.normals = geometryUtils.createVertexNormals(this.indices, this.positions, true);
-        this.tangents = geometryUtils.createVertexTangents(this.indices, this.positions, this.uvs, true)
+        this.tangents = geometryUtils.createVertexTangents(this.indices, this.positions, this.uvs, true);
     }
 }

@@ -1,6 +1,5 @@
-import { AnimationCurve, Color3, Color4, Gradient, Rectangle, Vector2 } from "@feng3d/math";
-import { dataTransform, mathUtil } from "@feng3d/polyfill";
-
+import { AnimationCurve, Color3, Color4, Gradient, Rectangle, Vector2 } from '@feng3d/math';
+import { dataTransform, mathUtil } from '@feng3d/polyfill';
 
 /**
  * 图片相关工具
@@ -13,7 +12,7 @@ export class ImageUtil
      * 获取图片数据
      * @param image 加载完成的图片元素
      */
-    static fromImage(image: HTMLImageElement) 
+    static fromImage(image: HTMLImageElement)
     {
         return new ImageUtil().fromImage(image);
     }
@@ -45,17 +44,18 @@ export class ImageUtil
      * 获取图片数据
      * @param image 加载完成的图片元素
      */
-    fromImage(image: HTMLImageElement) 
+    fromImage(image: HTMLImageElement)
     {
         if (!image) return null;
-        var canvasImg = document.createElement("canvas");
+        const canvasImg = document.createElement('canvas');
         canvasImg.width = image.width;
         canvasImg.height = image.height;
 
-        var ctxt = canvasImg.getContext('2d');
+        const ctxt = canvasImg.getContext('2d');
         console.assert(!!ctxt);
         ctxt.drawImage(image, 0, 0);
-        this.imageData = ctxt.getImageData(0, 0, image.width, image.height);//读取整张图片的像素。
+        this.imageData = ctxt.getImageData(0, 0, image.width, image.height);// 读取整张图片的像素。
+
         return this;
     }
 
@@ -67,9 +67,10 @@ export class ImageUtil
      */
     drawPixel(x: number, y: number, color: Color4)
     {
-        var oldColor = this.getPixel(x, y);
+        const oldColor = this.getPixel(x, y);
         oldColor.mix(color, color.a);
         this.setPixel(x, y, oldColor);
+
         return this;
     }
 
@@ -80,28 +81,30 @@ export class ImageUtil
      */
     getPixel(x: number, y: number)
     {
-        var pos = (x + y * this.imageData.width) * 4;
-        var color = new Color4(this.imageData.data[pos] / 255, this.imageData.data[pos + 1] / 255, this.imageData.data[pos + 2] / 255, this.imageData.data[pos + 3] / 255);
+        const pos = (x + y * this.imageData.width) * 4;
+        const color = new Color4(this.imageData.data[pos] / 255, this.imageData.data[pos + 1] / 255, this.imageData.data[pos + 2] / 255, this.imageData.data[pos + 3] / 255);
+
         return color;
     }
 
     /**
      * 设置指定位置颜色值
-     * @param imageData 图片数据 
+     * @param imageData 图片数据
      * @param x 图片数据x坐标
      * @param y 图片数据y坐标
      * @param color 颜色值
      */
     setPixel(x: number, y: number, color: Color4)
     {
-        x = Math.round(x)
-        y = Math.round(y)
-        var pos = (x + y * this.imageData.width) * 4;
+        x = Math.round(x);
+        y = Math.round(y);
+        const pos = (x + y * this.imageData.width) * 4;
 
         this.imageData.data[pos] = color.r * 255;
         this.imageData.data[pos + 1] = color.g * 255;
         this.imageData.data[pos + 2] = color.b * 255;
         this.imageData.data[pos + 3] = color.a * 255;
+
         return this;
     }
 
@@ -144,13 +147,14 @@ export class ImageUtil
      */
     drawLine(start: Vector2, end: Vector2, color: Color4)
     {
-        var length = end.subTo(start).length;
-        var p = new Vector2();
+        const length = end.subTo(start).length;
+        const p = new Vector2();
         for (let i = 0; i <= length; i++)
         {
             start.lerpNumberTo(end, i / length, p);
             this.setPixel(p.x, p.y, color);
         }
+
         return this;
     }
 
@@ -163,12 +167,12 @@ export class ImageUtil
      */
     drawPoint(x: number, y: number, color: Color4, size = 1)
     {
-        var half = Math.floor(size / 2);
+        const half = Math.floor(size / 2);
         //
-        var sx = x - half; if (sx < 0) sx = 0;
-        var ex = x - half + size; if (ex > this.imageData.width) ex = this.imageData.width;
-        var sy = y - half; if (sy < 0) sy = 0;
-        var ey = y - half + size; if (ey > this.imageData.height) ey = this.imageData.height;
+        let sx = x - half; if (sx < 0) sx = 0;
+        let ex = x - half + size; if (ex > this.imageData.width) ex = this.imageData.width;
+        let sy = y - half; if (sy < 0) sy = 0;
+        let ey = y - half + size; if (ey > this.imageData.height) ey = this.imageData.height;
         //
         for (let i = sx; i < ex; i++)
         {
@@ -177,6 +181,7 @@ export class ImageUtil
                 this.setPixel(i, j, color);
             }
         }
+
         return this;
     }
 
@@ -188,14 +193,14 @@ export class ImageUtil
      */
     drawImageData(imageData: ImageData, x: number, y: number)
     {
-        var rect = new Rectangle(0, 0, this.imageData.width, this.imageData.height).intersection(new Rectangle(x, y, imageData.width, imageData.height));
+        const rect = new Rectangle(0, 0, this.imageData.width, this.imageData.height).intersection(new Rectangle(x, y, imageData.width, imageData.height));
 
-        var imageUtil = new ImageUtil(); imageUtil.imageData = imageData;
+        const imageUtil = new ImageUtil(); imageUtil.imageData = imageData;
         for (let i = rect.x; i < rect.x + rect.width; i++)
         {
             for (let j = rect.y; j < rect.y + rect.height; j++)
             {
-                var c = imageUtil.getPixel(i - x, j - y);
+                const c = imageUtil.getPixel(i - x, j - y);
                 this.drawPixel(i, j, c);
             }
         }
@@ -217,18 +222,18 @@ export class ImageUtil
      */
     drawDefaultParticle(size = 64)
     {
-        var imageData = new ImageData(size, size);
+        const imageData = new ImageData(size, size);
 
-        var half = size / 2;
+        const half = size / 2;
         for (let i = 0; i < size; i++)
         {
             for (let j = 0; j < size; j++)
             {
-                var l = mathUtil.clamp(new Vector2(i - half, j - half).length, 0, half) / half;
-                var f = 1 - l;
+                const l = mathUtil.clamp(new Vector2(i - half, j - half).length, 0, half) / half;
+                let f = 1 - l;
                 f = f * f;
 
-                var pos = (i + j * size) * 4;
+                const pos = (i + j * size) * 4;
                 imageData.data[pos] = f * 255;
                 imageData.data[pos + 1] = f * 255;
                 imageData.data[pos + 2] = f * 255;
@@ -236,46 +241,48 @@ export class ImageUtil
             }
         }
         this.imageData = imageData;
+
         return this;
     }
 
     /**
      * 创建颜色拾取矩形
      * @param color 基色
-     * @param width 宽度    
+     * @param width 宽度
      * @param height 高度
      */
     drawColorPickerRect(color: number)
     {
-        Image
-        var leftTop = new Color3(1, 1, 1);
-        var rightTop = new Color3().fromUnit(color);
-        var leftBottom = new Color3(0, 0, 0);
-        var rightBottom = new Color3(0, 0, 0);
+        Image;
+        const leftTop = new Color3(1, 1, 1);
+        const rightTop = new Color3().fromUnit(color);
+        const leftBottom = new Color3(0, 0, 0);
+        const rightBottom = new Color3(0, 0, 0);
 
         //
         for (let i = 0; i < this.imageData.width; i++)
         {
             for (let j = 0; j < this.imageData.height; j++)
             {
-                var top = leftTop.mixTo(rightTop, i / this.imageData.width);
-                var bottom = leftBottom.mixTo(rightBottom, i / this.imageData.width);
-                var v = top.mixTo(bottom, j / this.imageData.height);
+                const top = leftTop.mixTo(rightTop, i / this.imageData.width);
+                const bottom = leftBottom.mixTo(rightBottom, i / this.imageData.width);
+                const v = top.mixTo(bottom, j / this.imageData.height);
 
-                this.setPixel(i, j, v.toColor4())
+                this.setPixel(i, j, v.toColor4());
             }
         }
+
         return this;
     }
 
     drawColorRect(color: Color4)
     {
-        var colorHeight = Math.floor(this.imageData.height * 0.8);
-        var alphaWidth = Math.floor(color.a * this.imageData.width);
+        const colorHeight = Math.floor(this.imageData.height * 0.8);
+        const alphaWidth = Math.floor(color.a * this.imageData.width);
 
-        var color4 = color.clone(); color4.a = 1;
-        var white = new Color4(1, 1, 1);
-        var black = new Color4(0, 0, 0);
+        const color4 = color.clone(); color4.a = 1;
+        const white = new Color4(1, 1, 1);
+        const black = new Color4(0, 0, 0);
         //
         for (let i = 0; i < this.imageData.width; i++)
         {
@@ -284,19 +291,21 @@ export class ImageUtil
                 //
                 if (j <= colorHeight)
                 {
-                    this.setPixel(i, j, color4)
-                } else
+                    this.setPixel(i, j, color4);
+                }
+                else
                 {
-                    this.setPixel(i, j, i < alphaWidth ? white : black)
+                    this.setPixel(i, j, i < alphaWidth ? white : black);
                 }
             }
         }
+
         return this;
     }
 
     /**
-     * 
-     * @param gradient 
+     *
+     * @param gradient
      * @param dirw true为横向条带，否则纵向条带
      */
     drawMinMaxGradient(gradient: Gradient, dirw = true)
@@ -306,11 +315,12 @@ export class ImageUtil
         {
             for (let j = 0; j < this.imageData.height; j++)
             {
-                var c = gradient.getValue(dirw ? i / (this.imageData.width - 1) : j / (this.imageData.height - 1));
+                const c = gradient.getValue(dirw ? i / (this.imageData.width - 1) : j / (this.imageData.height - 1));
 
                 this.setPixel(i, j, c);
             }
         }
+
         return this;
     }
 
@@ -323,19 +333,19 @@ export class ImageUtil
     drawCurve(curve: AnimationCurve, between0And1: boolean, color: Color4, rect = null)
     {
         rect = rect || new Rectangle(0, 0, this.imageData.width, this.imageData.height);
-        var range = between0And1 ? [1, 0] : [1, -1];
+        const range = between0And1 ? [1, 0] : [1, -1];
 
-        var prepos = new Vector2();
-        var curpos = new Vector2();
+        const prepos = new Vector2();
+        const curpos = new Vector2();
         //
         for (let i = 0; i < rect.width; i++)
         {
             //
-            var y = curve.getValue(i / (rect.width - 1));
+            let y = curve.getValue(i / (rect.width - 1));
 
             y = mathUtil.mapLinear(y, range[0], range[1], 0, 1);
 
-            var j = Math.round(y * (rect.height - 1));
+            const j = Math.round(y * (rect.height - 1));
 
             //
             curpos.x = rect.x + i;
@@ -347,6 +357,7 @@ export class ImageUtil
             prepos.x = curpos.x;
             prepos.y = curpos.y;
         }
+
         return this;
     }
 
@@ -360,18 +371,18 @@ export class ImageUtil
     drawBetweenTwoCurves(curve: AnimationCurve, curve1: AnimationCurve, between0And1: boolean, curveColor = new Color4(), fillcolor = new Color4(1, 1, 1, 0.5), rect = null)
     {
         rect = rect || new Rectangle(0, 0, this.imageData.width, this.imageData.height);
-        var range = between0And1 ? [1, 0] : [1, -1];
+        const range = between0And1 ? [1, 0] : [1, -1];
 
-        var prepos0 = new Vector2();
-        var curpos0 = new Vector2();
-        var prepos1 = new Vector2();
-        var curpos1 = new Vector2();
+        const prepos0 = new Vector2();
+        const curpos0 = new Vector2();
+        const prepos1 = new Vector2();
+        const curpos1 = new Vector2();
         //
         for (let i = 0; i < rect.width; i++)
         {
             //
-            var y0 = curve.getValue(i / (rect.width - 1));
-            var y1 = curve1.getValue(i / (rect.width - 1));
+            let y0 = curve.getValue(i / (rect.width - 1));
+            let y1 = curve1.getValue(i / (rect.width - 1));
 
             y0 = mathUtil.mapLinear(y0, range[0], range[1], 0, 1);
             y1 = mathUtil.mapLinear(y1, range[0], range[1], 0, 1);
@@ -394,8 +405,8 @@ export class ImageUtil
             prepos0.y = curpos0.y;
             prepos1.x = curpos1.x;
             prepos1.y = curpos1.y;
-
         }
+
         return this;
     }
 
@@ -409,14 +420,12 @@ export class ImageUtil
         {
             for (let j = 0; j < this.imageData.height; j++)
             {
-                var t = this.getPixel(i, j);
-                var a = 1 - t.r / backColor.r;
+                const t = this.getPixel(i, j);
+                const a = 1 - t.r / backColor.r;
                 t.r = t.g = t.b = 0;
                 t.a = a;
                 this.setPixel(i, j, t);
             }
         }
-
-
     }
 }

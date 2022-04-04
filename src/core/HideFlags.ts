@@ -1,8 +1,7 @@
-
-    /**
+/**
      * 在检查器中控制对象销毁、保存和可见性的位掩码。
      */
-    export enum HideFlags
+export enum HideFlags
     {
         /**
          * 一个正常的,可见对象。这是默认的。

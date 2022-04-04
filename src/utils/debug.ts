@@ -1,4 +1,4 @@
-import { functionwrap } from "./FunctionWarp";
+import { functionwrap } from './FunctionWarp';
 
 /**
  * 是否开启调试
@@ -10,14 +10,13 @@ export const debuger = true;
  */
 export class Debug
 {
-
     constructor()
     {
         // 断言失败前进入断点调试
-        functionwrap.wrap(console, "assert", (test: boolean) => { if (!test) debugger; });
+        functionwrap.wrap(console, 'assert', (test: boolean) => { if (!test) debugger; });
         // 输出错误前进入断点调试
-        functionwrap.wrap(console, "error", () => { debugger; });
-        functionwrap.wrap(console, "warn", () => { debugger; });
+        functionwrap.wrap(console, 'error', () => { debugger; });
+        functionwrap.wrap(console, 'warn', () => { debugger; });
     }
 
     /**
@@ -27,7 +26,7 @@ export class Debug
      */
     time(fn: Function, labal?: string)
     {
-        labal = labal || fn["name"] || "Anonymous function " + Math.random();
+        labal = labal || fn.name || `Anonymous function ${Math.random()}`;
         console.time(labal);
         fn();
         console.timeEnd(labal);

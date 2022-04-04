@@ -1,13 +1,13 @@
-import { Rectangle, Vector3 } from "@feng3d/math";
-import { GL, RenderAtomic, Shader } from "@feng3d/renderer";
-import { Camera } from "../../cameras/Camera";
-import { Renderable } from "../../core/Renderable";
-import { DirectionalLight } from "../../light/DirectionalLight";
-import { PointLight } from "../../light/PointLight";
-import { ShadowType } from "../../light/shadow/ShadowType";
-import { SpotLight } from "../../light/SpotLight";
-import { Scene } from "../../scene/Scene";
-import { FrameBufferObject } from "../FrameBufferObject";
+import { Rectangle, Vector3 } from '@feng3d/math';
+import { GL, RenderAtomic, Shader } from '@feng3d/renderer';
+import { Camera } from '../../cameras/Camera';
+import { Renderable } from '../../core/Renderable';
+import { DirectionalLight } from '../../light/DirectionalLight';
+import { PointLight } from '../../light/PointLight';
+import { ShadowType } from '../../light/shadow/ShadowType';
+import { SpotLight } from '../../light/SpotLight';
+import { Scene } from '../../scene/Scene';
+import { FrameBufferObject } from '../FrameBufferObject';
 
 export class ShadowRenderer
 {
@@ -18,21 +18,21 @@ export class ShadowRenderer
      */
     draw(gl: GL, scene: Scene, camera: Camera)
     {
-        var pointLights = scene.activePointLights.filter((i) => i.shadowType !== ShadowType.No_Shadows);
+        const pointLights = scene.activePointLights.filter((i) => i.shadowType !== ShadowType.No_Shadows);
         for (var i = 0; i < pointLights.length; i++)
         {
             pointLights[i].updateDebugShadowMap(scene, camera);
             this.drawForPointLight(gl, pointLights[i], scene, camera);
         }
 
-        var spotLights = scene.activeSpotLights.filter((i) => i.shadowType !== ShadowType.No_Shadows);
+        const spotLights = scene.activeSpotLights.filter((i) => i.shadowType !== ShadowType.No_Shadows);
         for (var i = 0; i < spotLights.length; i++)
         {
             spotLights[i].updateDebugShadowMap(scene, camera);
             this.drawForSpotLight(gl, spotLights[i], scene, camera);
         }
 
-        var directionalLights = scene.activeDirectionalLights.filter((i) => i.shadowType !== ShadowType.No_Shadows);
+        const directionalLights = scene.activeDirectionalLights.filter((i) => i.shadowType !== ShadowType.No_Shadows);
         for (var i = 0; i < directionalLights.length; i++)
         {
             directionalLights[i].updateDebugShadowMap(scene, camera);
@@ -49,15 +49,15 @@ export class ShadowRenderer
         gl.clearColor(1.0, 1.0, 1.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        var shadowCamera = light.shadowCamera;
+        const shadowCamera = light.shadowCamera;
         shadowCamera.node3d.localToWorldMatrix = light.node3d.localToWorldMatrix;
 
-        var renderAtomic = this.renderAtomic;
+        const renderAtomic = this.renderAtomic;
 
         // 获取影响阴影图的渲染对象
-        var models = scene.getModelsByCamera(shadowCamera);
+        const models = scene.getModelsByCamera(shadowCamera);
         // 筛选投射阴影的渲染对象
-        var castShadowsModels = models.filter(i => i.castShadows);
+        const castShadowsModels = models.filter((i) => i.castShadows);
 
         //
         renderAtomic.renderParams.useViewPort = true;
@@ -75,7 +75,7 @@ export class ShadowRenderer
         renderAtomic.uniforms.u_shadowCameraNear = light.shadowCameraNear;
         renderAtomic.uniforms.u_shadowCameraFar = light.shadowCameraFar;
 
-        castShadowsModels.forEach(renderable =>
+        castShadowsModels.forEach((renderable) =>
         {
             this.drawGameObject(gl, renderable, scene, camera);
         });
@@ -92,8 +92,8 @@ export class ShadowRenderer
         gl.clearColor(1.0, 1.0, 1.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        var vpWidth = light.shadowMapSize.x;
-        var vpHeight = light.shadowMapSize.y;
+        const vpWidth = light.shadowMapSize.x;
+        const vpHeight = light.shadowMapSize.y;
 
         // These viewports map a cube-map onto a 2D texture with the
         // following orientation:
@@ -122,21 +122,21 @@ export class ShadowRenderer
         // negative Y
         cube2DViewPorts[5].init(vpWidth, 0, vpWidth, vpHeight);
 
-        var shadowCamera = light.shadowCamera;
+        const shadowCamera = light.shadowCamera;
         shadowCamera.node3d.x = light.node3d.x;
         shadowCamera.node3d.y = light.node3d.y;
         shadowCamera.node3d.z = light.node3d.z;
 
-        var renderAtomic = this.renderAtomic;
+        const renderAtomic = this.renderAtomic;
 
-        for (var face = 0; face < 6; face++)
+        for (let face = 0; face < 6; face++)
         {
             shadowCamera.node3d.lookAt(light.position.addTo(cubeDirections[face]), cubeUps[face]);
 
             // 获取影响阴影图的渲染对象
-            var models = scene.getModelsByCamera(shadowCamera);
+            const models = scene.getModelsByCamera(shadowCamera);
             // 筛选投射阴影的渲染对象
-            var castShadowsModels = models.filter(i => i.castShadows);
+            const castShadowsModels = models.filter((i) => i.castShadows);
 
             //
             renderAtomic.renderParams.useViewPort = true;
@@ -154,7 +154,7 @@ export class ShadowRenderer
             renderAtomic.uniforms.u_shadowCameraNear = light.shadowCameraNear;
             renderAtomic.uniforms.u_shadowCameraFar = light.shadowCameraFar;
 
-            castShadowsModels.forEach(renderable =>
+            castShadowsModels.forEach((renderable) =>
             {
                 this.drawGameObject(gl, renderable, scene, camera);
             });
@@ -162,13 +162,12 @@ export class ShadowRenderer
         light.frameBufferObject.deactive(gl);
     }
 
-
     private drawForDirectionalLight(gl: GL, light: DirectionalLight, scene: Scene, camera: Camera): any
     {
         // 获取影响阴影图的渲染对象
-        var models = scene.getPickByDirectionalLight(light);
+        const models = scene.getPickByDirectionalLight(light);
         // 筛选投射阴影的渲染对象
-        var castShadowsModels = models.filter(i => i.castShadows);
+        const castShadowsModels = models.filter((i) => i.castShadows);
 
         light.updateShadowByCamera(scene, camera, models);
 
@@ -179,9 +178,9 @@ export class ShadowRenderer
         gl.clearColor(1.0, 1.0, 1.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        var shadowCamera = light.shadowCamera;
+        const shadowCamera = light.shadowCamera;
 
-        var renderAtomic = this.renderAtomic;
+        const renderAtomic = this.renderAtomic;
         //
         renderAtomic.renderParams.useViewPort = true;
         renderAtomic.renderParams.viewPort = new Rectangle(0, 0, light.frameBufferObject.OFFSCREEN_WIDTH, light.frameBufferObject.OFFSCREEN_HEIGHT);
@@ -197,7 +196,7 @@ export class ShadowRenderer
         renderAtomic.uniforms.u_shadowCameraNear = light.shadowCameraNear;
         renderAtomic.uniforms.u_shadowCameraFar = light.shadowCameraFar;
         //
-        castShadowsModels.forEach(renderable =>
+        castShadowsModels.forEach((renderable) =>
         {
             this.drawGameObject(gl, renderable, scene, camera);
         });
@@ -210,9 +209,9 @@ export class ShadowRenderer
      */
     private drawGameObject(gl: GL, renderable: Renderable, scene: Scene, camera: Camera)
     {
-        var renderAtomic = renderable.renderAtomic;
+        const renderAtomic = renderable.renderAtomic;
         renderable.beforeRender(renderAtomic, scene, camera);
-        renderAtomic.shadowShader = renderAtomic.shadowShader || new Shader("shadow");
+        renderAtomic.shadowShader = renderAtomic.shadowShader || new Shader('shadow');
 
         //
         this.renderAtomic.next = renderAtomic;
@@ -236,11 +235,11 @@ var cube2DViewPorts = [
 ];
 var cubeUps = [
     new Vector3(0, 1, 0), new Vector3(0, 1, 0), new Vector3(0, 1, 0),
-    new Vector3(0, 1, 0), new Vector3(0, 0, 1), new Vector3(0, 0, - 1)
+    new Vector3(0, 1, 0), new Vector3(0, 0, 1), new Vector3(0, 0, -1)
 ];
 var cubeDirections = [
-    new Vector3(1, 0, 0), new Vector3(- 1, 0, 0), new Vector3(0, 0, 1),
-    new Vector3(0, 0, - 1), new Vector3(0, 1, 0), new Vector3(0, - 1, 0)
+    new Vector3(1, 0, 0), new Vector3(-1, 0, 0), new Vector3(0, 0, 1),
+    new Vector3(0, 0, -1), new Vector3(0, 1, 0), new Vector3(0, -1, 0)
 ];
 
 declare global

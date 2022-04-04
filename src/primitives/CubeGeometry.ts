@@ -1,9 +1,9 @@
-import { Entity } from "../core/Entity";
-import { MeshRenderer } from "../core/MeshRenderer";
-import { Geometry } from "../geometry/Geometry";
-import { oav } from "@feng3d/objectview";
-import { serialize } from "@feng3d/serialization";
-import { watch } from "@feng3d/watcher";
+import { Entity } from '../core/Entity';
+import { MeshRenderer } from '../core/MeshRenderer';
+import { Geometry } from '../geometry/Geometry';
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 
 declare global
 {
@@ -18,77 +18,77 @@ declare global
  */
 export class CubeGeometry extends Geometry
 {
-    __class__: "feng3d.CubeGeometry";
+    __class__: 'feng3d.CubeGeometry';
 
-    protected _name = "Cube";
+    protected _name = 'Cube';
 
     /**
      * 宽度
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    width = 1;
+    @watch('invalidateGeometry')
+        width = 1;
 
     /**
      * 高度
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    height = 1;
+    @watch('invalidateGeometry')
+        height = 1;
 
     /**
      * 深度
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    depth = 1;
+    @watch('invalidateGeometry')
+        depth = 1;
 
     /**
      * 宽度方向分割数
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    segmentsW = 1;
+    @watch('invalidateGeometry')
+        segmentsW = 1;
 
     /**
      * 高度方向分割数
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    segmentsH = 1;
+    @watch('invalidateGeometry')
+        segmentsH = 1;
 
     /**
      * 深度方向分割数
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    segmentsD = 1;
+    @watch('invalidateGeometry')
+        segmentsD = 1;
 
     /**
      * 是否为6块贴图，默认true。
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    tile6 = false;
+    @watch('invalidateGeometry')
+        tile6 = false;
 
     protected buildGeometry()
     {
-        var vertexPositionData = this.buildPosition();
+        const vertexPositionData = this.buildPosition();
         this.positions = vertexPositionData;
-        var vertexNormalData = this.buildNormal();
+        const vertexNormalData = this.buildNormal();
         this.normals = vertexNormalData;
-        var vertexTangentData = this.buildTangent();
+        const vertexTangentData = this.buildTangent();
         this.tangents = vertexTangentData;
-        var uvData = this.buildUVs();
+        const uvData = this.buildUVs();
         this.uvs = uvData;
-        var indices = this.buildIndices();
+        const indices = this.buildIndices();
         this.indices = indices;
     }
 
@@ -97,17 +97,20 @@ export class CubeGeometry extends Geometry
      */
     private buildPosition()
     {
-        var vertexPositionData: number[] = [];
+        const vertexPositionData: number[] = [];
 
-        var i: number, j: number;
+        let i: number; let
+            j: number;
 
-        var hw: number, hh: number, hd: number; // halves
-        var dw: number, dh: number, dd: number; // deltas
+        let hw: number; let hh: number; let
+            hd: number; // halves
+        let dw: number; let dh: number; let
+            dd: number; // deltas
 
-        var outer_pos: number;
+        let outer_pos: number;
 
         // Indices
-        var positionIndex = 0;
+        let positionIndex = 0;
 
         // half cube dimensions
         hw = this.width / 2;
@@ -181,12 +184,13 @@ export class CubeGeometry extends Geometry
      */
     private buildNormal()
     {
-        var vertexNormalData: number[] = [];
+        const vertexNormalData: number[] = [];
 
-        var i: number, j: number;
+        let i: number; let
+            j: number;
 
         // Indices
-        var normalIndex = 0;
+        let normalIndex = 0;
 
         for (i = 0; i <= this.segmentsW; i++)
         {
@@ -235,6 +239,7 @@ export class CubeGeometry extends Geometry
                 vertexNormalData[normalIndex++] = 0;
             }
         }
+
         return vertexNormalData;
     }
 
@@ -243,13 +248,13 @@ export class CubeGeometry extends Geometry
      */
     private buildTangent()
     {
+        const vertexTangentData: number[] = [];
 
-        var vertexTangentData: number[] = [];
-
-        var i: number, j: number;
+        let i: number; let
+            j: number;
 
         // Indices
-        var tangentIndex = 0;
+        let tangentIndex = 0;
 
         for (i = 0; i <= this.segmentsW; i++)
         {
@@ -269,7 +274,6 @@ export class CubeGeometry extends Geometry
 
         for (i = 0; i <= this.segmentsW; i++)
         {
-
             for (j = 0; j <= this.segmentsD; j++)
             {
                 // top
@@ -286,7 +290,6 @@ export class CubeGeometry extends Geometry
 
         for (i = 0; i <= this.segmentsD; i++)
         {
-
             for (j = 0; j <= this.segmentsH; j++)
             {
                 // left
@@ -309,16 +312,17 @@ export class CubeGeometry extends Geometry
      */
     private buildIndices()
     {
-        var indices: number[] = [];
+        const indices: number[] = [];
 
-        var tl: number, tr: number, bl: number, br: number;
-        var i: number, j: number, inc = 0;
+        let tl: number; let tr: number; let bl: number; let
+            br: number;
+        let i: number; let j: number; let
+            inc = 0;
 
-        var fidx = 0;
+        let fidx = 0;
 
         for (i = 0; i <= this.segmentsW; i++)
         {
-
             for (j = 0; j <= this.segmentsH; j++)
             {
                 // front
@@ -350,7 +354,6 @@ export class CubeGeometry extends Geometry
 
         for (i = 0; i <= this.segmentsW; i++)
         {
-
             for (j = 0; j <= this.segmentsD; j++)
             {
                 // top
@@ -418,14 +421,20 @@ export class CubeGeometry extends Geometry
      */
     private buildUVs()
     {
-        var i: number, j: number, uidx: number;
-        var data: number[] = [];
+        let i: number; let j: number; let
+            uidx: number;
+        const data: number[] = [];
 
-        var u_tile_dim: number, v_tile_dim: number;
-        var u_tile_step: number, v_tile_step: number;
-        var tl0u: number, tl0v: number;
-        var tl1u: number, tl1v: number;
-        var du: number, dv: number;
+        let u_tile_dim: number; let
+            v_tile_dim: number;
+        let u_tile_step: number; let
+            v_tile_step: number;
+        let tl0u: number; let
+            tl0v: number;
+        let tl1u: number; let
+            tl1v: number;
+        let du: number; let
+            dv: number;
 
         if (this.tile6)
         {
@@ -453,8 +462,8 @@ export class CubeGeometry extends Geometry
         uidx = 0;
 
         // FRONT / BACK
-        tl0u = 1 * u_tile_step;
-        tl0v = 1 * v_tile_step;
+        tl0u = Number(u_tile_step);
+        tl0v = Number(v_tile_step);
         tl1u = 2 * u_tile_step;
         tl1v = 0 * v_tile_step;
         du = u_tile_dim / this.segmentsW;
@@ -471,7 +480,7 @@ export class CubeGeometry extends Geometry
         }
 
         // TOP / BOTTOM
-        tl0u = 1 * u_tile_step;
+        tl0u = Number(u_tile_step);
         tl0v = 0 * v_tile_step;
         tl1u = 0 * u_tile_step;
         tl1v = 0 * v_tile_step;
@@ -490,9 +499,9 @@ export class CubeGeometry extends Geometry
 
         // LEFT / RIGHT
         tl0u = 0 * u_tile_step;
-        tl0v = 1 * v_tile_step;
+        tl0v = Number(v_tile_step);
         tl1u = 2 * u_tile_step;
-        tl1v = 1 * v_tile_step;
+        tl1v = Number(v_tile_step);
         du = u_tile_dim / this.segmentsD;
         dv = v_tile_dim / this.segmentsH;
         for (i = 0; i <= this.segmentsD; i++)
@@ -522,9 +531,9 @@ declare global
     }
 }
 
-Geometry.setDefault("Cube", new CubeGeometry());
+Geometry.setDefault('Cube', new CubeGeometry());
 
-Entity.registerPrimitive("Cube", (g) =>
+Entity.registerPrimitive('Cube', (g) =>
 {
-    g.addComponent(MeshRenderer).geometry = Geometry.getDefault("Cube");
+    g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cube');
 });

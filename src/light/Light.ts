@@ -26,28 +26,28 @@ export class Light extends Behaviour
      * 灯光类型
      */
     @serialize
-    lightType: LightType;
+        lightType: LightType;
 
     /**
      * 颜色
      */
     @oav()
     @serialize
-    color = new Color3();
+        color = new Color3();
 
     /**
      * 光照强度
      */
     @oav()
     @serialize
-    intensity = 1;
+        intensity = 1;
 
     /**
      * 阴影类型
      */
     @oav({ component: 'OAVEnum', componentParam: { enumClass: ShadowType } })
     @serialize
-    shadowType = ShadowType.No_Shadows;
+        shadowType = ShadowType.No_Shadows;
 
     /**
      * 光源位置
@@ -115,7 +115,7 @@ export class Light extends Behaviour
     frameBufferObject = new FrameBufferObject();
 
     @oav({ tooltip: '是否调试阴影图' })
-    debugShadowMap = false;
+        debugShadowMap = false;
 
     private debugShadowMapModel: MeshRenderer;
 

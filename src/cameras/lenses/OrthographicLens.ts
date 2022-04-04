@@ -1,8 +1,8 @@
-import { oav } from "@feng3d/objectview";
-import { serialize } from "@feng3d/serialization";
-import { watch } from "@feng3d/watcher";
-import { Projection } from "../Projection";
-import { LensBase } from "./LensBase";
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
+import { Projection } from '../Projection';
+import { LensBase } from './LensBase';
 
 /**
  * 正射投影镜头
@@ -14,8 +14,8 @@ export class OrthographicLens extends LensBase
      */
     @serialize
     @oav()
-    @watch("invalidate")
-    size: number;
+    @watch('invalidate')
+        size: number;
 
     /**
      * 构建正射投影镜头

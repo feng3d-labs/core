@@ -1,6 +1,6 @@
-import { Attributes } from "@feng3d/renderer";
-import { serialize } from "@feng3d/serialization";
-import { Geometry } from "./Geometry";
+import { Attributes } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
+import { Geometry } from './Geometry';
 
 declare global
 {
@@ -12,7 +12,7 @@ declare global
 
 export class CustomGeometry extends Geometry
 {
-    __class__: "feng3d.CustomGeometry";
+    __class__: 'feng3d.CustomGeometry';
 
     /**
      * 顶点索引缓冲
@@ -21,6 +21,7 @@ export class CustomGeometry extends Geometry
     get indices()
     {
         this.updateGrometry();
+
         return this._indexBuffer.indices;
     }
 

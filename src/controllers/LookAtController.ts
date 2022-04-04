@@ -1,6 +1,6 @@
-import { Vector3 } from "@feng3d/math";
-import { Node3D } from "../core/Node3D";
-import { ControllerBase } from "./ControllerBase";
+import { Vector3 } from '@feng3d/math';
+import { Node3D } from '../core/Node3D';
+import { ControllerBase } from './ControllerBase';
 
 export class LookAtController extends ControllerBase
 {
@@ -15,9 +15,9 @@ export class LookAtController extends ControllerBase
         super(node3d);
 
         if (Node3D)
-            this.lookAtObject = Node3D;
+        { this.lookAtObject = Node3D; }
         else
-            this.lookAtPosition = new Vector3();
+        { this.lookAtPosition = new Vector3(); }
     }
 
     get upAxis(): Vector3
@@ -48,7 +48,7 @@ export class LookAtController extends ControllerBase
     set lookAtObject(value)
     {
         if (this._lookAtNode3D === value)
-            return;
+        { return; }
 
         this._lookAtNode3D = value;
     }

@@ -1,6 +1,6 @@
-import { Entity } from "./Entity";
-import { Node3D } from "./Node3D";
-import { ScriptComponent } from "./ScriptComponent";
+import { Entity } from './Entity';
+import { Node3D } from './Node3D';
+import { ScriptComponent } from './ScriptComponent';
 
 /**
  * 3d对象脚本

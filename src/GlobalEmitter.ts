@@ -1,6 +1,6 @@
 import '@feng3d/event';
 
-export { }
+export { };
 
 declare global
 {

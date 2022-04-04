@@ -1,6 +1,6 @@
-import { mathUtil } from "@feng3d/polyfill";
-import { Node3D } from "../core/Node3D";
-import { LookAtController } from "./LookAtController";
+import { mathUtil } from '@feng3d/polyfill';
+import { Node3D } from '../core/Node3D';
+import { LookAtController } from './LookAtController';
 
 export class HoverController extends LookAtController
 {
@@ -25,7 +25,7 @@ export class HoverController extends LookAtController
     {
         val = (val < 1) ? 1 : val;
         if (this._steps === val)
-            return;
+        { return; }
         this._steps = val;
         this.update();
     }
@@ -39,7 +39,7 @@ export class HoverController extends LookAtController
     {
         val = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, val));
         if (this._panAngle === val)
-            return;
+        { return; }
         this._panAngle = val;
         this.update();
     }
@@ -53,7 +53,7 @@ export class HoverController extends LookAtController
     {
         val = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, val));
         if (this._tiltAngle === val)
-            return;
+        { return; }
         this._tiltAngle = val;
         this.update();
     }
@@ -66,7 +66,7 @@ export class HoverController extends LookAtController
     set distance(val: number)
     {
         if (this._distance === val)
-            return;
+        { return; }
         this._distance = val;
         this.update();
     }
@@ -79,7 +79,7 @@ export class HoverController extends LookAtController
     set minPanAngle(val: number)
     {
         if (this._minPanAngle === val)
-            return;
+        { return; }
         this._minPanAngle = val;
         this.panAngle = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, this._panAngle));
     }
@@ -92,7 +92,7 @@ export class HoverController extends LookAtController
     set maxPanAngle(val: number)
     {
         if (this._maxPanAngle === val)
-            return;
+        { return; }
         this._maxPanAngle = val;
         this.panAngle = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, this._panAngle));
     }
@@ -105,7 +105,7 @@ export class HoverController extends LookAtController
     set minTiltAngle(val: number)
     {
         if (this._minTiltAngle === val)
-            return;
+        { return; }
         this._minTiltAngle = val;
         this.tiltAngle = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, this._tiltAngle));
     }
@@ -118,7 +118,7 @@ export class HoverController extends LookAtController
     set maxTiltAngle(val: number)
     {
         if (this._maxTiltAngle === val)
-            return;
+        { return; }
         this._maxTiltAngle = val;
         this.tiltAngle = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, this._tiltAngle));
     }
@@ -131,7 +131,7 @@ export class HoverController extends LookAtController
     set yFactor(val: number)
     {
         if (this._yFactor === val)
-            return;
+        { return; }
         this._yFactor = val;
         this.update();
     }
@@ -144,11 +144,10 @@ export class HoverController extends LookAtController
     set wrapPanAngle(val: boolean)
     {
         if (this._wrapPanAngle === val)
-            return;
+        { return; }
         this._wrapPanAngle = val;
         this.update();
     }
-
 
     constructor(node3d?: Node3D, lookAtObject?: Node3D, panAngle = 0, tiltAngle = 90, distance = 1000, minTiltAngle = -90, maxTiltAngle = 90, minPanAngle = NaN, maxPanAngle = NaN, steps = 8, yFactor = 2, wrapPanAngle = false)
     {
@@ -184,9 +183,9 @@ export class HoverController extends LookAtController
                     this._panAngle = this._panAngle % 360;
                 }
                 while (this._panAngle - this._currentPanAngle < -180)
-                    this._currentPanAngle -= 360;
+                { this._currentPanAngle -= 360; }
                 while (this._panAngle - this._currentPanAngle > 180)
-                    this._currentPanAngle += 360;
+                { this._currentPanAngle += 360; }
             }
             if (interpolate)
             {
@@ -205,7 +204,7 @@ export class HoverController extends LookAtController
             }
         }
         if (!this._targetNode)
-            return;
+        { return; }
         if (this._lookAtPosition)
         {
             this._pos.x = this._lookAtPosition.x;
@@ -250,6 +249,5 @@ export class HoverController extends LookAtController
         this._targetNode.y = this._pos.y + this._distance * Math.sin(this._currentTiltAngle * mathUtil.DEG2RAD) * this._yFactor;
         super.update();
     }
-
 }
 

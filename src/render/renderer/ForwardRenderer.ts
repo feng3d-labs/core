@@ -1,9 +1,9 @@
-import { defaultRotationOrder, Vector4 } from "@feng3d/math";
-import { lazy, LazyObject } from "@feng3d/polyfill";
-import { Camera } from "../../cameras/Camera";
-import { Uniforms } from "@feng3d/renderer";
-import { GL } from "@feng3d/renderer";
-import { Scene } from "../../scene/Scene";
+import { defaultRotationOrder, Vector4 } from '@feng3d/math';
+import { lazy, LazyObject } from '@feng3d/polyfill';
+import { Camera } from '../../cameras/Camera';
+import { Uniforms } from '@feng3d/renderer';
+import { GL } from '@feng3d/renderer';
+import { Scene } from '../../scene/Scene';
 
 /**
  * 前向渲染器
@@ -15,10 +15,10 @@ export class ForwardRenderer
      */
     draw(gl: GL, scene: Scene, camera: Camera)
     {
-        var blenditems = scene.getPickCache(camera).blenditems;
-        var unblenditems = scene.getPickCache(camera).unblenditems;
+        const blenditems = scene.getPickCache(camera).blenditems;
+        const unblenditems = scene.getPickCache(camera).unblenditems;
 
-        var uniforms: LazyObject<Uniforms> = {} as any;
+        const uniforms: LazyObject<Uniforms> = {} as any;
         //
         uniforms.u_projectionMatrix = camera.lens.matrix;
         uniforms.u_viewProjection = camera.viewProjection;
@@ -29,13 +29,13 @@ export class ForwardRenderer
         uniforms.u_scaleByDepth = camera.getScaleByDepth(1);
         uniforms.u_sceneAmbientColor = scene.ambientColor;
 
-        var ctime = (Date.now() / 1000) % 3600;
+        const ctime = (Date.now() / 1000) % 3600;
         uniforms._Time = new Vector4(ctime / 20, ctime, ctime * 2, ctime * 3);
 
-        unblenditems.concat(blenditems).forEach(renderable =>
+        unblenditems.concat(blenditems).forEach((renderable) =>
         {
-            //绘制
-            var renderAtomic = renderable.renderAtomic;
+            // 绘制
+            const renderAtomic = renderable.renderAtomic;
 
             for (const key in uniforms)
             {
@@ -43,13 +43,9 @@ export class ForwardRenderer
             }
             //
             renderAtomic.uniforms.u_mvMatrix = () =>
-            {
-                return lazy.getvalue(renderAtomic.uniforms.u_modelMatrix).clone().append(lazy.getvalue(renderAtomic.uniforms.u_viewMatrix))
-            };
+                lazy.getvalue(renderAtomic.uniforms.u_modelMatrix).clone().append(lazy.getvalue(renderAtomic.uniforms.u_viewMatrix));
             renderAtomic.uniforms.u_ITMVMatrix = () =>
-            {
-                return lazy.getvalue(renderAtomic.uniforms.u_mvMatrix).clone().invert().transpose()
-            };
+                lazy.getvalue(renderAtomic.uniforms.u_mvMatrix).clone().invert().transpose();
 
             renderAtomic.shaderMacro.RotationOrder = defaultRotationOrder;
 
@@ -59,7 +55,6 @@ export class ForwardRenderer
         });
     }
 }
-
 
 /**
  * 前向渲染器

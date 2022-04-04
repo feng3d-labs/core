@@ -1,14 +1,14 @@
-import { Animation } from "../../animation/Animation";
-import { Camera } from "../../cameras/Camera";
-import { RegisterComponent } from "../../component/Component";
-import { HideFlags } from "../../core/HideFlags";
-import { Renderable } from "../../core/Renderable";
-import { Matrix4x4 } from "@feng3d/math";
-import { RenderAtomic } from "@feng3d/renderer";
-import { Scene } from "../../scene/Scene";
-import { oav } from "@feng3d/objectview";
-import { serialize } from "@feng3d/serialization";
-import { SkeletonComponent } from "./SkeletonComponent";
+import { Animation } from '../../animation/Animation';
+import { Camera } from '../../cameras/Camera';
+import { RegisterComponent } from '../../component/Component';
+import { HideFlags } from '../../core/HideFlags';
+import { Renderable } from '../../core/Renderable';
+import { Matrix4x4 } from '@feng3d/math';
+import { RenderAtomic } from '@feng3d/renderer';
+import { Scene } from '../../scene/Scene';
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { SkeletonComponent } from './SkeletonComponent';
 
 declare global
 {
@@ -18,14 +18,14 @@ declare global
 @RegisterComponent({ name: 'SkinnedMeshRenderer', single: true })
 export class SkinnedMeshRenderer extends Renderable
 {
-    __class__: "feng3d.SkinnedMeshRenderer";
+    __class__: 'feng3d.SkinnedMeshRenderer';
 
     @serialize
     @oav()
-    skinSkeleton: SkinSkeleton;
+        skinSkeleton: SkinSkeleton;
 
     @serialize
-    initMatrix: Matrix4x4;
+        initMatrix: Matrix4x4;
 
     /**
      * 创建一个骨骼动画类
@@ -40,17 +40,17 @@ export class SkinnedMeshRenderer extends Renderable
     {
         super.beforeRender(renderAtomic, scene, camera);
 
-        var frameId: string = null;
-        var animation = this.getComponentsInParents(Animation)[0];
+        let frameId: string = null;
+        const animation = this.getComponentsInParents(Animation)[0];
         if (animation)
         {
-            frameId = animation.clipName + "&" + animation.frame;
+            frameId = `${animation.clipName}&${animation.frame}`;
         }
 
         renderAtomic.uniforms.u_modelMatrix = () => this.u_modelMatrix;
         renderAtomic.uniforms.u_ITModelMatrix = () => this.u_ITModelMatrix;
         //
-        var skeletonGlobalMatriices = this.cacheU_skeletonGlobalMatriices[frameId];
+        let skeletonGlobalMatriices = this.cacheU_skeletonGlobalMatriices[frameId];
         if (!skeletonGlobalMatriices)
         {
             skeletonGlobalMatriices = this.u_skeletonGlobalMatriices;
@@ -81,36 +81,38 @@ export class SkinnedMeshRenderer extends Renderable
     private get u_modelMatrix()
     {
         if (this.cacheSkeletonComponent)
-            return this.cacheSkeletonComponent.node3d.localToWorldMatrix;
-        return this.node3d.localToWorldMatrix
+        { return this.cacheSkeletonComponent.node3d.localToWorldMatrix; }
+
+        return this.node3d.localToWorldMatrix;
     }
 
     private get u_ITModelMatrix()
     {
         if (this.cacheSkeletonComponent)
-            return this.cacheSkeletonComponent.node3d.ITlocalToWorldMatrix;
-        return this.node3d.ITlocalToWorldMatrix
+        { return this.cacheSkeletonComponent.node3d.ITlocalToWorldMatrix; }
+
+        return this.node3d.ITlocalToWorldMatrix;
     }
 
-    private get u_skeletonGlobalMatriices() 
+    private get u_skeletonGlobalMatriices()
     {
         if (!this.cacheSkeletonComponent)
         {
-            var node3d = this.node3d;
-            var skeletonComponent: SkeletonComponent = null;
+            let node3d = this.node3d;
+            let skeletonComponent: SkeletonComponent = null;
             while (node3d && !skeletonComponent)
             {
-                skeletonComponent = node3d.getComponent(SkeletonComponent)
+                skeletonComponent = node3d.getComponent(SkeletonComponent);
                 node3d = node3d.parent;
             }
             this.cacheSkeletonComponent = skeletonComponent;
         }
-        var skeletonGlobalMatriices: Matrix4x4[] = [];
+        let skeletonGlobalMatriices: Matrix4x4[] = [];
         if (this.skinSkeleton && this.cacheSkeletonComponent)
         {
-            var joints = this.skinSkeleton.joints;
-            var globalMatrices = this.cacheSkeletonComponent.globalMatrices;
-            for (var i = joints.length - 1; i >= 0; i--)
+            const joints = this.skinSkeleton.joints;
+            const globalMatrices = this.cacheSkeletonComponent.globalMatrices;
+            for (let i = joints.length - 1; i >= 0; i--)
             {
                 skeletonGlobalMatriices[i] = globalMatrices[joints[i][0]].clone();
                 if (this.initMatrix)
@@ -118,15 +120,22 @@ export class SkinnedMeshRenderer extends Renderable
                     skeletonGlobalMatriices[i].prepend(this.initMatrix);
                 }
             }
-        } else
+        }
+        else
         {
             skeletonGlobalMatriices = defaultSkeletonGlobalMatriices;
         }
+
         return skeletonGlobalMatriices;
     }
 }
 
-var defaultSkeletonGlobalMatriices: Matrix4x4[] = (() => { var v = [new Matrix4x4()]; var i = 150; while (i-- > 1) v.push(v[0]); return v; })();
+var defaultSkeletonGlobalMatriices: Matrix4x4[] = (() =>
+{
+    const v = [new Matrix4x4()]; let i = 150; while (i-- > 1) v.push(v[0]);
+
+    return v;
+})();
 
 export class SkinSkeleton
 {
@@ -134,12 +143,12 @@ export class SkinSkeleton
      * [在整个骨架中的编号，骨骼名称]
      */
     @serialize
-    joints: [number, string][] = [];
+        joints: [number, string][] = [];
     /**
      * 当前模型包含骨骼数量
      */
     @serialize
-    numJoint = 0;
+        numJoint = 0;
 }
 
 export class SkinSkeletonTemp extends SkinSkeleton
@@ -151,16 +160,16 @@ export class SkinSkeletonTemp extends SkinSkeleton
 
     resetJointIndices(jointIndices: number[], skeleton: SkeletonComponent)
     {
-        var len = jointIndices.length;
-        for (var i = 0; i < len; i++)
+        const len = jointIndices.length;
+        for (let i = 0; i < len; i++)
         {
             if (this.cache_map[jointIndices[i]] === undefined)
-                this.cache_map[jointIndices[i]] = this.numJoint++;
+            { this.cache_map[jointIndices[i]] = this.numJoint++; }
             jointIndices[i] = this.cache_map[jointIndices[i]];
         }
 
         this.joints.length = 0;
-        for (var key in this.cache_map)
+        for (const key in this.cache_map)
         {
             if (this.cache_map.hasOwnProperty(key))
             {

@@ -1,23 +1,23 @@
-import { Ray3, Rectangle, Vector2, Vector3 } from "@feng3d/math";
-import { GL } from "@feng3d/renderer";
-import { serialization } from "@feng3d/serialization";
-import { windowEventProxy } from "@feng3d/shortcut";
-import { AudioListener } from "../audio/AudioListener";
-import { Camera } from "../cameras/Camera";
-import { DirectionalLight } from "../light/DirectionalLight";
-import { ShadowType } from "../light/shadow/ShadowType";
-import { forwardRenderer } from "../render/renderer/ForwardRenderer";
-import { outlineRenderer } from "../render/renderer/OutlineRenderer";
-import { shadowRenderer } from "../render/renderer/ShadowRenderer";
-import { wireframeRenderer } from "../render/renderer/WireframeRenderer";
-import { Scene } from "../scene/Scene";
-import { skyboxRenderer } from "../skybox/SkyboxRenderer";
-import { ticker } from "../utils/Ticker";
-import { Entity } from "./Entity";
-import { Feng3dObject } from "./Feng3dObject";
-import { Mouse3DManager, WindowMouseInput } from "./Mouse3DManager";
-import { Node3D } from "./Node3D";
-import { Renderable } from "./Renderable";
+import { Ray3, Rectangle, Vector2, Vector3 } from '@feng3d/math';
+import { GL } from '@feng3d/renderer';
+import { serialization } from '@feng3d/serialization';
+import { windowEventProxy } from '@feng3d/shortcut';
+import { AudioListener } from '../audio/AudioListener';
+import { Camera } from '../cameras/Camera';
+import { DirectionalLight } from '../light/DirectionalLight';
+import { ShadowType } from '../light/shadow/ShadowType';
+import { forwardRenderer } from '../render/renderer/ForwardRenderer';
+import { outlineRenderer } from '../render/renderer/OutlineRenderer';
+import { shadowRenderer } from '../render/renderer/ShadowRenderer';
+import { wireframeRenderer } from '../render/renderer/WireframeRenderer';
+import { Scene } from '../scene/Scene';
+import { skyboxRenderer } from '../skybox/SkyboxRenderer';
+import { ticker } from '../utils/Ticker';
+import { Entity } from './Entity';
+import { Feng3dObject } from './Feng3dObject';
+import { Mouse3DManager, WindowMouseInput } from './Mouse3DManager';
+import { Node3D } from './Node3D';
+import { Renderable } from './Renderable';
 
 declare global
 {
@@ -44,16 +44,18 @@ export class View extends Feng3dObject
     {
         if (!this._camera)
         {
-            var cameras = this.scene.getComponentsInChildren(Camera);
+            const cameras = this.scene.getComponentsInChildren(Camera);
             if (cameras.length === 0)
             {
-                this._camera = serialization.setValue(new Entity(), { name: "defaultCamera" }).addComponent(Camera);
+                this._camera = serialization.setValue(new Entity(), { name: 'defaultCamera' }).addComponent(Camera);
                 this.scene.node3d.addChild(this._camera.node3d);
-            } else
+            }
+            else
             {
                 this._camera = cameras[0];
             }
         }
+
         return this._camera;
     }
     set camera(v)
@@ -76,7 +78,8 @@ export class View extends Feng3dObject
     get gl()
     {
         if (!this.canvas.gl)
-            this.canvas.gl = GL.getGL(this.canvas, this._contextAttributes);
+        { this.canvas.gl = GL.getGL(this.canvas, this._contextAttributes); }
+
         return this.canvas.gl;
     }
 
@@ -85,9 +88,10 @@ export class View extends Feng3dObject
      */
     get mousePos()
     {
-        var clientRect = this.canvas.getBoundingClientRect();
+        const clientRect = this.canvas.getBoundingClientRect();
         this._mousePos.x = windowEventProxy.clientX - clientRect.left;
         this._mousePos.y = windowEventProxy.clientY - clientRect.top;
+
         return this._mousePos;
     }
     private _mousePos = new Vector2();
@@ -97,11 +101,12 @@ export class View extends Feng3dObject
      */
     get viewRect()
     {
-        var clientRect = this.canvas.getBoundingClientRect();
+        const clientRect = this.canvas.getBoundingClientRect();
         this._viewRect.x = clientRect.left;
         this._viewRect.y = clientRect.top;
         this._viewRect.width = clientRect.width;
-        this._viewRect.height = clientRect.height
+        this._viewRect.height = clientRect.height;
+
         return this._viewRect;
     }
     private _viewRect = new Rectangle();
@@ -111,8 +116,9 @@ export class View extends Feng3dObject
      */
     get mouseRay3D()
     {
-        var gpuPos = this.screenToGpuPosition(this.mousePos);
+        const gpuPos = this.screenToGpuPosition(this.mousePos);
         this._mouseRay3D = this.camera.getRay3D(gpuPos.x, gpuPos.y);
+
         return this._mouseRay3D;
     }
     private _mouseRay3D: Ray3;
@@ -135,13 +141,13 @@ export class View extends Feng3dObject
         super();
         if (!canvas)
         {
-            canvas = document.createElement("canvas");
-            canvas.id = "glcanvas";
-            canvas.style.position = "fixed";
-            canvas.style.left = "0px";
-            canvas.style.top = "0px";
-            canvas.style.width = "100%";
-            canvas.style.height = "100%";
+            canvas = document.createElement('canvas');
+            canvas.id = 'glcanvas';
+            canvas.style.position = 'fixed';
+            canvas.style.left = '0px';
+            canvas.style.top = '0px';
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
             document.body.appendChild(canvas);
         }
         console.assert(canvas instanceof HTMLCanvasElement, `canvas参数必须为 HTMLCanvasElement 类型！`);
@@ -152,20 +158,20 @@ export class View extends Feng3dObject
             Object.assign(this._contextAttributes, contextAttributes);
         }
 
-        canvas.addEventListener("webglcontextlost", (event) =>
+        canvas.addEventListener('webglcontextlost', (event) =>
         {
             event.preventDefault();
             this.contextLost = true;
             console.log('GraphicsDevice: WebGL context lost.');
         }, false);
 
-        canvas.addEventListener("webglcontextrestored", () =>
+        canvas.addEventListener('webglcontextrestored', () =>
         {
             this.contextLost = false;
             console.log('GraphicsDevice: WebGL context restored.');
         }, false);
 
-        this.scene = scene || serialization.setValue(new Entity(), { name: "scene" }).addComponent(Scene);
+        this.scene = scene || serialization.setValue(new Entity(), { name: 'scene' }).addComponent(Scene);
         this.camera = camera;
 
         this.start();
@@ -182,8 +188,8 @@ export class View extends Feng3dObject
     {
         this.canvas.width = width;
         this.canvas.height = height;
-        this.canvas.style.width = width + 'px';
-        this.canvas.style.height = height + 'px';
+        this.canvas.style.width = `${width}px`;
+        this.canvas.style.height = `${height}px`;
     }
 
     start()
@@ -230,7 +236,7 @@ export class View extends Feng3dObject
 
         // 鼠标拾取渲染
         this.selectedTransform = this.mouse3DManager.pick(this, this.scene, this.camera);
-        //绘制阴影图
+        // 绘制阴影图
         shadowRenderer.draw(this.gl, this.scene, this.camera);
         skyboxRenderer.draw(this.gl, this.scene, this.camera);
         // 默认渲染
@@ -246,10 +252,11 @@ export class View extends Feng3dObject
      */
     screenToGpuPosition(screenPos: Vector2): Vector2
     {
-        var gpuPos: Vector2 = new Vector2();
+        const gpuPos: Vector2 = new Vector2();
         gpuPos.x = (screenPos.x * 2 - this.viewRect.width) / this.viewRect.width;
         // 屏幕坐标与gpu中使用的坐标Y轴方向相反
-        gpuPos.y = - (screenPos.y * 2 - this.viewRect.height) / this.viewRect.height;
+        gpuPos.y = -(screenPos.y * 2 - this.viewRect.height) / this.viewRect.height;
+
         return gpuPos;
     }
 
@@ -260,9 +267,10 @@ export class View extends Feng3dObject
      */
     project(point3d: Vector3): Vector3
     {
-        var v: Vector3 = this.camera.project(point3d);
+        const v: Vector3 = this.camera.project(point3d);
         v.x = (v.x + 1.0) * this.viewRect.width / 2.0;
         v.y = (1.0 - v.y) * this.viewRect.height / 2.0;
+
         return v;
     }
 
@@ -276,7 +284,8 @@ export class View extends Feng3dObject
      */
     unproject(sX: number, sY: number, sZ: number, v = new Vector3()): Vector3
     {
-        var gpuPos: Vector2 = this.screenToGpuPosition(new Vector2(sX, sY));
+        const gpuPos: Vector2 = this.screenToGpuPosition(new Vector2(sX, sY));
+
         return this.camera.unproject(gpuPos.x, gpuPos.y, sZ, v);
     }
 
@@ -286,8 +295,9 @@ export class View extends Feng3dObject
      */
     getScaleByDepth(depth: number, dir = new Vector2(0, 1))
     {
-        var scale = this.camera.getScaleByDepth(depth, dir);
+        let scale = this.camera.getScaleByDepth(depth, dir);
         scale = scale / new Vector2(this.viewRect.width * dir.x, this.viewRect.height * dir.y).length;
+
         return scale;
     }
 
@@ -298,30 +308,34 @@ export class View extends Feng3dObject
      */
     getObjectsInGlobalArea(start: Vector2, end: Vector2)
     {
-        var s = this.viewRect.clampPoint(start);
-        var e = this.viewRect.clampPoint(end);
+        const s = this.viewRect.clampPoint(start);
+        const e = this.viewRect.clampPoint(end);
         s.sub(this.viewRect.topLeft);
         e.sub(this.viewRect.topLeft);
-        var min = s.clone().min(e);
-        var max = s.clone().max(e);
-        var rect = new Rectangle(min.x, min.y, max.x - min.x, max.y - min.y);
+        const min = s.clone().min(e);
+        const max = s.clone().max(e);
+        const rect = new Rectangle(min.x, min.y, max.x - min.x, max.y - min.y);
         //
-        var transforms = this.scene.getComponentsInChildren(Node3D).filter(t =>
+        const transforms = this.scene.getComponentsInChildren(Node3D).filter((t) =>
         {
             if (t === this.scene.node3d) return false;
-            var m = t.getComponent(Renderable);
+            const m = t.getComponent(Renderable);
             if (m)
             {
-                var include = m.selfWorldBounds.toPoints().every(pos =>
+                const include = m.selfWorldBounds.toPoints().every((pos) =>
                 {
-                    var p = this.project(pos);
+                    const p = this.project(pos);
+
                     return rect.contains(p.x, p.y);
-                })
+                });
+
                 return include;
             }
-            var p = this.project(t.worldPosition);
+            const p = this.project(t.worldPosition);
+
             return rect.contains(p.x, p.y);
         });
+
         return transforms;
     }
 
@@ -329,18 +343,18 @@ export class View extends Feng3dObject
 
     static createNewScene()
     {
-        var scene = serialization.setValue(new Entity(), { name: "Untitled" }).addComponent(Scene)
+        const scene = serialization.setValue(new Entity(), { name: 'Untitled' }).addComponent(Scene);
         scene.background.setTo(0.2784, 0.2784, 0.2784);
         scene.ambientColor.setTo(0.4, 0.4, 0.4);
 
-        var camera = Camera.create("Main Camera");
+        const camera = Camera.create('Main Camera');
         camera.entity.addComponent(AudioListener);
         camera.node3d.x = 0;
         camera.node3d.y = 1;
         camera.node3d.z = -10;
         scene.node3d.addChild(camera.node3d);
 
-        var directionalLight = DirectionalLight.create("DirectionalLight");
+        const directionalLight = DirectionalLight.create('DirectionalLight');
         directionalLight.shadowType = ShadowType.Hard_Shadows;
         directionalLight.node3d.rx = 50;
         directionalLight.node3d.ry = -30;
@@ -350,6 +364,5 @@ export class View extends Feng3dObject
         return scene;
     }
 }
-
 
 // var viewRect0 = { x: 0, y: 0, w: 400, h: 300 ;}

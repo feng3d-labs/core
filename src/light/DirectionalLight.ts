@@ -1,15 +1,15 @@
-import { Camera } from "../cameras/Camera";
-import { OrthographicLens } from "../cameras/lenses/OrthographicLens";
-import { RegisterComponent } from "../component/Component";
-import { Entity } from "../core/Entity";
-import { Renderable } from "../core/Renderable";
-import { Box3 } from "@feng3d/math";
-import { Vector3 } from "@feng3d/math";
-import { AddComponentMenu } from "../Menu";
-import { Scene } from "../scene/Scene";
-import { serialization } from "@feng3d/serialization";
-import { Light } from "./Light";
-import { LightType } from "./LightType";
+import { Camera } from '../cameras/Camera';
+import { OrthographicLens } from '../cameras/lenses/OrthographicLens';
+import { RegisterComponent } from '../component/Component';
+import { Entity } from '../core/Entity';
+import { Renderable } from '../core/Renderable';
+import { Box3 } from '@feng3d/math';
+import { Vector3 } from '@feng3d/math';
+import { AddComponentMenu } from '../Menu';
+import { Scene } from '../scene/Scene';
+import { serialization } from '@feng3d/serialization';
+import { Light } from './Light';
+import { LightType } from './LightType';
 
 declare global
 {
@@ -19,23 +19,24 @@ declare global
 /**
  * 方向光源
  */
-@AddComponentMenu("Rendering/DirectionalLight")
+@AddComponentMenu('Rendering/DirectionalLight')
 @RegisterComponent({ name: 'DirectionalLight' })
 export class DirectionalLight extends Light
 {
-    static create(name = "DirectionalLight")
+    static create(name = 'DirectionalLight')
     {
-        var entity = new Entity();
+        const entity = new Entity();
         entity.name = name;
-        var directionalLight = entity.addComponent(DirectionalLight);
+        const directionalLight = entity.addComponent(DirectionalLight);
+
         return directionalLight;
     }
-    __class__: "feng3d.DirectionalLight";
+    __class__: 'feng3d.DirectionalLight';
 
     lightType = LightType.Directional;
 
     /**
-     * 用于计算方向光   
+     * 用于计算方向光
      */
     private orthographicLens: OrthographicLens;
 
@@ -58,19 +59,20 @@ export class DirectionalLight extends Light
      */
     updateShadowByCamera(scene: Scene, viewCamera: Camera, models: Renderable[])
     {
-        var worldBounds: Box3 = models.reduce((pre: Box3, i) =>
+        const worldBounds: Box3 = models.reduce((pre: Box3, i) =>
         {
-            var box = i.node3d.boundingBox.worldBounds;
+            const box = i.node3d.boundingBox.worldBounds;
             if (!pre)
-                return box.clone();
+            { return box.clone(); }
             pre.union(box);
+
             return pre;
         }, null) || new Box3(new Vector3(), new Vector3(1, 1, 1));
 
-        // 
-        var center = worldBounds.getCenter();
-        var radius = worldBounds.getSize().length / 2;
-        // 
+        //
+        const center = worldBounds.getCenter();
+        const radius = worldBounds.getSize().length / 2;
+        //
         const position = center.addTo(this.direction.scaleNumberTo(radius + this.shadowCameraNear).negate());
         this.shadowCamera.node3d.x = position.x;
         this.shadowCamera.node3d.y = position.y;
@@ -80,19 +82,20 @@ export class DirectionalLight extends Light
         if (!this.orthographicLens)
         {
             this.shadowCamera.lens = this.orthographicLens = new OrthographicLens(radius, 1, this.shadowCameraNear, this.shadowCameraNear + radius * 2);
-        } else
+        }
+        else
         {
             serialization.setValue(this.orthographicLens, { size: radius, near: this.shadowCameraNear, far: this.shadowCameraNear + radius * 2 });
         }
     }
 }
 
-Entity.registerPrimitive("Directional light", (g) =>
+Entity.registerPrimitive('Directional light', (g) =>
 {
     g.addComponent(DirectionalLight);
 });
 
 declare global
 {
-    interface MixinsPrimitiveEntity { "Directional light": Entity; }
+    interface MixinsPrimitiveEntity { 'Directional light': Entity; }
 }

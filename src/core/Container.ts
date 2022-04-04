@@ -1,4 +1,4 @@
-import { EventEmitter } from "@feng3d/event";
+import { EventEmitter } from '@feng3d/event';
 import { objectIsEmpty } from '@feng3d/polyfill';
 
 export interface ContainerEventMap
@@ -24,7 +24,7 @@ export interface ContainerEventMap
 }
 
 /**
- * 
+ *
  */
 export class Container<T extends ContainerEventMap = ContainerEventMap> extends EventEmitter<T>
 {
@@ -53,73 +53,78 @@ export class Container<T extends ContainerEventMap = ContainerEventMap> extends 
 
     /**
      * 根据名称查找对象
-     * 
+     *
      * @param name 对象名称
      */
     find(name: string): Container
     {
         if (this.name === name)
-            return this;
-        for (var i = 0; i < this._children.length; i++)
+        { return this; }
+        for (let i = 0; i < this._children.length; i++)
         {
-            var target = this._children[i].find(name);
+            const target = this._children[i].find(name);
             if (target)
-                return target;
+            { return target; }
         }
+
         return null;
     }
 
     /**
      * 是否包含指定对象
-     * 
+     *
      * @param child 可能的子孙对象
      */
     contains(child: Container)
     {
-        var checkitem = child;
+        let checkitem = child;
         do
         {
             if (checkitem === this)
-                return true;
+            { return true; }
             checkitem = checkitem.parent;
         } while (checkitem);
+
         return false;
     }
 
     /**
      * 添加子对象
-     * 
+     *
      * @param child 子对象
      */
     addChild(child: Container)
     {
         if (objectIsEmpty(child))
-            return;
+        { return; }
         if (child.parent === this)
         {
             // 把子对象移动到最后
-            var childIndex = this._children.indexOf(child);
+            const childIndex = this._children.indexOf(child);
             if (childIndex !== -1) this._children.splice(childIndex, 1);
             this._children.push(child);
-        } else
+        }
+        else
         {
             if (child.contains(this))
             {
-                console.error("无法添加到自身中!");
+                console.error('无法添加到自身中!');
+
                 return;
             }
             if (child._parent) child._parent.removeChild(child);
             child._setParent(this);
             this._children.push(child);
-            child.emit("added", { parent: this });
-            this.emit("addChild", { child: child, parent: this }, true);
+            child.emit('added', { parent: this });
+            this.emit('addChild', { child, parent: this }, true);
         }
+
         return child;
     }
 
     /**
      * 添加子对象
-     * 
+     *
      * @param children 子对象
      */
     addChildren(...children: Container[])
@@ -151,35 +156,37 @@ export class Container<T extends ContainerEventMap = ContainerEventMap> extends 
 
     /**
      * 移除子对象
-     * 
+     *
      * @param child 子对象
      */
     removeChild(child: Container)
     {
         if (objectIsEmpty(child)) return;
-        var childIndex = this._children.indexOf(child);
+        const childIndex = this._children.indexOf(child);
         if (childIndex !== -1) this.removeChildInternal(childIndex, child);
     }
 
     /**
      * 删除指定位置的子对象
-     * 
+     *
      * @param index 需要删除子对象的所有
      */
     removeChildAt(index: number)
     {
-        var child = this._children[index];
+        const child = this._children[index];
+
         return this.removeChildInternal(index, child);
     }
 
     /**
      * 获取指定位置的子对象
-     * 
-     * @param index 
+     *
+     * @param index
      */
     getChildAt(index: number)
     {
         index = index;
+
         return this._children[index];
     }
 
@@ -197,7 +204,7 @@ export class Container<T extends ContainerEventMap = ContainerEventMap> extends 
         this._children.splice(childIndex, 1);
         child._setParent(null);
 
-        child.emit("removed", { parent: this });
-        this.emit("removeChild", { child: child, parent: this }, true);
+        child.emit('removed', { parent: this });
+        this.emit('removeChild', { child, parent: this }, true);
     }
 }

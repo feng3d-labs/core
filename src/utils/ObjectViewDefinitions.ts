@@ -1,4 +1,4 @@
-export { }
+export { };
 
 declare global
 {
@@ -9,16 +9,16 @@ declare global
         OAVPick: OAVPickParam;
         OAVEnum: OAVEnumParam;
 
-        OAVCubeMap: { component: "OAVCubeMap", componentParam: Object };
-        OAVImage: { component: "OAVImage", componentParam: Object };
-        OAVObjectView: { component: "OAVObjectView", componentParam: Object };
-        OAVParticleComponentList: { component: "OAVParticleComponentList", componentParam: Object };
-        OAVComponentList: { component: "OAVComponentList", componentParam: Object };
-        OAVEntityName: { component: "OAVEntityName", componentParam: Object };
-        OAVMaterialName: { component: "OAVMaterialName", componentParam: Object };
-        OAVMultiText: { component: "OAVMultiText", componentParam: Object };
-        OAVFeng3dPreView: { component: "OAVFeng3dPreView", componentParam: Object };
-        OAVAccordionObjectView: { component: "OAVAccordionObjectView", componentParam: Object };
+        OAVCubeMap: { component: 'OAVCubeMap', componentParam: Object };
+        OAVImage: { component: 'OAVImage', componentParam: Object };
+        OAVObjectView: { component: 'OAVObjectView', componentParam: Object };
+        OAVParticleComponentList: { component: 'OAVParticleComponentList', componentParam: Object };
+        OAVComponentList: { component: 'OAVComponentList', componentParam: Object };
+        OAVEntityName: { component: 'OAVEntityName', componentParam: Object };
+        OAVMaterialName: { component: 'OAVMaterialName', componentParam: Object };
+        OAVMultiText: { component: 'OAVMultiText', componentParam: Object };
+        OAVFeng3dPreView: { component: 'OAVFeng3dPreView', componentParam: Object };
+        OAVAccordionObjectView: { component: 'OAVAccordionObjectView', componentParam: Object };
         OAVVector3: OAVVector3Param;
     }
 }
@@ -28,7 +28,7 @@ declare global
  */
 export interface OAVVector3Param
 {
-    component: "OAVVector3", componentParam: {
+    component: 'OAVVector3', componentParam: {
         label?: string,
 
         /**
@@ -65,7 +65,7 @@ export interface OAVVector3Param
  */
 export interface OAVDefaultParam
 {
-    component: "OAVDefault";
+    component: 'OAVDefault';
 
     componentParam: {
         /**
@@ -87,9 +87,9 @@ export interface OAVDefaultParam
 /**
  * OAVArray 组件参数
  */
-export interface OAVArrayParam 
+export interface OAVArrayParam
 {
-    component: "OAVArray";
+    component: 'OAVArray';
 
     componentParam: {
         /**
@@ -115,9 +115,9 @@ export interface OAVArrayParam
 /**
  * OAVPick 组件参数
  */
-export interface OAVPickParam 
+export interface OAVPickParam
 {
-    component: "OAVPick";
+    component: 'OAVPick';
 
     componentParam: {
         /**
@@ -133,9 +133,9 @@ export interface OAVPickParam
 /**
  * OAVEnum 组件参数
  */
-interface OAVEnumParam 
+interface OAVEnumParam
 {
-    component: "OAVEnum";
+    component: 'OAVEnum';
 
     componentParam: {
         /**

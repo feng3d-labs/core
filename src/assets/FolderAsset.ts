@@ -1,14 +1,14 @@
-import { ov } from "@feng3d/objectview";
-import { AssetType } from "./AssetType";
-import { FileAsset, setAssetTypeClass } from "./FileAsset";
+import { ov } from '@feng3d/objectview';
+import { AssetType } from './AssetType';
+import { FileAsset, setAssetTypeClass } from './FileAsset';
 
 /**
  * 文件夹资源
  */
-@ov({ component: "OVFolderAsset" })
+@ov({ component: 'OVFolderAsset' })
 export class FolderAsset extends FileAsset
 {
-    static extenson = "";
+    static extenson = '';
 
     assetType = AssetType.folder;
 
@@ -17,7 +17,8 @@ export class FolderAsset extends FileAsset
      */
     get childrenAssets()
     {
-        var children = this.rs.getChildrenAssetByPath(this.assetPath);
+        const children = this.rs.getChildrenAssetByPath(this.assetPath);
+
         return children;
     }
 
@@ -27,7 +28,7 @@ export class FolderAsset extends FileAsset
 
     /**
      * 删除资源
-     * 
+     *
      * @param callback 完成回调
      */
     delete(callback?: (err: Error) => void)
@@ -53,4 +54,4 @@ export class FolderAsset extends FileAsset
         callback && callback(null);
     }
 }
-setAssetTypeClass("folder", FolderAsset);
+setAssetTypeClass('folder', FolderAsset);

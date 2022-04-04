@@ -1,17 +1,17 @@
-import { Matrix4x4, Plane, Vector3, Vector4 } from "@feng3d/math";
-import { Camera } from "../cameras/Camera";
-import { RegisterComponent } from "../component/Component";
-import { Entity } from "../core/Entity";
-import { Renderable } from "../core/Renderable";
-import { Geometry } from "../geometry/Geometry";
-import { Material } from "../materials/Material";
-import { AddComponentMenu } from "../Menu";
-import { PlaneGeometry } from "../primitives/PlaneGeometry";
-import { FrameBufferObject } from "../render/FrameBufferObject";
-import { RenderAtomic } from "@feng3d/renderer";
-import { Scene } from "../scene/Scene";
-import { serialization } from "@feng3d/serialization";
-import { WaterUniforms } from "./WaterMaterial";
+import { Matrix4x4, Plane, Vector3, Vector4 } from '@feng3d/math';
+import { Camera } from '../cameras/Camera';
+import { RegisterComponent } from '../component/Component';
+import { Entity } from '../core/Entity';
+import { Renderable } from '../core/Renderable';
+import { Geometry } from '../geometry/Geometry';
+import { Material } from '../materials/Material';
+import { AddComponentMenu } from '../Menu';
+import { PlaneGeometry } from '../primitives/PlaneGeometry';
+import { FrameBufferObject } from '../render/FrameBufferObject';
+import { RenderAtomic } from '@feng3d/renderer';
+import { Scene } from '../scene/Scene';
+import { serialization } from '@feng3d/serialization';
+import { WaterUniforms } from './WaterMaterial';
 
 declare global
 {
@@ -28,15 +28,15 @@ declare global
 /**
  * The Water component renders the terrain.
  */
-@AddComponentMenu("Graphics/Water")
+@AddComponentMenu('Graphics/Water')
 @RegisterComponent({ name: 'Water' })
 export class Water extends Renderable
 {
-    __class__: "feng3d.Water";
+    __class__: 'feng3d.Water';
 
-    geometry: PlaneGeometry = Geometry.getDefault("Plane");
+    geometry: PlaneGeometry = Geometry.getDefault('Plane');
 
-    protected _material = Material.getDefault("Water-Material");
+    protected _material = Material.getDefault('Water-Material');
 
     /**
      * 帧缓冲对象，用于处理水面反射
@@ -45,15 +45,15 @@ export class Water extends Renderable
 
     beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
     {
-        var uniforms = this.material.uniforms as WaterUniforms;
-        var sun = this.node3d.scene.activeDirectionalLights[0];
+        const uniforms = this.material.uniforms as WaterUniforms;
+        const sun = this.node3d.scene.activeDirectionalLights[0];
         if (sun)
         {
             uniforms.u_sunColor = sun.color;
             uniforms.u_sunDirection = sun.node3d.localToWorldMatrix.getAxisZ().negate();
         }
 
-        var clipBias = 0;
+        const clipBias = 0;
 
         uniforms.u_time += 1.0 / 60.0;
 
@@ -63,14 +63,14 @@ export class Water extends Renderable
 
         if (1) return;
         //
-        var mirrorWorldPosition = this.node3d.worldPosition;
-        var cameraWorldPosition = camera.node3d.worldPosition;
+        const mirrorWorldPosition = this.node3d.worldPosition;
+        const cameraWorldPosition = camera.node3d.worldPosition;
 
-        var rotationMatrix = this.node3d.rotationMatrix;
+        let rotationMatrix = this.node3d.rotationMatrix;
 
-        var normal = rotationMatrix.getAxisZ();
+        const normal = rotationMatrix.getAxisZ();
 
-        var view = mirrorWorldPosition.subTo(cameraWorldPosition);
+        const view = mirrorWorldPosition.subTo(cameraWorldPosition);
         if (view.dot(normal) > 0) return;
 
         view.reflect(normal).negate();
@@ -78,15 +78,15 @@ export class Water extends Renderable
 
         rotationMatrix = camera.node3d.rotationMatrix;
 
-        var lookAtPosition = new Vector3(0, 0, -1);
+        const lookAtPosition = new Vector3(0, 0, -1);
         lookAtPosition.applyMatrix4x4(rotationMatrix);
         lookAtPosition.add(cameraWorldPosition);
 
-        var target = mirrorWorldPosition.subTo(lookAtPosition);
+        const target = mirrorWorldPosition.subTo(lookAtPosition);
         target.reflect(normal).negate();
         target.add(mirrorWorldPosition);
 
-        var mirrorCamera = serialization.setValue(new Entity(), { name: "waterMirrorCamera" }).addComponent(Camera);
+        const mirrorCamera = serialization.setValue(new Entity(), { name: 'waterMirrorCamera' }).addComponent(Camera);
         mirrorCamera.node3d.x = view.x;
         mirrorCamera.node3d.y = view.y;
         mirrorCamera.node3d.z = view.z;
@@ -94,7 +94,7 @@ export class Water extends Renderable
 
         mirrorCamera.lens = camera.lens.clone();
 
-        var textureMatrix = new Matrix4x4(
+        const textureMatrix = new Matrix4x4(
             [
                 0.5, 0.0, 0.0, 0.0,
                 0.0, 0.5, 0.0, 0.0,
@@ -104,15 +104,15 @@ export class Water extends Renderable
         );
         textureMatrix.append(mirrorCamera.viewProjection);
 
-        var mirrorPlane = Plane.fromNormalAndPoint(mirrorCamera.node3d.worldToLocalMatrix.transformVector3(normal), mirrorCamera.node3d.worldToLocalMatrix.transformPoint3(mirrorWorldPosition));
-        var clipPlane = new Vector4(mirrorPlane.a, mirrorPlane.b, mirrorPlane.c, mirrorPlane.d);
+        const mirrorPlane = Plane.fromNormalAndPoint(mirrorCamera.node3d.worldToLocalMatrix.transformVector3(normal), mirrorCamera.node3d.worldToLocalMatrix.transformPoint3(mirrorWorldPosition));
+        const clipPlane = new Vector4(mirrorPlane.a, mirrorPlane.b, mirrorPlane.c, mirrorPlane.d);
 
-        var projectionMatrix = mirrorCamera.lens.matrix;
+        const projectionMatrix = mirrorCamera.lens.matrix;
 
-        var q = new Vector4();
+        const q = new Vector4();
         q.x = (clipPlane.x / Math.abs(clipPlane.x) + projectionMatrix.elements[8]) / projectionMatrix.elements[0];
         q.y = (clipPlane.y / Math.abs(clipPlane.y) + projectionMatrix.elements[9]) / projectionMatrix.elements[5];
-        q.z = - 1.0;
+        q.z = -1.0;
         q.w = (1.0 + projectionMatrix.elements[10]) / projectionMatrix.elements[14];
 
         clipPlane.scale(2.0 / clipPlane.dot(q));
@@ -122,10 +122,10 @@ export class Water extends Renderable
         projectionMatrix.elements[10] = clipPlane.z + 1.0 - clipBias;
         projectionMatrix.elements[14] = clipPlane.w;
 
-        var eye = camera.node3d.worldPosition;
+        const eye = camera.node3d.worldPosition;
 
         // 不支持直接操作gl，下面代码暂时注释掉！
-        // // 
+        // //
         // var frameBufferObject = this.frameBufferObject;
         // FrameBufferObject.active(gl, frameBufferObject);
 
@@ -147,7 +147,7 @@ export class Water extends Renderable
     }
 }
 
-Entity.registerPrimitive("Water", (g) =>
+Entity.registerPrimitive('Water', (g) =>
 {
     g.addComponent(Water);
 });

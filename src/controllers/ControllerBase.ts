@@ -1,4 +1,4 @@
-import { Node3D } from "../core/Node3D";
+import { Node3D } from '../core/Node3D';
 
 export class ControllerBase
 {
@@ -20,7 +20,7 @@ export class ControllerBase
      */
     update(interpolate = true): void
     {
-        throw new Error("Abstract method");
+        throw new Error('Abstract method');
     }
 
     get targetNode()

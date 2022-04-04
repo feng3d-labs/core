@@ -1,5 +1,3 @@
-
-
 /**
  * 资源扩展名
  */
@@ -8,85 +6,85 @@ export enum AssetType
     /**
      * 文件夹
      */
-    folder = "folder",
+    folder = 'folder',
 
     /**
      * 音频
      */
-    audio = "audio",
+    audio = 'audio',
 
     /**
      * ts文件
      */
-    ts = "ts",
+    ts = 'ts',
     /**
      * js文件
      */
-    js = "js",
+    js = 'js',
     /**
      * 文本文件
      */
-    txt = "txt",
+    txt = 'txt',
     /**
      * json文件
      */
-    json = "json",
+    json = 'json',
     /**
      * OBJ模型资源附带的材质文件
      */
-    mtl = "mtl",
+    mtl = 'mtl',
     /**
      * OBJ模型文件
      */
-    obj = "obj",
+    obj = 'obj',
     /**
      * MD5模型文件
      */
-    md5mesh = "md5mesh",
+    md5mesh = 'md5mesh',
     /**
      * MD5动画
      */
-    md5anim = "md5anim",
+    md5anim = 'md5anim',
     /**
      * 魔兽MDL模型
      */
-    mdl = "mdl",
+    mdl = 'mdl',
     // -- feng3d中的类型
     /**
      * 纹理
      */
-    texture = "texture",
+    texture = 'texture',
     /**
      * 立方体纹理
      */
-    texturecube = "texturecube",
+    texturecube = 'texturecube',
     /**
      * 材质
      */
-    material = "material",
+    material = 'material',
     /**
      * 几何体
      */
-    geometry = "geometry",
+    geometry = 'geometry',
     /**
      * 3d节点
      */
-    node3d = "node3d",
+    node3d = 'node3d',
     /**
      * 场景
      */
-    scene = "scene",
+    scene = 'scene',
     /**
      * 动画
      */
-    anim = "anim",
+    anim = 'anim',
     /**
      * 着色器
      */
-    shader = "shader",
+    shader = 'shader',
     /**
      * 脚本
      */
-    script = "script",
+    script = 'script',
 }
 

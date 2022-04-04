@@ -1,48 +1,48 @@
-import { oav } from "@feng3d/objectview";
+import { oav } from '@feng3d/objectview';
 import { objectIsEmpty } from '@feng3d/polyfill';
-import { serialize } from "@feng3d/serialization";
-import { watch } from "@feng3d/watcher";
-import { Behaviour } from "../component/Behaviour";
-import { getComponentType, RegisterComponent } from "../component/Component";
-import { AddComponentMenu } from "../Menu";
-import { AnimationClip } from "./AnimationClip";
-import { PropertyClip, PropertyClipPathItemType } from "./PropertyClip";
+import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
+import { Behaviour } from '../component/Behaviour';
+import { getComponentType, RegisterComponent } from '../component/Component';
+import { AddComponentMenu } from '../Menu';
+import { AnimationClip } from './AnimationClip';
+import { PropertyClip, PropertyClipPathItemType } from './PropertyClip';
 
 declare global
 {
     interface MixinsComponentMap { Animation: Animation; }
 }
 
-@AddComponentMenu("Animator/Animation")
+@AddComponentMenu('Animator/Animation')
 @RegisterComponent({ name: 'Animation' })
 export class Animation extends Behaviour
 {
-    @oav({ component: "OAVDefault", componentParam: { dragparam: { accepttype: "animationclip", datatype: "animationclip" } } })
+    @oav({ component: 'OAVDefault', componentParam: { dragparam: { accepttype: 'animationclip', datatype: 'animationclip' } } })
     @serialize
-    @watch("_onAnimationChanged")
-    animation: AnimationClip;
+    @watch('_onAnimationChanged')
+        animation: AnimationClip;
 
-    @oav({ component: "OAVArray", componentParam: { dragparam: { accepttype: "animationclip", datatype: "animationclip" }, defaultItem: () => new AnimationClip() } })
+    @oav({ component: 'OAVArray', componentParam: { dragparam: { accepttype: 'animationclip', datatype: 'animationclip' }, defaultItem: () => new AnimationClip() } })
     @serialize
-    animations: AnimationClip[] = [];
+        animations: AnimationClip[] = [];
 
     /**
      * 动画事件，单位为ms
      */
     @oav()
-    @watch("_onTimeChanged")
-    time = 0;
+    @watch('_onTimeChanged')
+        time = 0;
 
     @oav()
     @serialize
-    isplaying = false;
+        isplaying = false;
 
     /**
      * 播放速度
      */
     @oav()
     @serialize
-    playspeed = 1;
+        playspeed = 1;
 
     /**
      * 动作名称
@@ -55,9 +55,10 @@ export class Animation extends Behaviour
     get frame()
     {
         if (!this.animation) return -1;
-        var cycle = this.animation.length;
-        var cliptime = (this.time % cycle + cycle) % cycle;
-        var _frame = Math.round(this._fps * cliptime / 1000);
+        const cycle = this.animation.length;
+        const cliptime = (this.time % cycle + cycle) % cycle;
+        const _frame = Math.round(this._fps * cliptime / 1000);
+
         return _frame;
     }
 
@@ -82,18 +83,18 @@ export class Animation extends Behaviour
         if (!this.animation) return;
         if ((this.num++) % 2 !== 0) return;
 
-        var cycle = this.animation.length;
-        var cliptime = (this.time % cycle + cycle) % cycle;
+        const cycle = this.animation.length;
+        const cliptime = (this.time % cycle + cycle) % cycle;
 
-        var propertyClips = this.animation.propertyClips;
+        const propertyClips = this.animation.propertyClips;
 
-        for (var i = 0; i < propertyClips.length; i++)
+        for (let i = 0; i < propertyClips.length; i++)
         {
-            var propertyClip = propertyClips[i];
+            const propertyClip = propertyClips[i];
 
-            var propertyValues = propertyClip.propertyValues;
+            const propertyValues = propertyClip.propertyValues;
             if (propertyValues.length === 0) continue;
-            var propertyHost = this.getPropertyHost(propertyClip);
+            const propertyHost = this.getPropertyHost(propertyClip);
             if (!propertyHost) continue;
             propertyHost[propertyClip.propertyName] = propertyClip.getValue(cliptime, this._fps);
         }
@@ -102,17 +103,17 @@ export class Animation extends Behaviour
     private getPropertyHost(propertyClip: PropertyClip)
     {
         if (propertyClip.cacheIndex && this._objectCache[propertyClip.cacheIndex])
-            return this._objectCache[propertyClip.cacheIndex];
+        { return this._objectCache[propertyClip.cacheIndex]; }
 
         if (!propertyClip.cacheIndex)
-            propertyClip.cacheIndex = autoobjectCacheID++;
+        { propertyClip.cacheIndex = autoobjectCacheID++; }
 
-        var propertyHost: any = this.node3d;
-        var path = propertyClip.path;
+        let propertyHost: any = this.node3d;
+        const path = propertyClip.path;
 
-        for (var i = 0; i < path.length; i++)
+        for (let i = 0; i < path.length; i++)
         {
-            var element = path[i];
+            const element = path[i];
             switch (element[0])
             {
                 case PropertyClipPathItemType.Entity:
@@ -126,9 +127,10 @@ export class Animation extends Behaviour
                     console.error(`无法获取 PropertyHost ${element}`);
             }
             if (objectIsEmpty(propertyHost))
-                return null;
+            { return null; }
         }
         this._objectCache[propertyClip.cacheIndex] = propertyHost;
+
         return propertyHost;
     }
 
