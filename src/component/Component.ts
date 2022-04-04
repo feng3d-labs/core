@@ -342,7 +342,7 @@ export class Component<T extends EntityEventMap = EntityEventMap> extends Feng3d
         this._disposed = true;
     }
 
-    beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
+    beforeRender(_renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {
 
     }

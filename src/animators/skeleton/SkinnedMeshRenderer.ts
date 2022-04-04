@@ -130,7 +130,7 @@ export class SkinnedMeshRenderer extends Renderable
     }
 }
 
-var defaultSkeletonGlobalMatriices: Matrix4x4[] = (() =>
+const defaultSkeletonGlobalMatriices: Matrix4x4[] = (() =>
 {
     const v = [new Matrix4x4()]; let i = 150; while (i-- > 1) v.push(v[0]);
 
@@ -173,7 +173,7 @@ export class SkinSkeletonTemp extends SkinSkeleton
         {
             if (this.cache_map.hasOwnProperty(key))
             {
-                this.joints[this.cache_map[key]] = [parseInt(key), skeleton.joints[key].name];
+                this.joints[this.cache_map[key]] = [parseInt(key, 10), skeleton.joints[key].name];
             }
         }
     }

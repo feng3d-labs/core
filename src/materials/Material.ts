@@ -145,12 +145,12 @@ export class Material extends Feng3dObject
 
     private _onShaderChanged()
     {
-        const cls = shaderlib.shaderConfig.shaders[this.shaderName].cls;
-        if (cls)
+        const Cls = shaderlib.shaderConfig.shaders[this.shaderName].cls;
+        if (Cls)
         {
-            if (objectIsEmpty(this.uniforms) || this.uniforms.constructor !== cls)
+            if (objectIsEmpty(this.uniforms) || this.uniforms.constructor !== Cls)
             {
-                const newuniforms = new cls();
+                const newuniforms = new Cls();
                 this.uniforms = newuniforms;
             }
         }

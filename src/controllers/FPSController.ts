@@ -141,7 +141,7 @@ export class FPSController extends Behaviour
 
             const matrix = this.node3d.localToWorldMatrix;
             matrix.appendRotation(matrix.getAxisX(), offsetPoint.y, matrix.getPosition());
-            var up = Vector3.Y_AXIS.clone();
+            const up = Vector3.Y_AXIS.clone();
             if (matrix.getAxisY().dot(up) < 0)
             {
                 up.scaleNumber(-1);
@@ -167,7 +167,7 @@ export class FPSController extends Behaviour
         // 计算速度
         this.velocity.add(accelerationVec);
         const right = this.node3d.matrix.getAxisX();
-        var up = this.node3d.matrix.getAxisY();
+        const up = this.node3d.matrix.getAxisY();
         const forward = this.node3d.matrix.getAxisZ();
         right.scaleNumber(this.velocity.x);
         up.scaleNumber(this.velocity.y);

@@ -41,13 +41,13 @@ export abstract class FileAsset
      * 资源路径
      */
     @serialize
-        assetPath: string;
+    assetPath: string;
 
     /**
      * 资源编号
      */
     @serialize
-        assetId: string;
+    assetId: string;
 
     /**
      * 资源元标签，该对象也用来判断资源是否被加载，值为null表示未加载，否则已加载。
@@ -189,7 +189,7 @@ export abstract class FileAsset
 
                 return;
             }
-            this.readFile((err) =>
+            this.readFile((_err) =>
             {
                 anyEmitter.emit(this, eventtype);
             });
@@ -235,7 +235,7 @@ export abstract class FileAsset
 
                 return;
             }
-            this.deleteFile((err) =>
+            this.deleteFile((_err) =>
             {
                 // 删除映射
                 this.rs.deleteAssetById(this.assetId);

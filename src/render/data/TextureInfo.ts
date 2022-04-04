@@ -52,7 +52,7 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
     @serialize
     @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureFormat } })
     @watch('invalidate')
-        format = TextureFormat.RGBA;
+    format = TextureFormat.RGBA;
 
     /**
      * 数据类型
@@ -60,7 +60,7 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
     @serialize
     @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureDataType } })
     @watch('invalidate')
-        type = TextureDataType.UNSIGNED_BYTE;
+    type = TextureDataType.UNSIGNED_BYTE;
 
     /**
      * 是否生成mipmap
@@ -68,7 +68,7 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
     @serialize
     @oav()
     @watch('invalidate')
-        generateMipmap = false;
+    generateMipmap = false;
 
     /**
      * 对图像进行Y轴反转。默认值为false
@@ -76,7 +76,7 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
     @serialize
     @oav()
     @watch('invalidate')
-        flipY = false;
+    flipY = false;
 
     /**
      * 将图像RGB颜色值得每一个分量乘以A。默认为false
@@ -84,15 +84,15 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
     @serialize
     @oav()
     @watch('invalidate')
-        premulAlpha = false;
+    premulAlpha = false;
 
     @serialize
     @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureMinFilter } })
-        minFilter = TextureMinFilter.LINEAR;
+    minFilter = TextureMinFilter.LINEAR;
 
     @serialize
     @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureMagFilter } })
-        magFilter = TextureMagFilter.LINEAR;
+    magFilter = TextureMagFilter.LINEAR;
     /**
      * 表示x轴的纹理的回环方式，就是当纹理的宽度小于需要贴图的平面的宽度的时候，平面剩下的部分应该p以何种方式贴图的问题。
      */
@@ -134,7 +134,7 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
      */
     @serialize
     @oav()
-        anisotropy = 0;
+    anisotropy = 0;
 
     invalid = true;
 
@@ -159,10 +159,10 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
     isRenderTarget = false;
 
     @watch('invalidate')
-        OFFSCREEN_WIDTH = 1024;
+    OFFSCREEN_WIDTH = 1024;
 
     @watch('invalidate')
-        OFFSCREEN_HEIGHT = 1024;
+    OFFSCREEN_HEIGHT = 1024;
 
     /**
      * 是否为2的幂贴图
@@ -204,11 +204,18 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
             return new Vector2(this.OFFSCREEN_WIDTH, this.OFFSCREEN_HEIGHT);
         }
         let pixels = this.activePixels;
-        if (!pixels) new Vector2(1, 1);
+        if (!pixels)
+        {
+            return new Vector2(1, 1);
+        }
         if (!Array.isArray(pixels))
-        { pixels = [pixels]; }
+        {
+            pixels = [pixels];
+        }
         if (pixels.length === 0)
-        { return new Vector2(1, 1); }
+        {
+            return new Vector2(1, 1);
+        }
         const pixel = pixels[0];
 
         return new Vector2(pixel.width, pixel.height);
@@ -280,14 +287,14 @@ export abstract class TextureInfo<T = any> extends Feng3dObject<T> implements Te
             this._activePixels = this._pixels;
         }
         else
-        if (Array.isArray(this.noPixels))
-        {
-            this._activePixels = this.noPixels.map((v) => imageDatas[v]);
-        }
-        else
-        {
-            this._activePixels = imageDatas[this.noPixels];
-        }
+            if (Array.isArray(this.noPixels))
+            {
+                this._activePixels = this.noPixels.map((v) => imageDatas[v]);
+            }
+            else
+            {
+                this._activePixels = imageDatas[this.noPixels];
+            }
         if (old !== this._activePixels) this._dataURL = null;
     }
 }

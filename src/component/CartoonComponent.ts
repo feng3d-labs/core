@@ -1,6 +1,6 @@
 import { Color4, Vector4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { RenderAtomic, Uniforms } from '@feng3d/renderer';
+import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { AddComponentMenu } from '../Menu';
@@ -62,7 +62,7 @@ export class CartoonComponent extends Component
     }
     _cartoon_Anti_aliasing = false;
 
-    beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
+    beforeRender(renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {
         renderAtomic.uniforms.u_diffuseSegment = this.diffuseSegment;
         renderAtomic.uniforms.u_diffuseSegmentValue = this.diffuseSegmentValue;

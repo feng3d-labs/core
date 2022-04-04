@@ -43,11 +43,11 @@ export class RayCastable extends Behaviour
     /**
      * 与世界空间射线相交
      *
-     * @param worldRay 世界空间射线
+     * @param _worldRay 世界空间射线
      *
      * @returns 相交信息
      */
-    worldRayIntersection(worldRay: Ray3): PickingCollisionVO
+    worldRayIntersection(_worldRay: Ray3): PickingCollisionVO
     {
         throw '请在子类中实现！';
     }

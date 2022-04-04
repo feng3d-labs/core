@@ -26,7 +26,6 @@ export interface GeometryEventMap
  */
 export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Feng3dObject<T>
 {
-
     @oav()
     get name()
     {

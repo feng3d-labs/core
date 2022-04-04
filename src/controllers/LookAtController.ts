@@ -53,7 +53,7 @@ export class LookAtController extends ControllerBase
         this._lookAtNode3D = value;
     }
 
-    update(interpolate = true): void
+    update(_interpolate = true): void
     {
         if (this._targetNode)
         {

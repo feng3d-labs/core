@@ -30,7 +30,7 @@ export class OutLineComponent extends Component
     @serialize
         outlineMorphFactor = 0.0;
 
-    beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
+    beforeRender(renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {
         renderAtomic.uniforms.u_outlineSize = this.size;
         renderAtomic.uniforms.u_outlineColor = this.color;

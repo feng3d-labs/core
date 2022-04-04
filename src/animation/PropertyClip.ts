@@ -7,16 +7,16 @@ export class PropertyClip
      * 属性路径
      */
     @serialize
-        path: PropertyClipPath;
+    path: PropertyClipPath;
 
     @serialize
-        propertyName: string;
+    propertyName: string;
 
     @serialize
-        type: 'Number' | 'Vector3' | 'Quaternion';
+    type: 'Number' | 'Vector3' | 'Quaternion';
 
     @serialize
-        propertyValues: [number, number[]][];
+    propertyValues: [number, number[]][];
 
     private _cacheValues = {};
     private _propertyValues: [number, number | Vector3 | Quaternion][];
@@ -31,9 +31,15 @@ export class PropertyClip
             [v[0], this.getpropertyValue(v[1])]);
         const propertyValues = this._propertyValues;
         let propertyValue = propertyValues[0][1];
-        if (cliptime <= propertyValues[0][0]) { }
+        if (cliptime <= propertyValues[0][0])
+        // eslint-disable-next-line no-empty
+        {
+
+        }
         else if (cliptime >= propertyValues[propertyValues.length - 1][0])
-        { propertyValue = propertyValues[propertyValues.length - 1][1]; }
+        {
+            propertyValue = propertyValues[propertyValues.length - 1][1];
+        }
         else
         {
             for (let j = 0; j < propertyValues.length - 1; j++)

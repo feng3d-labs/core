@@ -83,19 +83,19 @@ export class Node3D extends Component
      * 预设资源编号
      */
     @serialize
-        prefabId: string;
+    prefabId: string;
 
     /**
      * 资源编号
      */
     @serialize
-        assetId: string;
+    assetId: string;
 
     /**
      * 自身以及子对象是否支持鼠标拾取
      */
     @serialize
-        mouseEnabled = true;
+    mouseEnabled = true;
 
     /**
      * 创建一个实体，该类为虚类
@@ -415,7 +415,7 @@ export class Node3D extends Component
     {
         if (this._rotationMatrixInvalid)
         {
-            this._rotationMatrix.setRotation(tempVector3_1.set(this._rx, this._ry, this._rz));
+            this._rotationMatrix.setRotation(tempVector31.set(this._rx, this._ry, this._rz));
             this._rotationMatrixInvalid = false;
         }
 
@@ -458,11 +458,11 @@ export class Node3D extends Component
     set children(value)
     {
         if (!value) return;
-        for (var i = this._children.length - 1; i >= 0; i--)
+        for (let i = this._children.length - 1; i >= 0; i--)
         {
             this.removeChildAt(i);
         }
-        for (var i = 0; i < value.length; i++)
+        for (let i = 0; i < value.length; i++)
         {
             this.addChild(value[i]);
         }
@@ -821,8 +821,6 @@ export class Node3D extends Component
      */
     getChildAt(index: number)
     {
-        index = index;
-
         return this._children[index];
     }
 
@@ -1019,7 +1017,7 @@ export class Node3D extends Component
         let findchildren = true;
         const cls = type;
         const components = this.entity.components;
-        for (var i = 0, n = components.length; i < n; i++)
+        for (let i = 0, n = components.length; i < n; i++)
         {
             const item = components[i] as T;
             if (!cls)
@@ -1042,7 +1040,7 @@ export class Node3D extends Component
         }
         if (findchildren)
         {
-            for (var i = 0, n = this.numChildren; i < n; i++)
+            for (let i = 0, n = this.numChildren; i < n; i++)
             {
                 this._children[i].getComponentsInChildren(type, filter, result);
             }
@@ -1071,7 +1069,7 @@ export class Node3D extends Component
         return result;
     }
 
-    beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
+    beforeRender(renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {
         Object.assign(renderAtomic.uniforms, this._renderAtomic.uniforms);
     }
@@ -1175,7 +1173,6 @@ export class Node3D extends Component
 
     private removeChildInternal(childIndex: number, child: Node3D)
     {
-        childIndex = childIndex;
         this._children.splice(childIndex, 1);
         child._setParent(null);
 
@@ -1215,7 +1212,7 @@ export class Node3D extends Component
 
     private _updateMatrix()
     {
-        this._matrix.fromTRS(tempVector3_1.set(this._x, this._y, this._z), tempVector3_2.set(this._rx, this._ry, this._rz), tempVector3_3.set(this._sx, this._sy, this._sz));
+        this._matrix.fromTRS(tempVector31.set(this._x, this._y, this._z), tempVector32.set(this._rx, this._ry, this._rz), tempVector33.set(this._sx, this._sy, this._sz));
     }
 
     private _updateLocalToWorldMatrix()
@@ -1264,6 +1261,7 @@ export class Node3D extends Component
             if (!element.isLoaded)
             {
                 loadingNum++;
+                // eslint-disable-next-line no-loop-func
                 element.onLoadCompleted(() =>
                 {
                     loadingNum--;
@@ -1316,10 +1314,8 @@ export class Node3D extends Component
     }
 }
 
-const tempVector3_1 = new Vector3();
-const tempVector3_2 = new Vector3();
-const tempVector3_3 = new Vector3();
-
-const s: Component = new Node3D();
+const tempVector31 = new Vector3();
+const tempVector32 = new Vector3();
+const tempVector33 = new Vector3();
 
 serialization.setValue(new Node3D(), { __class__: 'feng3d.Node3D' });

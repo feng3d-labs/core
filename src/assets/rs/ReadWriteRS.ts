@@ -21,7 +21,7 @@ export class ReadWriteRS extends ReadRS
     /**
      * 延迟保存执行函数
      */
-    private laterSaveFunc = (interval: number) => { this.save(); };
+    private laterSaveFunc = (_interval: number) => { this.save(); };
     /**
      * 延迟保存，避免多次操作时频繁调用保存
      */
@@ -135,11 +135,8 @@ export class ReadWriteRS extends ReadRS
             index++;
         }
 
-        // 最后根据 parentAsset 修复 childrenAssets
-        const copyassets = assets.concat();
-
         // 移动最后一个资源
-        var moveLastAsset = () =>
+        const moveLastAsset = () =>
         {
             if (assets.length === 0)
             {
@@ -151,7 +148,7 @@ export class ReadWriteRS extends ReadRS
             }
             const la = assets.pop();
             // 读取资源
-            this.readAsset(la.assetId, (err, a) =>
+            this.readAsset(la.assetId, (err, _a) =>
             {
                 if (err)
                 {
@@ -218,7 +215,7 @@ export class ReadWriteRS extends ReadRS
         }
 
         // 删除最后一个资源
-        var deleteLastAsset = () =>
+        const deleteLastAsset = () =>
         {
             if (assets.length === 0)
             {

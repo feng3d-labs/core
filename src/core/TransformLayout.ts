@@ -170,7 +170,7 @@ export class TransformLayout extends Component3D
     @serialize
         pivot = new Vector3(0.5, 0.5, 0.5);
 
-    beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
+    beforeRender(_renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {
         // renderAtomic.uniforms.u_rect = this.rect;
     }

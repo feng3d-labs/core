@@ -43,7 +43,7 @@ export class Behaviour extends Component3D
     /**
      * 每帧执行
      */
-    update(interval?: number)
+    update(_interval?: number)
     {
     }
 

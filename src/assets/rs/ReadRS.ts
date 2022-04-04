@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { FS, pathUtils, ReadFS } from '@feng3d/filesystem';
 import { classUtils, Constructor, deleteItem, gPartial, mathUtil, __class__ } from '@feng3d/polyfill';
 import { serialization } from '@feng3d/serialization';
@@ -61,7 +62,7 @@ export class ReadRS
      */
     init(callback?: () => void)
     {
-        this.fs.readObject(this.resources, (err, object) =>
+        this.fs.readObject(this.resources, (_err, object) =>
         {
             if (object)
             {
@@ -78,7 +79,7 @@ export class ReadRS
             }
             else
             {
-                this.createAsset(FolderAsset, this.rootPath, null, null, (err, asset) =>
+                this.createAsset(FolderAsset, this.rootPath, null, null, (_err, _asset) =>
                 {
                     callback();
                 });
@@ -89,17 +90,17 @@ export class ReadRS
     /**
      * 新建资源
      *
-     * @param cls 资源类定义
+     * @param Cls 资源类定义
      * @param fileName 文件名称
      * @param value 初始数据
      * @param parent 所在文件夹，如果值为null时默认添加到根文件夹中
      * @param callback 完成回调函数
      */
-    createAsset<T extends FileAsset>(cls: new () => T, fileName?: string, value?: gPartial<T>, parent?: FolderAsset, callback?: (err: Error, asset: T) => void)
+    createAsset<T extends FileAsset>(Cls: new () => T, fileName?: string, value?: gPartial<T>, parent?: FolderAsset, callback?: (err: Error, asset: T) => void)
     {
         parent = parent || this.root;
         //
-        const asset: FileAsset = new cls();
+        const asset: FileAsset = new Cls();
         const assetId = mathUtil.uuid();
 
         // 初始化
@@ -112,8 +113,9 @@ export class ReadRS
 
         // 计算扩展名
         let extenson = path.extname(fileName);
-        if (extenson === '') extenson = cls.extenson;
-        console.assert(extenson !== undefined, `对象 ${cls} 没有设置 extenson 值，参考 FolderAsset.extenson`);
+        // @ts-ignore
+        if (extenson === '') extenson = Cls.extenson;
+        console.assert(extenson !== undefined, `对象 ${Cls} 没有设置 extenson 值，参考 FolderAsset.extenson`);
 
         // 计算名称
         fileName = pathUtils.getName(fileName);
@@ -135,7 +137,7 @@ export class ReadRS
         this.addAsset(asset);
 
         //
-        asset.write((err) =>
+        asset.write((_err) =>
         {
             callback && callback(null, asset as T);
         });
@@ -215,7 +217,7 @@ export class ReadRS
         const result: AssetData[] = [];
         const fns = assetids.map((v) => (callback) =>
         {
-            rs.readAssetData(v, (err, data) =>
+            rs.readAssetData(v, (_err, data) =>
             {
                 console.assert(!!data);
                 result.push(data);
@@ -403,7 +405,7 @@ export class ReadRS
         // 不需要加载本资源，移除自身资源
         deleteItem(assetids, object.assetId);
         // 加载包含的资源数据
-        this.readAssetDatas(assetids, (err, result) =>
+        this.readAssetDatas(assetids, (_err, _result) =>
         {
             // 创建资源数据实例
             const assetData = classUtils.getInstanceByName(object[__class__]);

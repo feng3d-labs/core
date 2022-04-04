@@ -1,10 +1,10 @@
-import { Box3, Frustum, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
+import { Frustum, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { serialization, serialize } from '@feng3d/serialization';
 import { RegisterComponent } from '../component/Component';
 import { Component3D } from '../component/Component3D';
 import { Entity } from '../core/Entity';
 import { AddComponentMenu } from '../Menu';
-import { oav } from '@feng3d/objectview';
-import { serialization, serialize } from '@feng3d/serialization';
 import { LensBase } from './lenses/LensBase';
 import { OrthographicLens } from './lenses/OrthographicLens';
 import { PerspectiveLens } from './lenses/PerspectiveLens';
@@ -217,8 +217,6 @@ export class Camera extends Component3D
     private _frustum = new Frustum();
     private _frustumInvalid = true;
 }
-// 投影后可视区域
-const visibleBox = new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
 
 Entity.registerPrimitive('Camera', (g) =>
 {

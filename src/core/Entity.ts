@@ -60,7 +60,7 @@ export class Entity<T extends EntityEventMap = EntityEventMap> extends Feng3dObj
      * 标签
      */
     @serialize
-        tag: string;
+    tag: string;
 
     // ------------------------------------------
     // Variables
@@ -122,22 +122,22 @@ export class Entity<T extends EntityEventMap = EntityEventMap> extends Feng3dObj
      *
      * @type type 被添加组件类定义
      */
-    addComponent<T extends Component>(type: Constructor<T>, callback?: (component: T) => void): T
+    addComponent<T extends Component>(Type: Constructor<T>, callback?: (component: T) => void): T
     {
-        let component = this.getComponent(type);
-        if (component && Component.isSingleComponent(type))
+        let component = this.getComponent(Type);
+        if (component && Component.isSingleComponent(Type))
         {
             // alert(`The compnent ${param["name"]} can't be added because ${this.name} already contains the same component.`);
             return component;
         }
-        const dependencies = Component.getDependencies(type);
+        const dependencies = Component.getDependencies(Type);
         // 先添加依赖
         dependencies.forEach((dependency) =>
         {
             this.addComponent(dependency);
         });
         //
-        component = new type();
+        component = new Type();
         this.addComponentAt(component, this._components.length);
         callback && callback(component);
 
@@ -447,6 +447,7 @@ export class Entity<T extends EntityEventMap = EntityEventMap> extends Feng3dObj
      *
      * @deprecated
      */
+    // eslint-disable-next-line accessor-pairs
     set children(v: Entity[])
     {
         const node3ds = v.map((v) => v.getComponent(Node3D));
@@ -457,7 +458,7 @@ export class Entity<T extends EntityEventMap = EntityEventMap> extends Feng3dObj
         }
         else
         {
-            var f = (e: IEvent<{
+            const f = (e: IEvent<{
                 entity: Entity;
                 component: Component;
             }>) =>

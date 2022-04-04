@@ -34,9 +34,9 @@ export class Mouse3DManager
     /**
      * 拾取
      * @param scene 场景
-     * @param camera 摄像机
+     * @param _camera 摄像机
      */
-    pick(view: View, scene: Scene, camera: Camera)
+    pick(view: View, scene: Scene, _camera: Camera)
     {
         if (this._mouseEventTypes.length === 0) return;
         // 计算得到鼠标射线相交的物体
@@ -66,7 +66,7 @@ export class Mouse3DManager
      */
     private node3DClickNum: number;
 
-    private _mouseInputChanged(property: string, oldValue: MouseInput, newValue: MouseInput)
+    private _mouseInputChanged(_property: string, oldValue: MouseInput, newValue: MouseInput)
     {
         if (oldValue)
         {
@@ -211,7 +211,7 @@ export class MouseInput<T = MouseEventMap> extends EventEmitter<T>
 /**
  * 鼠标事件列表
  */
-var mouseEventTypes: (keyof MouseEventMap)[]
+const mouseEventTypes: (keyof MouseEventMap)[]
     = [
         'mouseout',
         'mouseover',

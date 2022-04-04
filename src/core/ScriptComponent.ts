@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { globalEmitter } from '@feng3d/event';
+import { oav } from '@feng3d/objectview';
+import { classUtils } from '@feng3d/polyfill';
+import { serialization, serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 import { Behaviour } from '../component/Behaviour';
 import { RegisterComponent } from '../component/Component';
 import { AddComponentMenu } from '../Menu';
-import { classUtils } from '@feng3d/polyfill';
-import { oav } from '@feng3d/objectview';
-import { serialization, serialize } from '@feng3d/serialization';
-import { watch } from '@feng3d/watcher';
 import { RunEnvironment } from './RunEnvironment';
 import { Script } from './Script';
 
@@ -59,9 +60,9 @@ export class ScriptComponent extends Behaviour
         this._scriptInstance = null;
         if (!this.scriptName) return;
 
-        const cls = classUtils.getDefinitionByName(this.scriptName, false);
+        const Cls = classUtils.getDefinitionByName(this.scriptName, false);
 
-        if (cls) this._scriptInstance = new cls();
+        if (Cls) this._scriptInstance = new Cls();
         else console.warn(`无法初始化脚本 ${this.scriptName}`);
 
         this.scriptInit = false;

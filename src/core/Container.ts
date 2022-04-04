@@ -185,8 +185,6 @@ export class Container<T extends ContainerEventMap = ContainerEventMap> extends 
      */
     getChildAt(index: number)
     {
-        index = index;
-
         return this._children[index];
     }
 
@@ -200,7 +198,6 @@ export class Container<T extends ContainerEventMap = ContainerEventMap> extends 
 
     private removeChildInternal(childIndex: number, child: Container)
     {
-        childIndex = childIndex;
         this._children.splice(childIndex, 1);
         child._setParent(null);
 
