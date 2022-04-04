@@ -27,7 +27,7 @@ export class CylinderGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        topRadius = 0.5;
+    topRadius = 0.5;
 
     /**
      * 底部半径
@@ -35,7 +35,7 @@ export class CylinderGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        bottomRadius = 0.5;
+    bottomRadius = 0.5;
 
     /**
      * 高度
@@ -43,7 +43,7 @@ export class CylinderGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        height = 2;
+    height = 2;
 
     /**
      * 横向分割数
@@ -51,7 +51,7 @@ export class CylinderGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        segmentsW = 16;
+    segmentsW = 16;
 
     /**
      * 纵向分割数
@@ -59,7 +59,7 @@ export class CylinderGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        segmentsH = 1;
+    segmentsH = 1;
 
     /**
      * 顶部是否封口
@@ -67,7 +67,7 @@ export class CylinderGeometry extends Geometry
     @oav()
     @serialize
     @watch('invalidateGeometry')
-        topClosed = true;
+    topClosed = true;
 
     /**
      * 底部是否封口
@@ -75,7 +75,7 @@ export class CylinderGeometry extends Geometry
     @oav()
     @serialize
     @watch('invalidateGeometry')
-        bottomClosed = true;
+    bottomClosed = true;
 
     /**
      * 侧面是否封口
@@ -83,7 +83,7 @@ export class CylinderGeometry extends Geometry
     @oav()
     @serialize
     @watch('invalidateGeometry')
-        surfaceClosed = true;
+    surfaceClosed = true;
 
     /**
      * 是否朝上
@@ -91,7 +91,7 @@ export class CylinderGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        yUp = true;
+    yUp = true;
 
     protected _name = 'Cylinder';
 
@@ -100,18 +100,12 @@ export class CylinderGeometry extends Geometry
      */
     protected buildGeometry()
     {
-        let i: number; let j: number; let
-            index = 0;
-        let x: number; let y: number; let z: number; let radius: number; let
-            revolutionAngle = 0;
-        let dr: number; let latNormElev: number; let
-            latNormBase: number;
+        let i: number; let j: number; let index = 0;
+        let x: number; let y: number; let z: number; let radius: number; let revolutionAngle = 0;
 
-        let comp1: number; let
-            comp2: number;
+        let comp1: number; let comp2: number;
         let startIndex = 0;
-        let t1: number; let
-            t2: number;
+        let t1: number; let t2: number;
 
         const vertexPositionData: number[] = [];
         const vertexNormalData: number[] = [];
@@ -228,16 +222,13 @@ export class CylinderGeometry extends Geometry
         }
 
         // 侧面
-        dr = this.bottomRadius - this.topRadius;
-        latNormElev = dr / this.height;
-        latNormBase = (latNormElev === 0) ? 1 : this.height / dr;
+        const dr = this.bottomRadius - this.topRadius;
+        const latNormElev = dr / this.height;
+        const latNormBase = (latNormElev === 0) ? 1 : this.height / dr;
 
         if (this.surfaceClosed)
         {
-            let a: number; let b: number; let c: number; let
-                d: number;
-            let na0: number; let na1: number; let naComp1: number; let
-                naComp2: number;
+            let na0: number; let na1: number; let naComp1: number; let naComp2: number;
 
             for (j = 0; j <= this.segmentsH; ++j)
             {

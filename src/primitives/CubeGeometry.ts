@@ -28,7 +28,7 @@ export class CubeGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        width = 1;
+    width = 1;
 
     /**
      * 高度
@@ -36,7 +36,7 @@ export class CubeGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        height = 1;
+    height = 1;
 
     /**
      * 深度
@@ -44,7 +44,7 @@ export class CubeGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        depth = 1;
+    depth = 1;
 
     /**
      * 宽度方向分割数
@@ -52,7 +52,7 @@ export class CubeGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        segmentsW = 1;
+    segmentsW = 1;
 
     /**
      * 高度方向分割数
@@ -60,7 +60,7 @@ export class CubeGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        segmentsH = 1;
+    segmentsH = 1;
 
     /**
      * 深度方向分割数
@@ -68,7 +68,7 @@ export class CubeGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        segmentsD = 1;
+    segmentsD = 1;
 
     /**
      * 是否为6块贴图，默认true。
@@ -76,7 +76,7 @@ export class CubeGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        tile6 = false;
+    tile6 = false;
 
     protected buildGeometry()
     {
@@ -99,42 +99,36 @@ export class CubeGeometry extends Geometry
     {
         const vertexPositionData: number[] = [];
 
-        let i: number; let
-            j: number;
+        let i: number; let j: number;
 
-        let hw: number; let hh: number; let
-            hd: number; // halves
-        let dw: number; let dh: number; let
-            dd: number; // deltas
-
-        let outer_pos: number;
+        let outerPos: number;
 
         // Indices
         let positionIndex = 0;
 
         // half cube dimensions
-        hw = this.width / 2;
-        hh = this.height / 2;
-        hd = this.depth / 2;
+        const hw = this.width / 2;
+        const hh = this.height / 2;
+        const hd = this.depth / 2;
 
         // Segment dimensions
-        dw = this.width / this.segmentsW;
-        dh = this.height / this.segmentsH;
-        dd = this.depth / this.segmentsD;
+        const dw = this.width / this.segmentsW;
+        const dh = this.height / this.segmentsH;
+        const dd = this.depth / this.segmentsD;
 
         for (i = 0; i <= this.segmentsW; i++)
         {
-            outer_pos = -hw + i * dw;
+            outerPos = -hw + i * dw;
 
             for (j = 0; j <= this.segmentsH; j++)
             {
                 // front
-                vertexPositionData[positionIndex++] = outer_pos;
+                vertexPositionData[positionIndex++] = outerPos;
                 vertexPositionData[positionIndex++] = -hh + j * dh;
                 vertexPositionData[positionIndex++] = -hd;
 
                 // back
-                vertexPositionData[positionIndex++] = outer_pos;
+                vertexPositionData[positionIndex++] = outerPos;
                 vertexPositionData[positionIndex++] = -hh + j * dh;
                 vertexPositionData[positionIndex++] = hd;
             }
@@ -142,17 +136,17 @@ export class CubeGeometry extends Geometry
 
         for (i = 0; i <= this.segmentsW; i++)
         {
-            outer_pos = -hw + i * dw;
+            outerPos = -hw + i * dw;
 
             for (j = 0; j <= this.segmentsD; j++)
             {
                 // top
-                vertexPositionData[positionIndex++] = outer_pos;
+                vertexPositionData[positionIndex++] = outerPos;
                 vertexPositionData[positionIndex++] = hh;
                 vertexPositionData[positionIndex++] = -hd + j * dd;
 
                 // bottom
-                vertexPositionData[positionIndex++] = outer_pos;
+                vertexPositionData[positionIndex++] = outerPos;
                 vertexPositionData[positionIndex++] = -hh;
                 vertexPositionData[positionIndex++] = -hd + j * dd;
             }
@@ -160,19 +154,19 @@ export class CubeGeometry extends Geometry
 
         for (i = 0; i <= this.segmentsD; i++)
         {
-            outer_pos = hd - i * dd;
+            outerPos = hd - i * dd;
 
             for (j = 0; j <= this.segmentsH; j++)
             {
                 // left
                 vertexPositionData[positionIndex++] = -hw;
                 vertexPositionData[positionIndex++] = -hh + j * dh;
-                vertexPositionData[positionIndex++] = outer_pos;
+                vertexPositionData[positionIndex++] = outerPos;
 
                 // right
                 vertexPositionData[positionIndex++] = hw;
                 vertexPositionData[positionIndex++] = -hh + j * dh;
-                vertexPositionData[positionIndex++] = outer_pos;
+                vertexPositionData[positionIndex++] = outerPos;
             }
         }
 
@@ -425,26 +419,21 @@ export class CubeGeometry extends Geometry
             uidx: number;
         const data: number[] = [];
 
-        let u_tile_dim: number; let
-            v_tile_dim: number;
-        let u_tile_step: number; let
-            v_tile_step: number;
-        let tl0u: number; let
-            tl0v: number;
-        let tl1u: number; let
-            tl1v: number;
-        let du: number; let
-            dv: number;
+        let uTileDim: number; let vTileDim: number;
+        let uTileStep: number; let vTileStep: number;
+        let tl0u: number; let tl0v: number;
+        let tl1u: number; let tl1v: number;
+        let du: number; let dv: number;
 
         if (this.tile6)
         {
-            u_tile_dim = u_tile_step = 1 / 3;
-            v_tile_dim = v_tile_step = 1 / 2;
+            uTileDim = uTileStep = 1 / 3;
+            vTileDim = vTileStep = 1 / 2;
         }
         else
         {
-            u_tile_dim = v_tile_dim = 1;
-            u_tile_step = v_tile_step = 0;
+            uTileDim = vTileDim = 1;
+            uTileStep = vTileStep = 0;
         }
 
         // Create planes two and two, the same way that they were
@@ -462,56 +451,56 @@ export class CubeGeometry extends Geometry
         uidx = 0;
 
         // FRONT / BACK
-        tl0u = Number(u_tile_step);
-        tl0v = Number(v_tile_step);
-        tl1u = 2 * u_tile_step;
-        tl1v = 0 * v_tile_step;
-        du = u_tile_dim / this.segmentsW;
-        dv = v_tile_dim / this.segmentsH;
+        tl0u = Number(uTileStep);
+        tl0v = Number(vTileStep);
+        tl1u = 2 * uTileStep;
+        tl1v = 0 * vTileStep;
+        du = uTileDim / this.segmentsW;
+        dv = vTileDim / this.segmentsH;
         for (i = 0; i <= this.segmentsW; i++)
         {
             for (j = 0; j <= this.segmentsH; j++)
             {
                 data[uidx++] = tl0u + i * du;
-                data[uidx++] = tl0v + (v_tile_dim - j * dv);
-                data[uidx++] = tl1u + (u_tile_dim - i * du);
-                data[uidx++] = tl1v + (v_tile_dim - j * dv);
+                data[uidx++] = tl0v + (vTileDim - j * dv);
+                data[uidx++] = tl1u + (uTileDim - i * du);
+                data[uidx++] = tl1v + (vTileDim - j * dv);
             }
         }
 
         // TOP / BOTTOM
-        tl0u = Number(u_tile_step);
-        tl0v = 0 * v_tile_step;
-        tl1u = 0 * u_tile_step;
-        tl1v = 0 * v_tile_step;
-        du = u_tile_dim / this.segmentsW;
-        dv = v_tile_dim / this.segmentsD;
+        tl0u = Number(uTileStep);
+        tl0v = 0 * vTileStep;
+        tl1u = 0 * uTileStep;
+        tl1v = 0 * vTileStep;
+        du = uTileDim / this.segmentsW;
+        dv = vTileDim / this.segmentsD;
         for (i = 0; i <= this.segmentsW; i++)
         {
             for (j = 0; j <= this.segmentsD; j++)
             {
                 data[uidx++] = tl0u + i * du;
-                data[uidx++] = tl0v + (v_tile_dim - j * dv);
+                data[uidx++] = tl0v + (vTileDim - j * dv);
                 data[uidx++] = tl1u + i * du;
                 data[uidx++] = tl1v + j * dv;
             }
         }
 
         // LEFT / RIGHT
-        tl0u = 0 * u_tile_step;
-        tl0v = Number(v_tile_step);
-        tl1u = 2 * u_tile_step;
-        tl1v = Number(v_tile_step);
-        du = u_tile_dim / this.segmentsD;
-        dv = v_tile_dim / this.segmentsH;
+        tl0u = 0 * uTileStep;
+        tl0v = Number(vTileStep);
+        tl1u = 2 * uTileStep;
+        tl1v = Number(vTileStep);
+        du = uTileDim / this.segmentsD;
+        dv = vTileDim / this.segmentsH;
         for (i = 0; i <= this.segmentsD; i++)
         {
             for (j = 0; j <= this.segmentsH; j++)
             {
                 data[uidx++] = tl0u + i * du;
-                data[uidx++] = tl0v + (v_tile_dim - j * dv);
-                data[uidx++] = tl1u + (u_tile_dim - i * du);
-                data[uidx++] = tl1v + (v_tile_dim - j * dv);
+                data[uidx++] = tl0v + (vTileDim - j * dv);
+                data[uidx++] = tl1u + (uTileDim - i * du);
+                data[uidx++] = tl1v + (vTileDim - j * dv);
             }
         }
 
