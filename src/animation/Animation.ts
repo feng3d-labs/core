@@ -20,29 +20,29 @@ export class Animation extends Behaviour
     @oav({ component: 'OAVDefault', componentParam: { dragparam: { accepttype: 'animationclip', datatype: 'animationclip' } } })
     @serialize
     @watch('_onAnimationChanged')
-        animation: AnimationClip;
+    animation: AnimationClip;
 
     @oav({ component: 'OAVArray', componentParam: { dragparam: { accepttype: 'animationclip', datatype: 'animationclip' }, defaultItem: () => new AnimationClip() } })
     @serialize
-        animations: AnimationClip[] = [];
+    animations: AnimationClip[] = [];
 
     /**
      * 动画事件，单位为ms
      */
     @oav()
     @watch('_onTimeChanged')
-        time = 0;
+    time = 0;
 
     @oav()
     @serialize
-        isplaying = false;
+    isplaying = false;
 
     /**
      * 播放速度
      */
     @oav()
     @serialize
-        playspeed = 1;
+    playspeed = 1;
 
     /**
      * 动作名称
@@ -120,7 +120,7 @@ export class Animation extends Behaviour
                     propertyHost = propertyHost.find(element[1]);
                     break;
                 case PropertyClipPathItemType.Component:
-                    var componentCls = getComponentType(element[1] as any);
+                    const componentCls = getComponentType(element[1] as any);
                     propertyHost = propertyHost.getComponent(componentCls);
                     break;
                 default:
@@ -144,4 +144,4 @@ export class Animation extends Behaviour
         this._updateAni();
     }
 }
-var autoobjectCacheID = 1;
+let autoobjectCacheID = 1;

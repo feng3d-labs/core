@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Camera } from '../cameras/Camera';
 import { AddComponentMenu } from '../Menu';
 import { oav } from '@feng3d/objectview';
@@ -51,11 +52,13 @@ export class HoldSizeComponent extends Component3D
 
     private _invalidateSceneTransform()
     {
+        // @ts-ignore
         if (this._entity) this.node3d._invalidateSceneTransform();
     }
 
     private _onUpdateLocalToWorldMatrix()
     {
+        // @ts-ignore
         const _localToWorldMatrix = this.node3d._localToWorldMatrix;
         if (this.holdSize && this.camera && _localToWorldMatrix)
         {

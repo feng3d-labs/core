@@ -1,7 +1,8 @@
-import { Camera } from '../cameras/Camera';
-import { AddComponentMenu } from '../Menu';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { oav } from '@feng3d/objectview';
 import { watch } from '@feng3d/watcher';
+import { Camera } from '../cameras/Camera';
+import { AddComponentMenu } from '../Menu';
 import { RegisterComponent } from './Component';
 import { Component3D } from './Component3D';
 
@@ -21,7 +22,7 @@ export class BillboardComponent extends Component3D
      */
     @oav()
     @watch('_onCameraChanged')
-        camera: Camera;
+    camera: Camera;
 
     init()
     {
@@ -39,11 +40,13 @@ export class BillboardComponent extends Component3D
 
     private _invalidHoldSizeMatrix()
     {
+        // @ts-ignore
         if (this._entity) this.node3d._invalidateSceneTransform();
     }
 
     private _onUpdateLocalToWorldMatrix()
     {
+        // @ts-ignore
         const _localToWorldMatrix = this.node3d._localToWorldMatrix;
         if (_localToWorldMatrix && this.camera)
         {

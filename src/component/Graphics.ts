@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { dataTransform } from '@feng3d/polyfill';
 import { Component } from './Component';
 
@@ -52,6 +53,7 @@ export function watchContext2D(context2D: CanvasRenderingContext2D, watchFuncs =
         {
             oldFunc.apply(context2D, args);
             // 标记更改
+            // @ts-ignore
             context2D.__changed = true;
         };
     });
