@@ -202,7 +202,7 @@
         "camelcase": [
             1,
             {
-                "properties": "always"
+                "properties": "never"
             }
         ],
         "comma-spacing": [

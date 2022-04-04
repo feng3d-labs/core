@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Lazy, lazy } from '@feng3d/polyfill';
 
 /**
@@ -223,8 +224,8 @@ function removeTickerFunc(item: TickerFuncItem)
     }
 }
 
-var running = false;
-var affers: [Function, any[]][] = [];
+let running = false;
+const affers: [Function, any[]][] = [];
 
 function runTickerFuncs()
 {
@@ -290,9 +291,13 @@ if (typeof requestAnimationFrame === 'undefined')
         _global = window;
         localrequestAnimationFrame
             = window.requestAnimationFrame
+            // @ts-ignore
             || window.webkitRequestAnimationFrame
+            // @ts-ignore
             || window.mozRequestAnimationFrame
+            // @ts-ignore
             || window.oRequestAnimationFrame
+            // @ts-ignore
             || window.msRequestAnimationFrame;
     }
     else if (typeof global !== 'undefined')

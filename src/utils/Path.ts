@@ -1,3 +1,4 @@
+/* eslint-disable prefer-rest-params */
 import { objectIsEmpty } from '@feng3d/polyfill';
 
 /**
@@ -228,8 +229,7 @@ function oneOf(expected: string | string[], thing: string)
         expected = expected.map((i) => String(i));
         if (len > 2)
         {
-            return `one of ${thing} ${expected.slice(0, len - 1).join(', ')}, or ${
-                expected[len - 1]}`;
+            return `one of ${thing} ${expected.slice(0, len - 1).join(', ')}, or ${expected[len - 1]}`;
         }
         else if (len === 2)
         {
@@ -377,7 +377,7 @@ function _format(sep: string, pathObject: { dir: string, root: string, base: str
 class Win32Path implements Path
 {
     // path.resolve([from ...], to)
-    resolve(...pathSegments: string[]): string
+    resolve(..._pathSegments: string[]): string
     {
         let resolvedDevice = '';
         let resolvedTail = '';
@@ -385,7 +385,7 @@ class Win32Path implements Path
 
         for (let i = arguments.length - 1; i >= -1; i--)
         {
-            var path: string;
+            let path: string;
             if (i >= 0)
             {
                 path = arguments[i];
@@ -467,8 +467,11 @@ class Win32Path implements Path
                                 // Match 1 or more non-path separators
                                 for (; j < len; ++j)
                                 {
+                                    // eslint-disable-next-line max-depth
                                     if (isPathSeparator(path.charCodeAt(j)))
-                                    { break; }
+                                    {
+                                        break;
+                                    }
                                 }
                                 if (j === len)
                                 {
@@ -607,8 +610,11 @@ class Win32Path implements Path
                             // Match 1 or more non-path separators
                             for (; j < len; ++j)
                             {
+                                // eslint-disable-next-line max-depth
                                 if (isPathSeparator(path.charCodeAt(j)))
-                                { break; }
+                                {
+                                    break;
+                                }
                             }
                             if (j === len)
                             {
@@ -1042,8 +1048,11 @@ class Win32Path implements Path
                             // Match 1 or more non-path separators
                             for (; j < len; ++j)
                             {
+                                // eslint-disable-next-line max-depth
                                 if (isPathSeparator(path.charCodeAt(j)))
-                                { break; }
+                                {
+                                    break;
+                                }
                             }
                             if (j === len)
                             {
@@ -1358,6 +1367,7 @@ class Win32Path implements Path
                             // Match 1 or more non-path separators
                             for (; j < len; ++j)
                             {
+                                // eslint-disable-next-line max-depth
                                 if (isPathSeparator(path.charCodeAt(j)))
                                 { break; }
                             }
@@ -1511,14 +1521,14 @@ class Win32Path implements Path
 class PosixPath implements Path
 {
     // path.resolve([from ...], to)
-    resolve(...pathSegments: string[]): string
+    resolve(..._pathSegments: string[]): string
     {
         let resolvedPath = '';
         let resolvedAbsolute = false;
 
         for (let i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--)
         {
-            var path;
+            let path: string;
             if (i >= 0)
             { path = arguments[i]; }
             else

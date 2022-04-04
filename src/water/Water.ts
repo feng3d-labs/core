@@ -122,7 +122,7 @@ export class Water extends Renderable
         projectionMatrix.elements[10] = clipPlane.z + 1.0 - clipBias;
         projectionMatrix.elements[14] = clipPlane.w;
 
-        const eye = camera.node3d.worldPosition;
+        // const eye = camera.node3d.worldPosition;
 
         // 不支持直接操作gl，下面代码暂时注释掉！
         // //

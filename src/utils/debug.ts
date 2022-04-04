@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-debugger */
 import { functionwrap } from './FunctionWarp';
 
 /**

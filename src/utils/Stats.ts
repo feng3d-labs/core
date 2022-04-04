@@ -70,9 +70,10 @@ export class Stats
         const fpsPanel = addPanel(new StatsPanel('FPS', '#0ff', '#002'));
         const msPanel = addPanel(new StatsPanel('MS', '#0f0', '#020'));
 
+        let memPanel: StatsPanel;
         if (self.performance && self.performance.memory)
         {
-            var memPanel = addPanel(new StatsPanel('MB', '#f08', '#201'));
+            memPanel = addPanel(new StatsPanel('MB', '#f08', '#201'));
         }
 
         showPanel(0);

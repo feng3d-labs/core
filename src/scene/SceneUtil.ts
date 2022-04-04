@@ -10,10 +10,10 @@ export class SceneUtil
     /**
      * 获取场景中可视需要混合的渲染对象
      *
-     * @param scene 场景
-     * @param camera 摄像机
+     * @param _scene 场景
+     * @param _camera 摄像机
      */
-    getBlenditems(scene: Scene, camera: Camera)
+    getBlenditems(_scene: Scene, _camera: Camera)
     {
         // throw new Error("Method not implemented.");
 

@@ -82,11 +82,6 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
         }
     }
 
-    constructor()
-    {
-        super();
-    }
-
     private onItemLoadCompleted()
     {
         if (this._loadings.length === 0) this.emit('loadCompleted');

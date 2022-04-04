@@ -109,7 +109,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
 
                 return;
             }
-            FS.fs.readImage(path, (err: Error, img: HTMLImageElement) =>
+            FS.fs.readImage(path, (_err: Error, img: HTMLImageElement) =>
             {
                 callback(img);
             });
@@ -171,7 +171,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
         if (objectIsEmpty(imagepath)) return;
 
         this._loading.push(imagepath);
-        FS.fs.readImage(imagepath, (err, img) =>
+        FS.fs.readImage(imagepath, (_err, img) =>
         {
             if (img !== null && this.rawData.type === 'path' && this.rawData.paths[index] === imagepath)
             {
