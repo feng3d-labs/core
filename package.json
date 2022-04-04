@@ -1,7 +1,7 @@
 {
   "name": "@feng3d/core",
   "version": "0.4.0",
-  "description": "",
+  "description": "核心库",
   "main": "lib/index.js",
   "module": "lib/index.es.js",
   "bundle": "dist/index.js",
