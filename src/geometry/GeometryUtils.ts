@@ -1,8 +1,4 @@
-import { Box3 } from '@feng3d/math';
-import { Matrix4x4 } from '@feng3d/math';
-import { Ray3 } from '@feng3d/math';
-import { Vector2 } from '@feng3d/math';
-import { Vector3 } from '@feng3d/math';
+import { Box3, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
 import { CullFace } from '@feng3d/renderer';
 
 export class GeometryUtils
@@ -428,7 +424,7 @@ export class GeometryUtils
             }
             else
             {
-                var startIndex = result.positions.length / 3;
+                const startIndex = result.positions.length / 3;
                 geometry.indices.forEach((v) => result.indices.push(v + startIndex));
                 geometry.positions.forEach((v) => result.positions.push(v));
                 result.uvs && geometry.uvs.forEach((v) => result.uvs.push(v));

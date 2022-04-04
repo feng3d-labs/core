@@ -1,4 +1,4 @@
-import { FrameBuffer, GL, GLCache, RenderBuffer, Texture } from '@feng3d/renderer';
+import { FrameBuffer, GL, RenderBuffer, Texture } from '@feng3d/renderer';
 import { watch } from '@feng3d/watcher';
 import { RenderTargetTexture2D } from '../textures/RenderTargetTexture2D';
 
@@ -8,19 +8,19 @@ import { RenderTargetTexture2D } from '../textures/RenderTargetTexture2D';
 export class FrameBufferObject
 {
     @watch('invalidateSize')
-        OFFSCREEN_WIDTH = 1024;
+    OFFSCREEN_WIDTH = 1024;
 
     @watch('invalidateSize')
-        OFFSCREEN_HEIGHT = 1024;
+    OFFSCREEN_HEIGHT = 1024;
 
     @watch('invalidate')
-        frameBuffer: FrameBuffer;
+    frameBuffer: FrameBuffer;
 
     @watch('invalidate')
-        texture: RenderTargetTexture2D;
+    texture: RenderTargetTexture2D;
 
     @watch('invalidate')
-        depthBuffer: RenderBuffer;
+    depthBuffer: RenderBuffer;
 
     constructor(width = 1024, height = 1024)
     {
@@ -58,7 +58,7 @@ export class FrameBufferObject
             const e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
             if (gl.FRAMEBUFFER_COMPLETE !== e)
             {
-                alert(`Frame buffer object is incomplete: ${e.toString()}`);
+                console.warn(`Frame buffer object is incomplete: ${e.toString()}`);
 
                 return null;
             }

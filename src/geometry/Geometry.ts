@@ -26,8 +26,6 @@ export interface GeometryEventMap
  */
 export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Feng3dObject<T>
 {
-    @oav({ component: 'OAVFeng3dPreView' })
-    private preview = '';
 
     @oav()
     get name()
@@ -199,14 +197,6 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
     }
 
     /**
-     * 创建一个几何体
-     */
-    constructor()
-    {
-        super();
-    }
-
-    /**
      * 标记需要更新几何体，在更改几何体数据后需要调用该函数。
      */
     @oav({ tooltip: '标记需要更新几何体，在更改几何体数据后需要调用该函数。' })
@@ -290,8 +280,6 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
             totalIndices[indices.length + i] = targetIndices[i] + oldNumVertex;
         }
         this.indices = totalIndices;
-        // 合并后顶点数量
-        const totalVertex = oldNumVertex + geometry.numVertex;
         // 合并属性数据
         for (const attributeName in attributes)
         {
@@ -386,7 +374,6 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
     getVertices(result: Vector3[] = [])
     {
         const positions = this.positions;
-        var result: Vector3[] = [];
         for (let i = 0, n = positions.length; i < n; i += 3)
         {
             result.push(new Vector3(positions[i], positions[i + 1], positions[i + 2]));
@@ -484,7 +471,6 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
     }
 
     private _geometryInvalid = true;
-    private _useFaceWeights = false;
 
     private _bounding: Box3;
 

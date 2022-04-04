@@ -61,7 +61,7 @@ export class Water extends Renderable
 
         super.beforeRender(renderAtomic, scene, camera);
 
-        if (1) return;
+        return;
         //
         const mirrorWorldPosition = this.node3d.worldPosition;
         const cameraWorldPosition = camera.node3d.worldPosition;

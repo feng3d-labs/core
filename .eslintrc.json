@@ -44,7 +44,6 @@
         "no-irregular-whitespace": 1,
         "no-negated-in-lhs": 1,
         "no-obj-calls": 1,
-        "no-prototype-builtins": 1,
         "no-regex-spaces": 1,
         "no-sparse-arrays": 1,
         "no-unexpected-multiline": 1,
@@ -83,7 +82,7 @@
         "no-case-declarations": 0,
         "no-div-regex": 1,
         "no-else-return": 1,
-        "no-empty-function": 1,
+        "no-empty-function": 0,
         "no-empty-pattern": 1,
         "no-eq-null": 1,
         "no-eval": 1,
@@ -477,10 +476,11 @@
                 "plugin:@typescript-eslint/recommended"
             ],
             "rules": {
-                "@typescript-eslint/ban-types":0,
+                "@typescript-eslint/ban-types": 0,
                 "@typescript-eslint/semi": 1,
                 "@typescript-eslint/no-explicit-any": 0,
                 "@typescript-eslint/interface-name-prefix": 0,
+                "@typescript-eslint/no-empty-function": 0,
                 "@typescript-eslint/no-unused-vars": [
                     "error",
                     {

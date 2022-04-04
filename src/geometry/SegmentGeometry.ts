@@ -47,11 +47,6 @@ export class SegmentGeometry extends Geometry
         this.invalidateGeometry();
     }
 
-    constructor()
-    {
-        super();
-    }
-
     /**
      * 更新几何体
      */

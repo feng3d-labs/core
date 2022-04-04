@@ -46,14 +46,14 @@ export class Scene extends Component3D
      */
     @serialize
     @oav()
-        background = new Color4(0, 0, 0, 1);
+    background = new Color4(0, 0, 0, 1);
 
     /**
      * 环境光强度
      */
     @serialize
     @oav()
-        ambientColor = new Color4();
+    ambientColor = new Color4();
 
     /**
      * 指定所运行环境
@@ -123,7 +123,12 @@ export class Scene extends Component3D
      */
     get visibleAndEnabledModels()
     {
-        return this._visibleAndEnabledModels = this._visibleAndEnabledModels || this.models.filter((i) => i.isVisibleAndEnabled);
+        if (!this._visibleAndEnabledModels)
+        {
+            this._visibleAndEnabledModels = this.models.filter((i) => i.isVisibleAndEnabled);
+        }
+
+        return this._visibleAndEnabledModels;
     }
 
     /**
@@ -138,47 +143,80 @@ export class Scene extends Component3D
 
     get activeSkyBoxs()
     {
-        return this._activeSkyBoxs = this._activeSkyBoxs || this.skyBoxs.filter((i) => i.node3d.globalVisible);
+        if (!this._activeSkyBoxs)
+        {
+            this._activeSkyBoxs = this.skyBoxs.filter((i) => i.node3d.globalVisible);
+        }
+
+        return this._activeSkyBoxs;
     }
 
     get directionalLights()
     {
-        return this._directionalLights = this._directionalLights || this.node3d.getComponentsInChildren(DirectionalLight);
+        if (!this._directionalLights)
+        {
+            this._directionalLights = this.node3d.getComponentsInChildren(DirectionalLight);
+        }
+
+        return this._directionalLights;
     }
 
     get activeDirectionalLights()
     {
-        return this._activeDirectionalLights = this._activeDirectionalLights || this.directionalLights.filter((i) => i.isVisibleAndEnabled);
+        if (!this._activeDirectionalLights)
+        {
+            this._activeDirectionalLights = this.directionalLights.filter((i) => i.isVisibleAndEnabled);
+        }
+
+        return this._activeDirectionalLights;
     }
 
     get pointLights()
     {
-        return this._pointLights = this._pointLights || this.node3d.getComponentsInChildren(PointLight);
+        if (!this._pointLights)
+        {
+            this._pointLights = this.node3d.getComponentsInChildren(PointLight);
+        }
+
+        return this._pointLights;
     }
 
     get activePointLights()
     {
-        return this._activePointLights = this._activePointLights || this.pointLights.filter((i) => i.isVisibleAndEnabled);
+        if (!this._activePointLights)
+        {
+            this._activePointLights = this.pointLights.filter((i) => i.isVisibleAndEnabled);
+        }
+
+        return this._activePointLights;
     }
 
     get spotLights()
     {
-        return this._spotLights = this._spotLights || this.node3d.getComponentsInChildren(SpotLight);
+        this._spotLights = this._spotLights || this.node3d.getComponentsInChildren(SpotLight);
+
+        return this._spotLights;
     }
 
     get activeSpotLights()
     {
-        return this._activeSpotLights = this._activeSpotLights || this.spotLights.filter((i) => i.isVisibleAndEnabled);
+        this._activeSpotLights = this._activeSpotLights || this.spotLights.filter((i) => i.isVisibleAndEnabled);
+
+        return this._activeSpotLights;
     }
 
     get animations()
     {
-        return this._animations = this._animations || this.node3d.getComponentsInChildren(Animation);
+        this._animations = this._animations || this.node3d.getComponentsInChildren(Animation);
+
+        return this._animations;
     }
 
     get activeAnimations()
     {
-        return this._activeAnimations = this._activeAnimations || this.animations.filter((i) => i.isVisibleAndEnabled);
+        this._activeAnimations = this._activeAnimations || this.animations.filter((i) => i.isVisibleAndEnabled);
+
+        return this._activeAnimations;
     }
 
     get behaviours()
@@ -190,7 +228,9 @@ export class Scene extends Component3D
 
     get activeBehaviours()
     {
-        return this._activeBehaviours = this._activeBehaviours || this.behaviours.filter((i) => i.isVisibleAndEnabled);
+        this._activeBehaviours = this._activeBehaviours || this.behaviours.filter((i) => i.isVisibleAndEnabled);
+
+        return this._activeBehaviours;
     }
 
     get mouseCheckObjects(): Node3D[]
@@ -234,9 +274,9 @@ export class Scene extends Component3D
 
     /**
      * 获取接收光照渲染对象列表
-     * @param light
+     * @param _light
      */
-    getPickByDirectionalLight(light: DirectionalLight)
+    getPickByDirectionalLight(_light: DirectionalLight)
     {
         const openlist = [this.node3d];
         const targets: Renderable[] = [];

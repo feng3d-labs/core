@@ -1,9 +1,9 @@
-import { Entity } from '../core/Entity';
-import { MeshRenderer } from '../core/MeshRenderer';
-import { Geometry } from '../geometry/Geometry';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { Entity } from '../core/Entity';
+import { MeshRenderer } from '../core/MeshRenderer';
+import { Geometry } from '../geometry/Geometry';
 
 declare global
 {
@@ -26,7 +26,7 @@ export class TorusGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        radius = 0.5;
+    radius = 0.5;
 
     /**
      * 管道半径
@@ -34,7 +34,7 @@ export class TorusGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        tubeRadius = 0.1;
+    tubeRadius = 0.1;
 
     /**
      * 半径方向分割数
@@ -42,7 +42,7 @@ export class TorusGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        segmentsR = 16;
+    segmentsR = 16;
 
     /**
      * 管道方向分割数
@@ -50,7 +50,7 @@ export class TorusGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        segmentsT = 8;
+    segmentsT = 8;
 
     /**
      * 是否朝上
@@ -58,7 +58,7 @@ export class TorusGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        yUp = true;
+    yUp = true;
 
     protected _name = 'Torus';
 
@@ -113,7 +113,6 @@ export class TorusGeometry extends Geometry
             j: number;
         let x: number; let y: number; let z: number; let nx: number; let ny: number; let nz: number; let revolutionAngleR: number; let
             revolutionAngleT: number;
-        let numTriangles: number;
         // reset utility variables
         this._numVertices = 0;
         this._vertexIndex = 0;
@@ -121,7 +120,6 @@ export class TorusGeometry extends Geometry
 
         // evaluate target number of vertices, triangles and indices
         this._numVertices = (this.segmentsT + 1) * (this.segmentsR + 1); // this.segmentsT + 1 because of closure, this.segmentsR + 1 because of closure
-        numTriangles = this.segmentsT * this.segmentsR * 2; // each level has segmentsR quads, each of 2 triangles
 
         this._vertexPositionData = [];
         this._vertexNormalData = [];
@@ -224,10 +222,8 @@ export class TorusGeometry extends Geometry
         const data: number[] = [];
 
         // evaluate num uvs
-        const numUvs = this._numVertices * stride;
 
         // current uv component index
-        const currentUvCompIndex = 0;
 
         let index = 0;
         // surface

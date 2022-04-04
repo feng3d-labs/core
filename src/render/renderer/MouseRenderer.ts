@@ -53,12 +53,12 @@ export class MouseRenderer extends EventEmitter
         if (renderable.node3d.mouseEnabled)
         {
             const object = renderable.entity;
-            const u_objectID = this.objects.length;
-            this.objects[u_objectID] = object;
+            const uObjectID = this.objects.length;
+            this.objects[uObjectID] = object;
 
             const renderAtomic = renderable.renderAtomic;
 
-            renderAtomic.uniforms.u_objectID = u_objectID;
+            renderAtomic.uniforms.u_objectID = uObjectID;
             // super.drawRenderables(renderContext, model);
         }
     }
@@ -66,7 +66,7 @@ export class MouseRenderer extends EventEmitter
     /**
      * 绘制3D对象
      */
-    protected drawGameObject(gl: GL, renderAtomic: RenderAtomic)
+    protected drawGameObject(_gl: GL, _renderAtomic: RenderAtomic)
     {
         // var shader = new Shader();
         // shader.vertexCode = shaderlib.getShader("mouse").vertex;
