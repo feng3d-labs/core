@@ -11,7 +11,7 @@ import { outlineRenderer } from '../render/renderer/OutlineRenderer';
 import { shadowRenderer } from '../render/renderer/ShadowRenderer';
 import { wireframeRenderer } from '../render/renderer/WireframeRenderer';
 import { Scene } from '../scene/Scene';
-import { skyboxRenderer } from '../skybox/SkyboxRenderer';
+import { skyboxRenderer } from '../skybox/SkyBoxRenderer';
 import { ticker } from '../utils/Ticker';
 import { Entity } from './Entity';
 import { Feng3dObject } from './Feng3dObject';
