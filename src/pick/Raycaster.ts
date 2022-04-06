@@ -1,5 +1,5 @@
 import { Ray3, Vector2, Vector3 } from '@feng3d/math';
-import { objectIsEmpty } from '@feng3d/polyfill';
+import { ObjectUtils } from '@feng3d/polyfill';
 import { CullFace } from '@feng3d/renderer';
 import { Node3D } from '../core/Node3D';
 import { RayCastable } from '../core/RayCastable';
@@ -41,7 +41,7 @@ export class Raycaster
         for (let i = 0; i < pickingCollisionVOs.length; ++i)
         {
             const pickingCollisionVO = pickingCollisionVOs[i];
-            if (objectIsEmpty(bestCollisionVO) || pickingCollisionVO.rayEntryDistance < bestCollisionVO.rayEntryDistance)
+            if (ObjectUtils.objectIsEmpty(bestCollisionVO) || pickingCollisionVO.rayEntryDistance < bestCollisionVO.rayEntryDistance)
             {
                 const result = pickingCollisionVO.geometry.raycast(pickingCollisionVO.localRay, shortestCollisionDistance, pickingCollisionVO.cullFace);
                 if (result)

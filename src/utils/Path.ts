@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-import { objectIsEmpty } from '@feng3d/polyfill';
+import { ObjectUtils } from '@feng3d/polyfill';
 
 /**
  * 路径
@@ -1311,7 +1311,7 @@ class Win32Path implements Path
         ext: string;
     })
     {
-        if (objectIsEmpty(pathObject) || typeof pathObject !== 'object')
+        if (ObjectUtils.objectIsEmpty(pathObject) || typeof pathObject !== 'object')
         {
             throw new ERR_INVALID_ARG_TYPE('pathObject', 'Object', pathObject);
         }
@@ -1938,7 +1938,7 @@ class PosixPath implements Path
         ext: string;
     })
     {
-        if (objectIsEmpty(pathObject) || typeof pathObject !== 'object')
+        if (ObjectUtils.objectIsEmpty(pathObject) || typeof pathObject !== 'object')
         {
             throw new ERR_INVALID_ARG_TYPE('pathObject', 'Object', pathObject);
         }

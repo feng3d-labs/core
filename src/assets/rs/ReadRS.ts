@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { FS, pathUtils, ReadFS } from '@feng3d/filesystem';
-import { ArrayUtils, classUtils, Constructor, gPartial, mathUtil, __class__ } from '@feng3d/polyfill';
+import { ArrayUtils, classUtils, Constructor, gPartial, mathUtil, ObjectUtils, __class__ } from '@feng3d/polyfill';
 import { serialization } from '@feng3d/serialization';
 import { task } from '@feng3d/task';
 import { AssetData } from '../../core/AssetData';
@@ -376,11 +376,11 @@ export class ReadRS
      */
     getAssetsWithObject(object: any, assetids: string[] = [])
     {
-        if (Object.isBaseType(object)) return [];
+        if (ObjectUtils.isBaseType(object)) return [];
         //
         if (AssetData.isAssetData(object)) assetids.push(object.assetId);
         //
-        if (Object.isObject(object) || Array.isArray(object))
+        if (ObjectUtils.isObject(object) || Array.isArray(object))
         {
             const keys = Object.keys(object);
             keys.forEach((k) =>

@@ -1,5 +1,5 @@
 import { oav } from '@feng3d/objectview';
-import { objectIsEmpty } from '@feng3d/polyfill';
+import { ObjectUtils } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { Behaviour } from '../component/Behaviour';
@@ -126,7 +126,7 @@ export class Animation extends Behaviour
                 default:
                     console.error(`无法获取 PropertyHost ${element}`);
             }
-            if (objectIsEmpty(propertyHost))
+            if (ObjectUtils.objectIsEmpty(propertyHost))
             { return null; }
         }
         this._objectCache[propertyClip.cacheIndex] = propertyHost;

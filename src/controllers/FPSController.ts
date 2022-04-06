@@ -1,7 +1,7 @@
 import { IEvent as Event } from '@feng3d/event';
 import { Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { objectIsEmpty } from '@feng3d/polyfill';
+import { ObjectUtils } from '@feng3d/polyfill';
 import { windowEventProxy } from '@feng3d/shortcut';
 import { Behaviour } from '../component/Behaviour';
 import { RegisterComponent } from '../component/Component';
@@ -188,7 +188,7 @@ export class FPSController extends Behaviour
     {
         this.mousePoint = new Vector2(event.data.clientX, event.data.clientY);
 
-        if (objectIsEmpty(this.preMousePoint))
+        if (ObjectUtils.objectIsEmpty(this.preMousePoint))
         {
             this.preMousePoint = this.mousePoint;
             this.mousePoint = null;
@@ -201,7 +201,7 @@ export class FPSController extends Behaviour
     private onKeydown(event: Event<KeyboardEvent>): void
     {
         const boardKey = String.fromCharCode(event.data.keyCode).toLocaleLowerCase();
-        if (objectIsEmpty(this.keyDirectionDic[boardKey]))
+        if (ObjectUtils.objectIsEmpty(this.keyDirectionDic[boardKey]))
         { return; }
 
         if (!this.keyDownDic[boardKey])
@@ -215,7 +215,7 @@ export class FPSController extends Behaviour
     private onKeyup(event: Event<KeyboardEvent>): void
     {
         const boardKey = String.fromCharCode(event.data.keyCode).toLocaleLowerCase();
-        if (objectIsEmpty(this.keyDirectionDic[boardKey]))
+        if (ObjectUtils.objectIsEmpty(this.keyDirectionDic[boardKey]))
         { return; }
 
         this.keyDownDic[boardKey] = false;
@@ -228,7 +228,7 @@ export class FPSController extends Behaviour
      */
     private stopDirectionVelocity(direction: Vector3)
     {
-        if (objectIsEmpty(direction))
+        if (ObjectUtils.objectIsEmpty(direction))
         { return; }
         if (direction.x !== 0)
         {

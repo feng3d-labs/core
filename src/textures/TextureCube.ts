@@ -1,6 +1,6 @@
 import { FS } from '@feng3d/filesystem';
 import { oav } from '@feng3d/objectview';
-import { ArrayUtils, objectIsEmpty } from '@feng3d/polyfill';
+import { ArrayUtils, ObjectUtils } from '@feng3d/polyfill';
 import { TextureType } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
@@ -55,7 +55,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
 
     setTexture2D(pos: TextureCubeImageName, texture: Texture2D)
     {
-        if (objectIsEmpty(this.rawData) || this.rawData.type !== 'texture')
+        if (ObjectUtils.objectIsEmpty(this.rawData) || this.rawData.type !== 'texture')
         {
             this.rawData = { type: 'texture', textures: [] };
         }
@@ -67,7 +67,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
 
     setTexture2DPath(pos: TextureCubeImageName, path: string)
     {
-        if (objectIsEmpty(this.rawData) || this.rawData.type !== 'path')
+        if (ObjectUtils.objectIsEmpty(this.rawData) || this.rawData.type !== 'path')
         {
             this.rawData = { type: 'path', paths: [] };
         }
@@ -145,7 +145,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
      */
     private _loadItemTexture(texture: Texture2D, index: number)
     {
-        if (objectIsEmpty(texture)) return;
+        if (ObjectUtils.objectIsEmpty(texture)) return;
 
         this._loading.push(texture);
         texture.onLoadCompleted(() =>
@@ -168,7 +168,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
      */
     private _loadItemImagePath(imagepath: string, index: number)
     {
-        if (objectIsEmpty(imagepath)) return;
+        if (ObjectUtils.objectIsEmpty(imagepath)) return;
 
         this._loading.push(imagepath);
         FS.fs.readImage(imagepath, (_err, img) =>

@@ -1,4 +1,4 @@
-import { mathUtil } from '@feng3d/polyfill';
+import { mathUtil, ObjectUtils } from '@feng3d/polyfill';
 
 /**
  * 通用唯一标识符（Universally Unique Identifier）
@@ -30,7 +30,7 @@ export class Uuid
      */
     getObjectUuid(object: Object)
     {
-        if (Object.isBaseType(object))
+        if (ObjectUtils.isBaseType(object))
         {
             return String(object);
         }

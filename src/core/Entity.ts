@@ -1,7 +1,7 @@
 import { Component, ComponentMap, ComponentNames } from '../component/Component';
 import { IEvent } from '@feng3d/event';
 import { Geometry } from '../geometry/Geometry';
-import { Constructor, gPartial, IDisposable, objectIsEmpty } from '@feng3d/polyfill';
+import { Constructor, gPartial, IDisposable, ObjectUtils } from '@feng3d/polyfill';
 import { oav } from '@feng3d/objectview';
 import { serialization, serialize } from '@feng3d/serialization';
 import { Feng3dObject } from './Feng3dObject';
@@ -412,7 +412,7 @@ export class Entity<T extends EntityEventMap = EntityEventMap> extends Feng3dObj
      */
     private addComponentAt<T extends Component>(component: T, index: number): void
     {
-        if (objectIsEmpty(component))
+        if (ObjectUtils.objectIsEmpty(component))
         { return; }
         console.assert(index >= 0 && index <= this.numComponents, '给出索引超出范围');
 

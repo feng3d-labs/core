@@ -1,6 +1,6 @@
-import { AssetType } from '../assets/AssetType';
-import { classUtils, objectIsEmpty, __class__ } from '@feng3d/polyfill';
+import { classUtils, ObjectUtils, __class__ } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
+import { AssetType } from '../assets/AssetType';
 import { Feng3dObject } from './Feng3dObject';
 
 /**
@@ -190,7 +190,7 @@ serialization.setValueHandlers.push(
             }
             if (AssetData.isAssetData(tpv))
             {
-                if (objectIsEmpty(spv.__class__))
+                if (ObjectUtils.objectIsEmpty(spv.__class__))
                 {
                     const className = classUtils.getQualifiedClassName(tpv);
                     const inst = classUtils.getInstanceByName(className);
