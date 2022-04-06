@@ -1,4 +1,4 @@
-import { classUtils, ObjectUtils, __class__ } from '@feng3d/polyfill';
+import { classUtils, MapUtils, ObjectUtils, __class__ } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
 import { AssetType } from '../assets/AssetType';
 import { Feng3dObject } from './Feng3dObject';
@@ -154,7 +154,7 @@ export class AssetData extends Feng3dObject
      */
     static getAllLoadedAssetDatas()
     {
-        return Map.getKeys(this.assetMap);
+        return MapUtils.getKeys(this.assetMap);
     }
 
     /**
