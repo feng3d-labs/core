@@ -1,5 +1,5 @@
 import { loader } from '@feng3d/filesystem';
-import { deleteItem } from '@feng3d/polyfill';
+import { ArrayUtils } from '@feng3d/polyfill';
 import { TextureFormat, TextureType } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
 import { AssetType } from '../assets/AssetType';
@@ -70,13 +70,13 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
             {
                 this._pixels = img;
                 this.invalidate();
-                deleteItem(this._loadings, v.url);
+                ArrayUtils.deleteItem(this._loadings, v.url);
                 this.onItemLoadCompleted();
             }, null,
             (e) =>
             {
                 console.error(e);
-                deleteItem(this._loadings, v.url);
+                ArrayUtils.deleteItem(this._loadings, v.url);
                 this.onItemLoadCompleted();
             });
         }

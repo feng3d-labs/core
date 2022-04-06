@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Lazy, lazy } from '@feng3d/polyfill';
+import { ArrayUtils, Lazy, lazy } from '@feng3d/polyfill';
 
 /**
  * 心跳计时器
@@ -251,7 +251,7 @@ function runTickerFuncs()
     }
     needTickerFuncItems.reverse();
     // 相同的函数只执行一个
-    Array.unique(needTickerFuncItems, (a, b) => (a.func === b.func && a.thisObject === b.thisObject));
+    ArrayUtils.unique(needTickerFuncItems, (a, b) => (a.func === b.func && a.thisObject === b.thisObject));
     needTickerFuncItems.forEach((v) =>
     {
         // try

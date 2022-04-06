@@ -1,6 +1,6 @@
 import { FS } from '@feng3d/filesystem';
 import { oav } from '@feng3d/objectview';
-import { deleteItem, objectIsEmpty } from '@feng3d/polyfill';
+import { ArrayUtils, objectIsEmpty } from '@feng3d/polyfill';
 import { TextureType } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
@@ -34,14 +34,14 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
     static ImageNames: TextureCubeImageName[] = ['positive_x_url', 'positive_y_url', 'positive_z_url', 'negative_x_url', 'negative_y_url', 'negative_z_url'];
 
     @oav({ component: 'OAVCubeMap', priority: -1 })
-        OAVCubeMap = '';
+    OAVCubeMap = '';
 
     /**
      * 原始数据
      */
     @serialize
     @watch('_rawDataChanged')
-        rawData: { type: 'texture', textures: Texture2D[] } | { type: 'path', paths: string[] };
+    rawData: { type: 'texture', textures: Texture2D[] } | { type: 'path', paths: string[] };
 
     noPixels = [ImageDatas.white, ImageDatas.white, ImageDatas.white, ImageDatas.white, ImageDatas.white, ImageDatas.white];
 
@@ -155,7 +155,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
                 this._pixels[index] = texture.image;
                 this.invalidate();
             }
-            deleteItem(this._loading, texture);
+            ArrayUtils.deleteItem(this._loading, texture);
             this._onItemLoadCompleted();
         });
     }
@@ -178,7 +178,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
                 this._pixels[index] = img;
                 this.invalidate();
             }
-            deleteItem(this._loading, imagepath);
+            ArrayUtils.deleteItem(this._loading, imagepath);
             this._onItemLoadCompleted();
         });
     }

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { FS, pathUtils, ReadFS } from '@feng3d/filesystem';
-import { classUtils, Constructor, deleteItem, gPartial, mathUtil, __class__ } from '@feng3d/polyfill';
+import { ArrayUtils, classUtils, Constructor, gPartial, mathUtil, __class__ } from '@feng3d/polyfill';
 import { serialization } from '@feng3d/serialization';
 import { task } from '@feng3d/task';
 import { AssetData } from '../../core/AssetData';
@@ -403,7 +403,7 @@ export class ReadRS
         // 获取所包含的资源列表
         const assetids = this.getAssetsWithObject(object);
         // 不需要加载本资源，移除自身资源
-        deleteItem(assetids, object.assetId);
+        ArrayUtils.deleteItem(assetids, object.assetId);
         // 加载包含的资源数据
         this.readAssetDatas(assetids, (_err, _result) =>
         {
