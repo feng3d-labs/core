@@ -104,7 +104,6 @@ export * from './utils/FunctionWarp';
 export * from './utils/ImageUtil';
 export * from './utils/ObjectViewDefinitions';
 export * from './utils/Path';
-export * from './utils/Pool';
 export * from './utils/RegExps';
 export * from './utils/Stats';
 export * from './utils/Ticker';
