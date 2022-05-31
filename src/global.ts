@@ -7,8 +7,4 @@ declare global
      */
     interface MixinsPrimitiveEntity { }
 
-    /**
-     * 组件映射
-     */
-    interface MixinsComponentMap { }
 }
