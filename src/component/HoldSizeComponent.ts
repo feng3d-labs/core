@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Camera } from '../cameras/Camera';
-import { AddComponentMenu } from '../Menu';
+import { RegisterComponent } from '@feng3d/ecs';
 import { oav } from '@feng3d/objectview';
 import { watch } from '@feng3d/watcher';
-import { RegisterComponent } from './Component';
+import { Camera } from '../cameras/Camera';
+import { AddComponentMenu } from '../Menu';
 import { Component3D } from './Component3D';
 
 declare global
@@ -22,14 +22,14 @@ export class HoldSizeComponent extends Component3D
      */
     @oav()
     @watch('_invalidateSceneTransform')
-        holdSize = 1;
+    holdSize = 1;
 
     /**
      * 相机
      */
     @oav()
     @watch('_onCameraChanged')
-        camera: Camera;
+    camera: Camera;
 
     init()
     {

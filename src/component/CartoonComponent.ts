@@ -1,3 +1,4 @@
+import { Component, RegisterComponent } from '@feng3d/ecs';
 import { Color4, Vector4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { RenderAtomic } from '@feng3d/renderer';
@@ -5,7 +6,6 @@ import { serialize } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { AddComponentMenu } from '../Menu';
 import { Scene } from '../scene/Scene';
-import { Component, RegisterComponent } from './Component';
 
 declare global
 {
@@ -23,32 +23,32 @@ export class CartoonComponent extends Component
 
     @oav()
     @serialize
-        outlineSize = 1;
+    outlineSize = 1;
 
     @oav()
     @serialize
-        outlineColor = new Color4(0.2, 0.2, 0.2, 1.0);
+    outlineColor = new Color4(0.2, 0.2, 0.2, 1.0);
 
     @oav()
     @serialize
-        outlineMorphFactor = 0.0;
+    outlineMorphFactor = 0.0;
 
     /**
      * 半兰伯特值diff，分段值 4个(0.0,1.0)
      */
     @oav()
     @serialize
-        diffuseSegment = new Vector4(0.1, 0.3, 0.6, 1.0);
+    diffuseSegment = new Vector4(0.1, 0.3, 0.6, 1.0);
     /**
      * 半兰伯特值diff，替换分段值 4个(0.0,1.0)
      */
     @oav()
     @serialize
-        diffuseSegmentValue = new Vector4(0.1, 0.3, 0.6, 1.0);
+    diffuseSegmentValue = new Vector4(0.1, 0.3, 0.6, 1.0);
 
     @oav()
     @serialize
-        specularSegment = 0.5;
+    specularSegment = 0.5;
 
     @oav()
     @serialize

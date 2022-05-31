@@ -1,10 +1,10 @@
+import { RegisterComponent } from '@feng3d/ecs';
 import { IEvent as Event } from '@feng3d/event';
 import { Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { ObjectUtils } from '@feng3d/polyfill';
 import { windowEventProxy } from '@feng3d/shortcut';
 import { Behaviour } from '../component/Behaviour';
-import { RegisterComponent } from '../component/Component';
 import { RunEnvironment } from '../core/RunEnvironment';
 import { AddComponentMenu } from '../Menu';
 

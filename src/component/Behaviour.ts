@@ -1,7 +1,7 @@
-import { RunEnvironment } from '../core/RunEnvironment';
+import { RegisterComponent } from '@feng3d/ecs';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
-import { RegisterComponent } from './Component';
+import { RunEnvironment } from '../core/RunEnvironment';
 import { Component3D } from './Component3D';
 
 declare global

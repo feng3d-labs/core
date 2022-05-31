@@ -1,6 +1,6 @@
+import { RegisterComponent } from '@feng3d/ecs';
 import { Color4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { RegisterComponent } from './Component';
 import { Component3D } from './Component3D';
 
 declare global
@@ -17,5 +17,5 @@ export class WireframeComponent extends Component3D
     __class__: 'feng3d.WireframeComponent';
 
     @oav()
-        color = new Color4(125 / 255, 176 / 255, 250 / 255);
+    color = new Color4(125 / 255, 176 / 255, 250 / 255);
 }

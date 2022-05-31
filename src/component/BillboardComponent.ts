@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import { RegisterComponent } from '@feng3d/ecs';
 import { oav } from '@feng3d/objectview';
 import { watch } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
 import { AddComponentMenu } from '../Menu';
-import { RegisterComponent } from './Component';
 import { Component3D } from './Component3D';
 
 declare global
