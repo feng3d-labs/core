@@ -1,4 +1,4 @@
-import { HideFlags } from '@feng3d/ecs';
+import { Feng3dObject, HideFlags } from '@feng3d/ecs';
 import { globalEmitter } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
 import { gPartial, ObjectUtils } from '@feng3d/polyfill';
@@ -6,7 +6,6 @@ import { RenderAtomic, RenderMode, RenderParams, Shader, shaderlib } from '@feng
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { AssetData } from '../core/AssetData';
-import { Feng3dObject } from '../core/Feng3dObject';
 import { Texture2D } from '../textures/Texture2D';
 import { TextureCube } from '../textures/TextureCube';
 
@@ -51,7 +50,7 @@ export class Material extends Feng3dObject
     @oav({ component: 'OAVMaterialName' })
     @serialize
     @watch('_onShaderChanged')
-        shaderName: ShaderNames;
+    shaderName: ShaderNames;
 
     @oav()
     @serialize
@@ -71,7 +70,7 @@ export class Material extends Feng3dObject
     @serialize
     @oav({ component: 'OAVObjectView' })
     @watch('_onUniformsChanged')
-        uniforms: UniformsLike;
+    uniforms: UniformsLike;
 
     /**
      * 渲染参数
@@ -79,7 +78,7 @@ export class Material extends Feng3dObject
     @serialize
     @oav({ block: '渲染参数', component: 'OAVObjectView' })
     @watch('_onRenderParamsChanged')
-        renderParams: RenderParams;
+    renderParams: RenderParams;
 
     constructor()
     {

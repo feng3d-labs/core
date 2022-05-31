@@ -1,7 +1,7 @@
+import { Feng3dObject } from '@feng3d/ecs';
 import { classUtils, MapUtils, ObjectUtils, __class__ } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
 import { AssetType } from '../assets/AssetType';
-import { Feng3dObject } from './Feng3dObject';
 
 /**
  * 资源数据

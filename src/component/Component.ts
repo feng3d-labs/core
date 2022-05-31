@@ -1,12 +1,12 @@
-import { Camera } from '../cameras/Camera';
-import { Entity, EntityEventMap } from '../core/Entity';
-import { Feng3dObject } from '../core/Feng3dObject';
-import { ScriptComponent } from '../core/ScriptComponent';
+import { Feng3dObject } from '@feng3d/ecs';
 import { IEvent } from '@feng3d/event';
 import { Constructor, IDisposable } from '@feng3d/polyfill';
 import { RenderAtomic } from '@feng3d/renderer';
-import { Scene } from '../scene/Scene';
 import { serialize } from '@feng3d/serialization';
+import { Camera } from '../cameras/Camera';
+import { Entity, EntityEventMap } from '../core/Entity';
+import { ScriptComponent } from '../core/ScriptComponent';
+import { Scene } from '../scene/Scene';
 
 interface ComponentInfo
 {

@@ -1,4 +1,4 @@
-import { HideFlags } from '@feng3d/ecs';
+import { Feng3dObject, HideFlags } from '@feng3d/ecs';
 import { Box3, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { gPartial } from '@feng3d/polyfill';
@@ -6,7 +6,6 @@ import { Attribute, Attributes, CullFace, Index, RenderAtomic } from '@feng3d/re
 import { serialization, serialize } from '@feng3d/serialization';
 import { AssetType } from '../assets/AssetType';
 import { AssetData } from '../core/AssetData';
-import { Feng3dObject } from '../core/Feng3dObject';
 import { geometryUtils } from './GeometryUtils';
 
 export interface GeometryTypes extends MixinsGeometryTypes { }
@@ -313,14 +312,14 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
      */
     @serialize
     @oav()
-        scaleU = 1;
+    scaleU = 1;
 
     /**
      * 纹理V缩放，默认为1。
      */
     @serialize
     @oav()
-        scaleV = 1;
+    scaleV = 1;
 
     /**
      * 包围盒失效

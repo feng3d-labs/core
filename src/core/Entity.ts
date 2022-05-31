@@ -1,13 +1,13 @@
-import { Component, ComponentMap, ComponentNames } from '../component/Component';
+import { Feng3dObject } from '@feng3d/ecs';
 import { IEvent } from '@feng3d/event';
-import { Geometry } from '../geometry/Geometry';
-import { Constructor, gPartial, IDisposable, ObjectUtils } from '@feng3d/polyfill';
 import { oav } from '@feng3d/objectview';
+import { Constructor, gPartial, IDisposable, ObjectUtils } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
-import { Feng3dObject } from './Feng3dObject';
+import { Component, ComponentMap, ComponentNames } from '../component/Component';
+import { Geometry } from '../geometry/Geometry';
+import { MouseEventMap } from './Mouse3DManager';
 import { Node3D } from './Node3D';
 import { ScriptComponent } from './ScriptComponent';
-import { MouseEventMap } from './Mouse3DManager';
 
 type Components = ComponentMap[ComponentNames];
 

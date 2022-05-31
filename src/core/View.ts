@@ -1,3 +1,4 @@
+import { Feng3dObject } from '@feng3d/ecs';
 import { Ray3, Rectangle, Vector2, Vector3 } from '@feng3d/math';
 import { GL } from '@feng3d/renderer';
 import { serialization } from '@feng3d/serialization';
@@ -14,7 +15,6 @@ import { Scene } from '../scene/Scene';
 import { skyboxRenderer } from '../skybox/SkyBoxRenderer';
 import { ticker } from '../utils/Ticker';
 import { Entity } from './Entity';
-import { Feng3dObject } from './Feng3dObject';
 import { Mouse3DManager, WindowMouseInput } from './Mouse3DManager';
 import { Node3D } from './Node3D';
 import { Renderable } from './Renderable';
