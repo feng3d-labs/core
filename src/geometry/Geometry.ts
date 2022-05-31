@@ -1,3 +1,4 @@
+import { HideFlags } from '@feng3d/ecs';
 import { Box3, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { gPartial } from '@feng3d/polyfill';
@@ -6,7 +7,6 @@ import { serialization, serialize } from '@feng3d/serialization';
 import { AssetType } from '../assets/AssetType';
 import { AssetData } from '../core/AssetData';
 import { Feng3dObject } from '../core/Feng3dObject';
-import { HideFlags } from '../core/HideFlags';
 import { geometryUtils } from './GeometryUtils';
 
 export interface GeometryTypes extends MixinsGeometryTypes { }

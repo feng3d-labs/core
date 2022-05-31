@@ -1,3 +1,4 @@
+import { HideFlags } from '@feng3d/ecs';
 import { globalEmitter } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
 import { gPartial, ObjectUtils } from '@feng3d/polyfill';
@@ -6,7 +7,6 @@ import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { AssetData } from '../core/AssetData';
 import { Feng3dObject } from '../core/Feng3dObject';
-import { HideFlags } from '../core/HideFlags';
 import { Texture2D } from '../textures/Texture2D';
 import { TextureCube } from '../textures/TextureCube';
 

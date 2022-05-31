@@ -65,6 +65,7 @@
     "@feng3d/serialization": "0.4.0",
     "@feng3d/shortcut": "0.4.0",
     "@feng3d/task": "0.4.0",
+    "@feng3d/ecs": "0.0.1",
     "@feng3d/watcher": "0.4.10"
   }
 }

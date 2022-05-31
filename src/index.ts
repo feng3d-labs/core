@@ -34,7 +34,6 @@ export * from './core/AssetData';
 export * from './core/BoundingBox';
 export * from './core/Entity';
 export * from './core/Feng3dObject';
-export * from './core/HideFlags';
 export * from './core/MeshRenderer';
 export * from './core/Mouse3DManager';
 export * from './core/Node3D';

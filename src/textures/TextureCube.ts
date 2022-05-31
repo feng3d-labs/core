@@ -1,3 +1,4 @@
+import { HideFlags } from '@feng3d/ecs';
 import { FS } from '@feng3d/filesystem';
 import { oav } from '@feng3d/objectview';
 import { ArrayUtils, ObjectUtils } from '@feng3d/polyfill';
@@ -6,7 +7,6 @@ import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { AssetType } from '../assets/AssetType';
 import { AssetData } from '../core/AssetData';
-import { HideFlags } from '../core/HideFlags';
 import { ImageDatas, TextureInfo } from '../render/data/TextureInfo';
 import { Texture2D } from './Texture2D';
 

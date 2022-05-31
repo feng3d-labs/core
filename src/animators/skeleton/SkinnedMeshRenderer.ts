@@ -1,13 +1,13 @@
+import { HideFlags } from '@feng3d/ecs';
+import { Matrix4x4 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { RenderAtomic } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
 import { Animation } from '../../animation/Animation';
 import { Camera } from '../../cameras/Camera';
 import { RegisterComponent } from '../../component/Component';
-import { HideFlags } from '../../core/HideFlags';
 import { Renderable } from '../../core/Renderable';
-import { Matrix4x4 } from '@feng3d/math';
-import { RenderAtomic } from '@feng3d/renderer';
 import { Scene } from '../../scene/Scene';
-import { oav } from '@feng3d/objectview';
-import { serialize } from '@feng3d/serialization';
 import { SkeletonComponent } from './SkeletonComponent';
 
 declare global

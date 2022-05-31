@@ -1,3 +1,4 @@
+import { HideFlags } from '@feng3d/ecs';
 import { Color3, Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { BlendFactor } from '@feng3d/renderer';
@@ -6,7 +7,6 @@ import { Camera } from '../cameras/Camera';
 import { Behaviour } from '../component/Behaviour';
 import { BillboardComponent } from '../component/BillboardComponent';
 import { Entity } from '../core/Entity';
-import { HideFlags } from '../core/HideFlags';
 import { MeshRenderer } from '../core/MeshRenderer';
 import { Geometry } from '../geometry/Geometry';
 import { Material } from '../materials/Material';
