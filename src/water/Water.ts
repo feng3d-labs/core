@@ -1,16 +1,15 @@
+import { Entity, RegisterComponent } from '@feng3d/ecs';
 import { Matrix4x4, Plane, Vector3, Vector4 } from '@feng3d/math';
+import { RenderAtomic } from '@feng3d/renderer';
+import { serialization } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
-import { RegisterComponent } from '../component/Component';
-import { Entity } from '../core/Entity';
 import { Renderable } from '../core/Renderable';
 import { Geometry } from '../geometry/Geometry';
 import { Material } from '../materials/Material';
 import { AddComponentMenu } from '../Menu';
 import { PlaneGeometry } from '../primitives/PlaneGeometry';
 import { FrameBufferObject } from '../render/FrameBufferObject';
-import { RenderAtomic } from '@feng3d/renderer';
 import { Scene } from '../scene/Scene';
-import { serialization } from '@feng3d/serialization';
 import { WaterUniforms } from './WaterMaterial';
 
 declare global
@@ -147,7 +146,7 @@ export class Water extends Renderable
     }
 }
 
-Entity.registerPrimitive('Water', (g) =>
-{
-    g.addComponent(Water);
-});
+// Entity.registerPrimitive('Water', (g) =>
+// {
+//     g.addComponent(Water);
+// });

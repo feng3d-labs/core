@@ -1,10 +1,7 @@
-import { Entity } from '../core/Entity';
-import { MeshRenderer } from '../core/MeshRenderer';
-import { Material } from '../materials/Material';
-import { Color4 } from '@feng3d/math';
-import { Vector3 } from '@feng3d/math';
+import { Entity } from '@feng3d/ecs';
+import { Color4, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { serialize, serialization } from '@feng3d/serialization';
+import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { Geometry } from './Geometry';
 
@@ -32,7 +29,7 @@ export class SegmentGeometry extends Geometry
     @serialize
     @oav({ component: 'OAVArray', tooltip: '在指定时间进行额外发射指定数量的粒子', componentParam: { defaultItem: () => new Segment() } })
     @watch('invalidateGeometry')
-        segments: Segment[] = [];
+    segments: Segment[] = [];
 
     /**
      * 添加线段
@@ -87,28 +84,28 @@ export class Segment
      */
     @serialize
     @oav({ tooltip: '起点坐标' })
-        start = new Vector3();
+    start = new Vector3();
 
     /**
      * 终点坐标
      */
     @serialize
     @oav({ tooltip: '终点坐标' })
-        end = new Vector3();
+    end = new Vector3();
 
     /**
      * 起点颜色
      */
     @serialize
     @oav({ tooltip: '起点颜色' })
-        startColor = new Color4();
+    startColor = new Color4();
 
     /**
      * 终点颜色
      */
     @serialize
     @oav({ tooltip: '终点颜色' })
-        endColor = new Color4();
+    endColor = new Color4();
 }
 
 declare global
@@ -119,10 +116,10 @@ declare global
     }
 }
 
-Entity.registerPrimitive('Segment', (g) =>
-{
-    const model = g.addComponent(MeshRenderer);
-    model.geometry = new SegmentGeometry();
-    model.material = Material.getDefault('Segment-Material');
-});
+// Entity.registerPrimitive('Segment', (g) =>
+// {
+//     const model = g.addComponent(MeshRenderer);
+//     model.geometry = new SegmentGeometry();
+//     model.material = Material.getDefault('Segment-Material');
+// });
 

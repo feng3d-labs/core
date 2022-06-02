@@ -1,4 +1,5 @@
-import { IEvent, EventEmitter } from '@feng3d/event';
+import { MouseEventMap } from '@feng3d/ecs';
+import { EventEmitter, IEvent } from '@feng3d/event';
 import { Rectangle } from '@feng3d/math';
 import { Lazy, lazy } from '@feng3d/polyfill';
 import { windowEventProxy } from '@feng3d/shortcut';
@@ -15,7 +16,7 @@ import { View } from './View';
 export class Mouse3DManager
 {
     @watch('_mouseInputChanged')
-        mouseInput: MouseInput;
+    mouseInput: MouseInput;
 
     get selectedTransform()
     {

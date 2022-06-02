@@ -1,7 +1,5 @@
 import { Camera } from '../cameras/Camera';
 import { OrthographicLens } from '../cameras/lenses/OrthographicLens';
-import { RegisterComponent } from '../component/Component';
-import { Entity } from '../core/Entity';
 import { Renderable } from '../core/Renderable';
 import { Box3 } from '@feng3d/math';
 import { Vector3 } from '@feng3d/math';
@@ -10,6 +8,7 @@ import { Scene } from '../scene/Scene';
 import { serialization } from '@feng3d/serialization';
 import { Light } from './Light';
 import { LightType } from './LightType';
+import { Entity, RegisterComponent } from '@feng3d/ecs';
 
 declare global
 {
@@ -85,10 +84,10 @@ export class DirectionalLight extends Light
     }
 }
 
-Entity.registerPrimitive('Directional light', (g) =>
-{
-    g.addComponent(DirectionalLight);
-});
+// Entity.registerPrimitive('Directional light', (g) =>
+// {
+//     g.addComponent(DirectionalLight);
+// });
 
 declare global
 {

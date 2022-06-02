@@ -1,5 +1,4 @@
-import { Entity } from '../core/Entity';
-import { MeshRenderer } from '../core/MeshRenderer';
+import { Entity } from '@feng3d/ecs';
 import { Geometry } from '../geometry/Geometry';
 import { CylinderGeometry } from './CylinderGeometry';
 
@@ -31,10 +30,10 @@ export class ConeGeometry extends CylinderGeometry
 
 Geometry.setDefault('Cone', new ConeGeometry());
 
-Entity.registerPrimitive('Cone', (g) =>
-{
-    g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cone');
-});
+// Entity.registerPrimitive('Cone', (g) =>
+// {
+//     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cone');
+// });
 
 declare global
 {

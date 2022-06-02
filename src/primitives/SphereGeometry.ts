@@ -1,9 +1,9 @@
-import { Entity } from '../core/Entity';
 import { MeshRenderer } from '../core/MeshRenderer';
 import { Geometry } from '../geometry/Geometry';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { Entity } from '@feng3d/ecs';
 
 declare global
 {
@@ -27,7 +27,7 @@ export class SphereGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        radius = 0.5;
+    radius = 0.5;
 
     /**
      * 横向分割数
@@ -35,7 +35,7 @@ export class SphereGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        segmentsW = 16;
+    segmentsW = 16;
 
     /**
      * 纵向分割数
@@ -43,7 +43,7 @@ export class SphereGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        segmentsH = 12;
+    segmentsH = 12;
 
     /**
      * 是否朝上
@@ -51,7 +51,7 @@ export class SphereGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        yUp = true;
+    yUp = true;
 
     protected _name = 'Sphere';
 
@@ -234,7 +234,7 @@ declare global
 }
 Geometry.setDefault('Sphere', new SphereGeometry());
 
-Entity.registerPrimitive('Sphere', (g) =>
-{
-    g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Sphere');
-});
+// Entity.registerPrimitive('Sphere', (g) =>
+// {
+//     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Sphere');
+// });

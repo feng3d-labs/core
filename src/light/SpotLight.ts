@@ -1,10 +1,9 @@
+import { Entity, RegisterComponent } from '@feng3d/ecs';
 import { oav } from '@feng3d/objectview';
 import { mathUtil } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { PerspectiveLens } from '../cameras/lenses/PerspectiveLens';
-import { RegisterComponent } from '../component/Component';
-import { Entity } from '../core/Entity';
 import { Light } from './Light';
 import { LightType } from './LightType';
 
@@ -28,7 +27,7 @@ export class SpotLight extends Light
     @oav()
     @serialize
     @watch('_invalidRange')
-        range = 10;
+    range = 10;
 
     /**
      *
@@ -36,14 +35,14 @@ export class SpotLight extends Light
     @oav()
     @serialize
     @watch('_invalidAngle')
-        angle = 60;
+    angle = 60;
 
     /**
      * 半影.
      */
     @oav()
     @serialize
-        penumbra = 0;
+    penumbra = 0;
 
     /**
      * 椎体cos值
@@ -79,7 +78,7 @@ export class SpotLight extends Light
     }
 }
 
-Entity.registerPrimitive('Spot light', (g) =>
-{
-    g.addComponent(SpotLight);
-});
+// Entity.registerPrimitive('Spot light', (g) =>
+// {
+//     g.addComponent(SpotLight);
+// });

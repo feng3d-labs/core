@@ -1,4 +1,4 @@
-import { Component } from '../component/Component';
+import { Component } from '@feng3d/ecs';
 import { Box3 } from '@feng3d/math';
 import { Node3D } from './Node3D';
 

@@ -1,7 +1,6 @@
+import { RegisterComponent } from '@feng3d/ecs';
+import { Box3, Ray3 } from '@feng3d/math';
 import { Behaviour } from '../component/Behaviour';
-import { RegisterComponent } from '../component/Component';
-import { Box3 } from '@feng3d/math';
-import { Ray3 } from '@feng3d/math';
 import { PickingCollisionVO } from '../pick/Raycaster';
 
 declare global

@@ -1,4 +1,4 @@
-import { Entity } from './Entity';
+import { Entity } from '@feng3d/ecs';
 import { Node3D } from './Node3D';
 import { ScriptComponent } from './ScriptComponent';
 

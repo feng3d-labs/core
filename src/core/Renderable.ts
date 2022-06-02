@@ -110,7 +110,9 @@ export class Renderable extends RayCastable
         this.entity.components.forEach((element) =>
         {
             if (element !== this)
-            { element.beforeRender(renderAtomic, scene, camera); }
+            {
+                element.beforeRender(renderAtomic, scene, camera);
+            }
         });
     }
 

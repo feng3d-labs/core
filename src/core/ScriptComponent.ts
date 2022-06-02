@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import { RegisterComponent } from '@feng3d/ecs';
 import { globalEmitter } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
 import { classUtils } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { Behaviour } from '../component/Behaviour';
-import { RegisterComponent } from '../component/Component';
 import { AddComponentMenu } from '../Menu';
 import { RunEnvironment } from './RunEnvironment';
 import { Script } from './Script';
@@ -30,7 +30,7 @@ export class ScriptComponent extends Behaviour
     @serialize
     @watch('_invalidateScriptInstance')
     @oav({ component: 'OAVPick', componentParam: { accepttype: 'file_script' } })
-        scriptName: string;
+    scriptName: string;
 
     /**
      * 脚本对象

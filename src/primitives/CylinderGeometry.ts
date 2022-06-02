@@ -1,9 +1,9 @@
-import { Entity } from '../core/Entity';
 import { MeshRenderer } from '../core/MeshRenderer';
 import { Geometry } from '../geometry/Geometry';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { Entity } from '@feng3d/ecs';
 
 declare global
 {
@@ -454,7 +454,7 @@ declare global
 
 Geometry.setDefault('Cylinder', new CylinderGeometry());
 
-Entity.registerPrimitive('Cylinder', (g) =>
-{
-    g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cylinder');
-});
+// Entity.registerPrimitive('Cylinder', (g) =>
+// {
+//     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cylinder');
+// });

@@ -1,15 +1,15 @@
-import { Camera } from '../cameras/Camera';
-import { RegisterComponent } from '../component/Component';
-import { Component3D } from '../component/Component3D';
+import { RegisterComponent } from '@feng3d/ecs';
 import { IEvent as Event } from '@feng3d/event';
 import { Vector3 } from '@feng3d/math';
-import { AddComponentMenu } from '../Menu';
-import { RenderAtomic } from '@feng3d/renderer';
-import { Scene } from '../scene/Scene';
 import { oav } from '@feng3d/objectview';
+import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
-import { ticker } from '../utils/Ticker';
 import { watcher } from '@feng3d/watcher';
+import { Camera } from '../cameras/Camera';
+import { Component3D } from '../component/Component3D';
+import { AddComponentMenu } from '../Menu';
+import { Scene } from '../scene/Scene';
+import { ticker } from '../utils/Ticker';
 import { Node3D } from './Node3D';
 
 declare global
@@ -154,21 +154,21 @@ export class TransformLayout extends Component3D
      */
     @oav({ tooltip: '父Transform2D中左上角锚定的规范化位置。', componentParam: { step: 0.01, stepScale: 0.01, stepDownup: 0.01 } })
     @serialize
-        anchorMin = new Vector3(0.5, 0.5, 0.5);
+    anchorMin = new Vector3(0.5, 0.5, 0.5);
 
     /**
      * 最大锚点，父Transform2D中左上角锚定的规范化位置。
      */
     @oav({ tooltip: '最大锚点，父Transform2D中左上角锚定的规范化位置。', componentParam: { step: 0.01, stepScale: 0.01, stepDownup: 0.01 } })
     @serialize
-        anchorMax = new Vector3(0.5, 0.5, 0.5);
+    anchorMax = new Vector3(0.5, 0.5, 0.5);
 
     /**
      * The normalized position in this RectTransform that it rotates around.
      */
     @oav({ tooltip: '中心点' })
     @serialize
-        pivot = new Vector3(0.5, 0.5, 0.5);
+    pivot = new Vector3(0.5, 0.5, 0.5);
 
     beforeRender(_renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {

@@ -1,10 +1,9 @@
-import { PerspectiveLens } from '../cameras/lenses/PerspectiveLens';
-import { RegisterComponent } from '../component/Component';
-import { Entity } from '../core/Entity';
+import { Entity, RegisterComponent } from '@feng3d/ecs';
 import { Vector2 } from '@feng3d/math';
-import { AddComponentMenu } from '../Menu';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
+import { PerspectiveLens } from '../cameras/lenses/PerspectiveLens';
+import { AddComponentMenu } from '../Menu';
 import { Light } from './Light';
 import { LightType } from './LightType';
 
@@ -63,8 +62,8 @@ export class PointLight extends Light
     }
 }
 
-Entity.registerPrimitive('Point light', (g) =>
-{
-    g.addComponent(PointLight);
-});
+// Entity.registerPrimitive('Point light', (g) =>
+// {
+//     g.addComponent(PointLight);
+// });
 

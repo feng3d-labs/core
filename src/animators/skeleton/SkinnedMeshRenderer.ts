@@ -1,11 +1,10 @@
-import { HideFlags } from '@feng3d/ecs';
+import { HideFlags, RegisterComponent } from '@feng3d/ecs';
 import { Matrix4x4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { Animation } from '../../animation/Animation';
 import { Camera } from '../../cameras/Camera';
-import { RegisterComponent } from '../../component/Component';
 import { Renderable } from '../../core/Renderable';
 import { Scene } from '../../scene/Scene';
 import { SkeletonComponent } from './SkeletonComponent';
@@ -22,10 +21,10 @@ export class SkinnedMeshRenderer extends Renderable
 
     @serialize
     @oav()
-        skinSkeleton: SkinSkeleton;
+    skinSkeleton: SkinSkeleton;
 
     @serialize
-        initMatrix: Matrix4x4;
+    initMatrix: Matrix4x4;
 
     /**
      * 创建一个骨骼动画类
@@ -143,12 +142,12 @@ export class SkinSkeleton
      * [在整个骨架中的编号，骨骼名称]
      */
     @serialize
-        joints: [number, string][] = [];
+    joints: [number, string][] = [];
     /**
      * 当前模型包含骨骼数量
      */
     @serialize
-        numJoint = 0;
+    numJoint = 0;
 }
 
 export class SkinSkeletonTemp extends SkinSkeleton
