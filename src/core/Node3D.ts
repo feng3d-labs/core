@@ -5,7 +5,6 @@ import { oav } from '@feng3d/objectview';
 import { Constructor, mathUtil, ObjectUtils } from '@feng3d/polyfill';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
-import { AssetType } from '../assets/AssetType';
 import { Camera } from '../cameras/Camera';
 import { Scene } from '../scene/Scene';
 import { BoundingBox } from './BoundingBox';
@@ -76,8 +75,6 @@ export interface Node3D extends MixinsNode3D
 export class Node3D extends Component
 {
     __class__: 'feng3d.Node3D';
-
-    assetType = AssetType.node3d;
 
     /**
      * 预设资源编号
@@ -1222,54 +1219,6 @@ export class Node3D extends Component
         { this._localToWorldMatrix.append(this.parent.localToWorldMatrix); }
         this.emit('updateLocalToWorldMatrix', this);
         console.assert(!isNaN(this._localToWorldMatrix.elements[0]));
-    }
-
-    /**
-     * 是否加载完成
-     */
-    get isLoaded()
-    {
-        if (!this.isSelfLoaded) return false;
-        for (let i = 0; i < this.children.length; i++)
-        {
-            const element = this.children[i];
-            if (!element.isLoaded) return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * 已加载完成或者加载完成时立即调用
-     * @param callback 完成回调
-     */
-    onLoadCompleted(callback: () => void)
-    {
-        let loadingNum = 0;
-        if (!this.isSelfLoaded)
-        {
-            loadingNum++;
-            this.onSelfLoadCompleted(() =>
-            {
-                loadingNum--;
-                if (loadingNum === 0) callback();
-            });
-        }
-        for (let i = 0; i < this.children.length; i++)
-        {
-            const element = this.children[i];
-            if (!element.isLoaded)
-            {
-                loadingNum++;
-                // eslint-disable-next-line no-loop-func
-                element.onLoadCompleted(() =>
-                {
-                    loadingNum--;
-                    if (loadingNum === 0) callback();
-                });
-            }
-        }
-        if (loadingNum === 0) callback();
     }
 
     protected _updateGlobalVisible()

@@ -11,7 +11,6 @@ import { LightPicker } from '../light/pickers/LightPicker';
 import { Material } from '../materials/Material';
 import { PickingCollisionVO } from '../pick/Raycaster';
 import { Scene } from '../scene/Scene';
-import { Node3D } from './Node3D';
 import { RayCastable } from './RayCastable';
 
 declare global
@@ -20,15 +19,6 @@ declare global
 
     interface MixinsNode3D
     {
-        /**
-         * 是否加载完成
-         */
-        isSelfLoaded: boolean;
-        /**
-         * 已加载完成或者加载完成时立即调用
-         * @param callback 完成回调
-         */
-        onSelfLoadCompleted(callback: () => void): void;
     }
 }
 
@@ -162,24 +152,6 @@ export class Renderable extends RayCastable
     }
 
     /**
-     * 是否加载完成
-     */
-    get isLoaded()
-    {
-        return this.material.isLoaded;
-    }
-
-    /**
-     * 已加载完成或者加载完成时立即调用
-     * @param callback 完成回调
-     */
-    onLoadCompleted(callback: () => void)
-    {
-        if (this.isLoaded) callback();
-        this.material.onLoadCompleted(callback);
-    }
-
-    /**
      * 销毁
      */
     dispose()
@@ -216,29 +188,3 @@ export class Renderable extends RayCastable
         event.data.bounds.push(this.geometry.bounding);
     }
 }
-
-Object.defineProperty(Node3D.prototype, 'isSelfLoaded', {
-    get: function get(this: Node3D)
-    {
-        const model = this.getComponent(Renderable);
-        if (model) return model.isLoaded;
-
-        return true;
-    }
-});
-
-Node3D.prototype.onSelfLoadCompleted = function onSelfLoadCompleted(this: Node3D, callback: () => void)
-{
-    if (this.isSelfLoaded)
-    {
-        callback();
-
-        return;
-    }
-    const model = this.getComponent(Renderable);
-    if (model)
-    {
-        model.onLoadCompleted(callback);
-    }
-    else callback();
-};

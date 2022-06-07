@@ -4,8 +4,6 @@ import { oav } from '@feng3d/objectview';
 import { gPartial } from '@feng3d/polyfill';
 import { Attribute, Attributes, CullFace, Index, RenderAtomic } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
-import { AssetType } from '../assets/AssetType';
-import { AssetData } from '../core/AssetData';
 import { geometryUtils } from './GeometryUtils';
 
 export interface GeometryTypes extends MixinsGeometryTypes { }
@@ -35,13 +33,6 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
         this._name = v;
     }
     protected _name: string = null;
-
-    /**
-     * 资源编号
-     */
-    assetId: string;
-
-    assetType = AssetType.geometry;
 
     /**
      * 几何体信息
@@ -482,8 +473,7 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
     {
         this._defaultGeometry[name] = geometry;
         if (param) serialization.setValue(geometry, param);
-        serialization.setValue(geometry, { name, assetId: name, hideFlags: HideFlags.NotEditable });
-        AssetData.addAssetData(name, geometry);
+        serialization.setValue(geometry, { name, hideFlags: HideFlags.NotEditable });
     }
 
     /**

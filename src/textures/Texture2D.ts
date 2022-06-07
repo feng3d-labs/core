@@ -1,8 +1,6 @@
 import { HideFlags } from '@feng3d/ecs';
-import { ArrayUtils } from '@feng3d/polyfill';
 import { TextureFormat, TextureType } from '@feng3d/renderer';
-import { serialization, serialize } from '@feng3d/serialization';
-import { AssetData } from '../core/AssetData';
+import { serialization } from '@feng3d/serialization';
 import { ImageDatas, TextureInfo } from '../render/data/TextureInfo';
 
 export interface Texture2DEventMap
@@ -25,8 +23,6 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
      */
     textureType = TextureType.TEXTURE_2D;
 
-    assetType = AssetType.texture;
-
     /**
      * 当贴图数据未加载好等情况时代替使用
      */
@@ -44,48 +40,6 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
     }
 
     /**
-     * 用于表示初始化纹理的数据来源
-     */
-    @serialize
-    get source()
-    {
-        return this._source;
-    }
-    set source(v)
-    {
-        this._source = v;
-        if (!v)
-        {
-            this._pixels = null;
-            this.invalidate();
-
-            return;
-        }
-        if (v.url)
-        {
-            this._loadings.push(v.url);
-            loader.loadImage(v.url, (img) =>
-            {
-                this._pixels = img;
-                this.invalidate();
-                ArrayUtils.deleteItem(this._loadings, v.url);
-                this.onItemLoadCompleted();
-            }, null,
-            (e) =>
-            {
-                console.error(e);
-                ArrayUtils.deleteItem(this._loadings, v.url);
-                this.onItemLoadCompleted();
-            });
-        }
-    }
-
-    private onItemLoadCompleted()
-    {
-        if (this._loadings.length === 0) this.emit('loadCompleted');
-    }
-
-    /**
      * 已加载完成或者加载完成时立即调用
      * @param callback 完成回调
      */
@@ -99,8 +53,6 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
         }
         this.once('loadCompleted', callback);
     }
-
-    private _source: { url: string };
 
     /**
      * 默认贴图
@@ -121,27 +73,9 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
      * 默认粒子贴图
      */
     static defaultParticle: Texture2D;
-
-    /**
-     * 从url初始化纹理
-     *
-     * @param url 路径
-     */
-    static fromUrl(url: string)
-    {
-        const texture = new Texture2D();
-        texture.source = { url };
-
-        return texture;
-    }
 }
 
 Texture2D.white = serialization.setValue(new Texture2D(), { name: 'white-Texture', noPixels: ImageDatas.white, hideFlags: HideFlags.NotEditable });
 Texture2D.default = serialization.setValue(new Texture2D(), { name: 'Default-Texture', hideFlags: HideFlags.NotEditable });
 Texture2D.defaultNormal = serialization.setValue(new Texture2D(), { name: 'Default-NormalTexture', noPixels: ImageDatas.defaultNormal, hideFlags: HideFlags.NotEditable });
 Texture2D.defaultParticle = serialization.setValue(new Texture2D(), { name: 'Default-ParticleTexture', noPixels: ImageDatas.defaultParticle, format: TextureFormat.RGBA, hideFlags: HideFlags.NotEditable });
-
-AssetData.addAssetData('white-Texture', Texture2D.white);
-AssetData.addAssetData('Default-Texture', Texture2D.default);
-AssetData.addAssetData('Default-NormalTexture', Texture2D.defaultNormal);
-AssetData.addAssetData('Default-ParticleTexture', Texture2D.defaultParticle);
