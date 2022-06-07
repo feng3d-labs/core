@@ -1,9 +1,8 @@
-import { MeshRenderer } from '../core/MeshRenderer';
-import { Geometry } from '../geometry/Geometry';
+import { Entity } from '@feng3d/ecs';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
-import { Entity } from '@feng3d/ecs';
+import { Geometry } from '../geometry/Geometry';
 
 declare global
 {
