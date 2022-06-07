@@ -1,9 +1,7 @@
 import { HideFlags } from '@feng3d/ecs';
-import { loader } from '@feng3d/filesystem';
 import { ArrayUtils } from '@feng3d/polyfill';
 import { TextureFormat, TextureType } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
-import { AssetType } from '../assets/AssetType';
 import { AssetData } from '../core/AssetData';
 import { ImageDatas, TextureInfo } from '../render/data/TextureInfo';
 

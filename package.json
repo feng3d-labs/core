@@ -58,7 +58,6 @@
   "dependencies": {
     "@feng3d/ecs": "^0.0.2",
     "@feng3d/event": "^0.4.2",
-    "@feng3d/filesystem": "^0.4.1",
     "@feng3d/math": "^0.4.1",
     "@feng3d/objectview": "^0.4.2",
     "@feng3d/polyfill": "^0.4.3",
