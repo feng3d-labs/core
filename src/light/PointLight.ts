@@ -1,4 +1,4 @@
-import { RegisterComponent } from '@feng3d/ecs';
+import { Entity, RegisterComponent } from '@feng3d/ecs';
 import { Vector2 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';

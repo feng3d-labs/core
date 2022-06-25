@@ -75,7 +75,7 @@ export class Material extends Feng3dObject
     @serialize
     @oav({ block: '渲染参数', component: 'OAVObjectView' })
     @watch('_onRenderParamsChanged')
-    renderParams: RenderParams;
+    renderParams = new RenderParams();
 
     constructor()
     {

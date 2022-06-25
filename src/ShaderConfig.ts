@@ -70,10 +70,11 @@ import worldposition_pars_vert from './shaders/modules/worldposition_pars_vert.g
 import worldposition_vert from './shaders/modules/worldposition_vert.glsl';
 
 import { shaderlib } from '@feng3d/renderer';
+import { serialization } from '@feng3d/serialization';
 
 export { };
 
-shaderlib.shaderConfig = {
+serialization.setValue(shaderlib.shaderConfig, {
     shaders: {
         mouse: { fragment: mouseFragment, vertex: mouseVertex },
         outline: { fragment: outlineFragment, vertex: outlineVertex },
@@ -137,4 +138,4 @@ shaderlib.shaderConfig = {
         worldposition_pars_vert,
         worldposition_vert,
     }
-};
+});
