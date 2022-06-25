@@ -2,9 +2,9 @@ import { Component, RegisterComponent } from '@feng3d/ecs';
 import type { IVector3 } from '@feng3d/math';
 import { Box3, Matrix4x4, Quaternion, Ray3, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { Constructor, mathUtil, ObjectUtils } from '@feng3d/polyfill';
+import { Constructor, decoratorRegisterClass, mathUtil, ObjectUtils } from '@feng3d/polyfill';
 import { RenderAtomic } from '@feng3d/renderer';
-import { serialization, serialize } from '@feng3d/serialization';
+import { serialize } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { Scene } from '../scene/Scene';
 import { BoundingBox } from './BoundingBox';
@@ -17,6 +17,7 @@ declare global
          * 添加了子对象，当child被添加到parent中时派发冒泡事件
          */
         addChild: { parent: Node3D, child: Node3D }
+
         /**
          * 删除了子对象，当child被parent移除时派发冒泡事件
          */
@@ -72,9 +73,10 @@ export interface Node3D extends MixinsNode3D
  * 场景中的每个对象都有一个变换。它用于存储和操作对象的位置、旋转和缩放。每个转换都可以有一个父元素，它允许您分层应用位置、旋转和缩放
  */
 @RegisterComponent({ name: 'Node3D', single: true })
+@decoratorRegisterClass()
 export class Node3D extends Component
 {
-    __class__: 'feng3d.Node3D';
+    __class__: 'Node3D';
 
     /**
      * 预设资源编号
@@ -1266,5 +1268,3 @@ export class Node3D extends Component
 const tempVector31 = new Vector3();
 const tempVector32 = new Vector3();
 const tempVector33 = new Vector3();
-
-serialization.setValue(new Node3D(), { __class__: 'feng3d.Node3D' });

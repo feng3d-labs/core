@@ -81,7 +81,6 @@ export class Material extends Feng3dObject
     {
         super();
         globalEmitter.on('asset.shaderChanged', this._onShaderChanged, this);
-        this.shaderName = 'standard';
     }
 
     beforeRender(renderAtomic: RenderAtomic)

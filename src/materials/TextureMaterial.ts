@@ -1,8 +1,10 @@
 import { Color4 } from '@feng3d/math';
-import { shaderlib } from '@feng3d/renderer';
-import { Texture2D, Texture2DEventMap } from '../textures/Texture2D';
 import { oav } from '@feng3d/objectview';
+import { shaderlib } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
+import { Texture2D, Texture2DEventMap } from '../textures/Texture2D';
+import textureFragment from '../shaders/texture.fragment.glsl';
+import textureVertex from '../shaders/texture.vertex.glsl';
 
 declare global
 {
@@ -20,14 +22,14 @@ export class TextureUniforms
      */
     @serialize
     @oav()
-        u_color = new Color4();
+    u_color = new Color4();
 
     /**
      * 纹理数据
      */
     @oav()
     @serialize
-        s_texture: Texture2D<Texture2DEventMap> = Texture2D.default;
+    s_texture: Texture2D<Texture2DEventMap> = Texture2D.default;
 }
 
-shaderlib.shaderConfig.shaders.texture.cls = TextureUniforms;
+shaderlib.shaderConfig.shaders.texture = { fragment: textureFragment, vertex: textureVertex, cls: TextureUniforms };

@@ -4,6 +4,7 @@ import { RenderAtomic } from '@feng3d/renderer';
 import { serialization } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { Renderable } from '../core/Renderable';
+import { EntityFactory } from '../EntityFactory';
 import { Geometry } from '../geometry/Geometry';
 import { Material } from '../materials/Material';
 import { AddComponentMenu } from '../Menu';
@@ -146,7 +147,7 @@ export class Water extends Renderable
     }
 }
 
-// Entity.registerPrimitive('Water', (g) =>
-// {
-//     g.addComponent(Water);
-// });
+EntityFactory.registerPrimitive('Water', (g) =>
+{
+    g.addComponent(Water);
+});

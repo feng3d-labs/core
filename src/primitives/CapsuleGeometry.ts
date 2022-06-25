@@ -2,6 +2,8 @@ import { Entity } from '@feng3d/ecs';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { MeshRenderer } from '../core/MeshRenderer';
+import { EntityFactory } from '../EntityFactory';
 import { Geometry } from '../geometry/Geometry';
 
 declare global
@@ -25,7 +27,7 @@ export class CapsuleGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        radius = 0.5;
+    radius = 0.5;
 
     /**
      * 胶囊体高度
@@ -33,7 +35,7 @@ export class CapsuleGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        height = 1;
+    height = 1;
 
     /**
      * 横向分割数
@@ -41,7 +43,7 @@ export class CapsuleGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        segmentsW = 16;
+    segmentsW = 16;
 
     /**
      * 纵向分割数
@@ -49,7 +51,7 @@ export class CapsuleGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        segmentsH = 15;
+    segmentsH = 15;
 
     /**
      * 正面朝向 true:Y+ false:Z+
@@ -57,7 +59,7 @@ export class CapsuleGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        yUp = true;
+    yUp = true;
 
     protected _name = 'Capsule';
 
@@ -227,10 +229,10 @@ export class CapsuleGeometry extends Geometry
 
 Geometry.setDefault('Capsule', new CapsuleGeometry());
 
-// Entity.registerPrimitive('Capsule', (g) =>
-// {
-//     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Capsule');
-// });
+EntityFactory.registerPrimitive('Capsule', (g) =>
+{
+    g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Capsule');
+});
 
 declare global
 {
@@ -242,5 +244,4 @@ declare global
     {
         Capsule: CapsuleGeometry;
     }
-
 }

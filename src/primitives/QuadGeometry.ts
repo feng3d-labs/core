@@ -1,4 +1,6 @@
 import { Entity } from '@feng3d/ecs';
+import { MeshRenderer } from '../core/MeshRenderer';
+import { EntityFactory } from '../EntityFactory';
 import { Geometry } from '../geometry/Geometry';
 import { geometryUtils } from '../geometry/GeometryUtils';
 
@@ -44,7 +46,7 @@ declare global
 }
 Geometry.setDefault('Quad', new QuadGeometry());
 
-// Entity.registerPrimitive('Quad', (g) =>
-// {
-//     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Quad');
-// });
+EntityFactory.registerPrimitive('Quad', (g) =>
+{
+    g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Quad');
+});

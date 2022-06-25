@@ -3,6 +3,7 @@ import { Frustum, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialization, serialize } from '@feng3d/serialization';
 import { Component3D } from '../component/Component3D';
+import { EntityFactory } from '../EntityFactory';
 import { AddComponentMenu } from '../Menu';
 import { LensBase } from './lenses/LensBase';
 import { OrthographicLens } from './lenses/OrthographicLens';
@@ -217,8 +218,8 @@ export class Camera extends Component3D
     private _frustumInvalid = true;
 }
 
-// Entity.registerPrimitive('Camera', (g) =>
-// {
-//     g.addComponent(Camera);
-// });
+EntityFactory.registerPrimitive('Camera', (g) =>
+{
+    g.addComponent(Camera);
+});
 

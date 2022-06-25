@@ -4,6 +4,7 @@ import { mathUtil } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { PerspectiveLens } from '../cameras/lenses/PerspectiveLens';
+import { EntityFactory } from '../EntityFactory';
 import { Light } from './Light';
 import { LightType } from './LightType';
 
@@ -78,7 +79,7 @@ export class SpotLight extends Light
     }
 }
 
-// Entity.registerPrimitive('Spot light', (g) =>
-// {
-//     g.addComponent(SpotLight);
-// });
+EntityFactory.registerPrimitive('Spot light', (g) =>
+{
+    g.addComponent(SpotLight);
+});

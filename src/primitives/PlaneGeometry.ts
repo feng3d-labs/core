@@ -2,6 +2,8 @@ import { Entity } from '@feng3d/ecs';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { MeshRenderer } from '../core/MeshRenderer';
+import { EntityFactory } from '../EntityFactory';
 import { Geometry } from '../geometry/Geometry';
 
 declare global
@@ -25,7 +27,7 @@ export class PlaneGeometry extends Geometry
     @oav()
     @serialize
     @watch('invalidateGeometry')
-        width = 1;
+    width = 1;
 
     /**
      * 高度
@@ -33,7 +35,7 @@ export class PlaneGeometry extends Geometry
     @oav()
     @serialize
     @watch('invalidateGeometry')
-        height = 1;
+    height = 1;
 
     /**
      * 横向分割数
@@ -41,7 +43,7 @@ export class PlaneGeometry extends Geometry
     @oav()
     @serialize
     @watch('invalidateGeometry')
-        segmentsW = 1;
+    segmentsW = 1;
 
     /**
      * 纵向分割数
@@ -49,7 +51,7 @@ export class PlaneGeometry extends Geometry
     @oav()
     @serialize
     @watch('invalidateGeometry')
-        segmentsH = 1;
+    segmentsH = 1;
 
     /**
      * 是否朝上
@@ -57,7 +59,7 @@ export class PlaneGeometry extends Geometry
     @oav()
     @serialize
     @watch('invalidateGeometry')
-        yUp = true;
+    yUp = true;
 
     protected _name = 'Plane';
 
@@ -260,8 +262,7 @@ declare global
 }
 Geometry.setDefault('Plane', new PlaneGeometry(), { width: 10, height: 10 });
 
-// Entity.registerPrimitive('Plane', (g) =>
-// {
-//     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Plane');
-// });
-
+EntityFactory.registerPrimitive('Plane', (g) =>
+{
+    g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Plane');
+});

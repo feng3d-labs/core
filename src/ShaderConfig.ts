@@ -1,6 +1,4 @@
 /* eslint-disable camelcase */
-import colorVertex from './shaders/color.vertex.glsl';
-import colorFragment from './shaders/color.fragment.glsl';
 import mouseVertex from './shaders/mouse.vertex.glsl';
 import mouseFragment from './shaders/mouse.fragment.glsl';
 import outlineVertex from './shaders/outline.vertex.glsl';
@@ -9,20 +7,12 @@ import Particles_AdditiveVertex from './shaders/Particles_Additive.vertex.glsl';
 import Particles_AdditiveFragment from './shaders/Particles_Additive.fragment.glsl';
 import Particles_AlphaBlendedPremultiplyVertex from './shaders/Particles_AlphaBlendedPremultiply.vertex.glsl';
 import Particles_AlphaBlendedPremultiplyFragment from './shaders/Particles_AlphaBlendedPremultiply.fragment.glsl';
-import pointVertex from './shaders/point.vertex.glsl';
-import pointFragment from './shaders/point.fragment.glsl';
-import segmentVertex from './shaders/segment.vertex.glsl';
-import segmentFragment from './shaders/segment.fragment.glsl';
 import shadowVertex from './shaders/shadow.vertex.glsl';
 import shadowFragment from './shaders/shadow.fragment.glsl';
 import skyboxVertex from './shaders/skybox.vertex.glsl';
 import skyboxFragment from './shaders/skybox.fragment.glsl';
-import standardVertex from './shaders/standard.vertex.glsl';
-import standardFragment from './shaders/standard.fragment.glsl';
 import terrainVertex from './shaders/terrain.vertex.glsl';
 import terrainFragment from './shaders/terrain.fragment.glsl';
-import textureVertex from './shaders/texture.vertex.glsl';
-import textureFragment from './shaders/texture.fragment.glsl';
 import waterVertex from './shaders/water.vertex.glsl';
 import waterFragment from './shaders/water.fragment.glsl';
 import wireframeVertex from './shaders/wireframe.vertex.glsl';
@@ -85,18 +75,13 @@ export { };
 
 shaderlib.shaderConfig = {
     shaders: {
-        color: { fragment: colorFragment, vertex: colorVertex },
         mouse: { fragment: mouseFragment, vertex: mouseVertex },
         outline: { fragment: outlineFragment, vertex: outlineVertex },
         Particles_Additive: { fragment: Particles_AdditiveFragment, vertex: Particles_AdditiveVertex },
         Particles_AlphaBlendedPremultiply: { fragment: Particles_AlphaBlendedPremultiplyFragment, vertex: Particles_AlphaBlendedPremultiplyVertex },
-        point: { fragment: pointFragment, vertex: pointVertex },
-        segment: { fragment: segmentFragment, vertex: segmentVertex },
         shadow: { fragment: shadowFragment, vertex: shadowVertex },
         skybox: { fragment: skyboxFragment, vertex: skyboxVertex },
-        standard: { fragment: standardFragment, vertex: standardVertex },
         terrain: { fragment: terrainFragment, vertex: terrainVertex },
-        texture: { fragment: textureFragment, vertex: textureVertex },
         water: { fragment: waterFragment, vertex: waterVertex },
         wireframe: { fragment: wireframeFragment, vertex: wireframeVertex },
     },
