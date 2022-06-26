@@ -1,8 +1,8 @@
 import { IEvent } from '@feng3d/event';
-import { Constructor, IDisposable } from '@feng3d/polyfill';
+import { Constructor } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
-import { GameObject, GameObjectEventMap } from './GameObject';
 import { Feng3dObject } from './Feng3dObject';
+import { GameObject, GameObjectEventMap } from './GameObject';
 
 interface ComponentInfo
 {
@@ -93,7 +93,7 @@ export type ComponentNames = keyof ComponentMap;
  *
  * 注意，您的代码不会直接创建 Component，而是您编写脚本代码，然后将该脚本附加到 Entity。
  */
-export class Component<T extends GameObjectEventMap = GameObjectEventMap> extends Feng3dObject<T> implements IDisposable
+export class Component<T extends GameObjectEventMap = GameObjectEventMap> extends Feng3dObject<T>
 {
     /**
      * 组件名称与类定义映射，由 @RegisterComponent 装饰器进行填充。

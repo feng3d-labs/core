@@ -1,6 +1,6 @@
 import { EventEmitter } from '@feng3d/event';
-import { Vector3, Quaternion } from '@feng3d/math';
-import { Constructor, IDisposable, mathUtil } from '@feng3d/polyfill';
+import { Quaternion, Vector3 } from '@feng3d/math';
+import { Constructor, mathUtil } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
 import { Transform } from '../core/Transform';
 import { HideFlags } from './HideFlags';
@@ -15,7 +15,7 @@ import { HideFlags } from './HideFlags';
  *
  * @see https://docs.unity3d.com/2021.3/Documentation/ScriptReference/Object.html
  */
-export class Feng3dObject<T = any> extends EventEmitter<T> implements IDisposable
+export class Feng3dObject<T = any> extends EventEmitter<T>
 {
     /**
      * The name of the object.

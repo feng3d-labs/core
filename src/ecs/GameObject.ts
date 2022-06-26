@@ -1,6 +1,6 @@
 import { IEvent } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
-import { Constructor, IDisposable, ObjectUtils } from '@feng3d/polyfill';
+import { Constructor, ObjectUtils } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
 import { Component, ComponentMap, ComponentNames } from './Component';
 import { Feng3dObject } from './Feng3dObject';
@@ -34,7 +34,7 @@ export interface GameObjectEventMap extends MixinsEntityEventMap, MouseEventMap
 /**
  * 实体，场景唯一存在的对象类型
  */
-export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> extends Feng3dObject<T> implements IDisposable
+export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> extends Feng3dObject<T>
 {
     __class__: 'GameObject';
 
