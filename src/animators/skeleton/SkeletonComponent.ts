@@ -2,7 +2,7 @@ import { Matrix4x4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { Component3D } from '../../component/Component3D';
-import { Node3D } from '../../core/Node3D';
+import { Transform } from '../../core/Transform';
 import { RegisterComponent } from '../../ecs/Component';
 import { Entity } from '../../ecs/Entity';
 import { HideFlags } from '../../ecs/HideFlags';
@@ -45,8 +45,8 @@ export class SkeletonComponent extends Component3D
 
     //
     private isInitJoints = false;
-    private jointNode3Ds: Node3D[];
-    private jointNode3DMap: { [jointname: string]: Node3D };
+    private jointNode3Ds: Transform[];
+    private jointNode3DMap: { [jointname: string]: Transform };
     private _globalPropertiesInvalid: boolean;
     private _jointsInvalid: boolean[];
     private _globalMatrixsInvalid: boolean[];
@@ -153,7 +153,7 @@ export class SkeletonComponent extends Component3D
             { return jointNode3Ds[i]; }
 
             const skeletonJoint = joints[i];
-            let parentNode3D: Node3D;
+            let parentNode3D: Transform;
             if (skeletonJoint.parentIndex !== -1)
             {
                 parentNode3D = createJoint(skeletonJoint.parentIndex);
@@ -170,7 +170,7 @@ export class SkeletonComponent extends Component3D
                 const entity = new Entity();
                 entity.name = skeletonJoint.name;
                 entity.hideFlags = HideFlags.DontSave;
-                jointTransform = entity.addComponent(Node3D);
+                jointTransform = entity.addComponent(Transform);
                 parentNode3D.addChild(jointTransform);
             }
 

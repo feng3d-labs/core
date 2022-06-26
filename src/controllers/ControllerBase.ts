@@ -1,16 +1,16 @@
-import { Node3D } from '../core/Node3D';
+import { Transform } from '../core/Transform';
 
 export class ControllerBase
 {
     /**
      * 控制对象
      */
-    protected _targetNode: Node3D | undefined;
+    protected _targetNode: Transform | undefined;
 
     /**
      * 控制器基类，用于动态调整3D对象的属性
      */
-    constructor(node3d?: Node3D)
+    constructor(node3d?: Transform)
     {
         this.targetNode = node3d;
     }

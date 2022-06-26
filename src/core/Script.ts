@@ -1,5 +1,5 @@
 import { Entity } from '../ecs/Entity';
-import { Node3D } from './Node3D';
+import { Transform } from './Transform';
 import { ScriptComponent } from './ScriptComponent';
 
 /**
@@ -18,7 +18,7 @@ export class Script
     /**
      * The Transform attached to this Entity (null if there is none attached).
      */
-    get node3d(): Node3D
+    get node3d(): Transform
     {
         return this.component.node3d;
     }

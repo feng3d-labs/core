@@ -16,7 +16,7 @@ import { Scene } from '../scene/Scene';
 import { skyboxRenderer } from '../skybox/SkyBoxRenderer';
 import { ticker } from '../utils/Ticker';
 import { Mouse3DManager, WindowMouseInput } from './Mouse3DManager';
-import { Node3D } from './Node3D';
+import { Transform } from './Transform';
 import { Renderable } from './Renderable';
 
 declare global
@@ -316,7 +316,7 @@ export class View extends Feng3dObject
         const max = s.clone().max(e);
         const rect = new Rectangle(min.x, min.y, max.x - min.x, max.y - min.y);
         //
-        const transforms = this.scene.getComponentsInChildren(Node3D).filter((t) =>
+        const transforms = this.scene.getComponentsInChildren(Transform).filter((t) =>
         {
             if (t === this.scene.node3d) return false;
             const m = t.getComponent(Renderable);
@@ -339,7 +339,7 @@ export class View extends Feng3dObject
         return transforms;
     }
 
-    protected selectedTransform: Node3D;
+    protected selectedTransform: Transform;
 
     static createNewScene()
     {

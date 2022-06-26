@@ -10,7 +10,7 @@ import { RegisterComponent } from '../ecs/Component';
 import { AddComponentMenu } from '../Menu';
 import { Scene } from '../scene/Scene';
 import { ticker } from '../utils/Ticker';
-import { Node3D } from './Node3D';
+import { Transform } from './Transform';
 
 declare global
 {
@@ -78,14 +78,14 @@ export class TransformLayout extends Component3D
         this.on('removed', this._onRemoved, this);
     }
 
-    private _onAdded(event: Event<{ parent: Node3D; }>)
+    private _onAdded(event: Event<{ parent: Transform; }>)
     {
         event.data.parent.on('sizeChanged', this._invalidateLayout, this);
         event.data.parent.on('pivotChanged', this._invalidateLayout, this);
         this._invalidateLayout();
     }
 
-    private _onRemoved(event: Event<{ parent: Node3D; }>)
+    private _onRemoved(event: Event<{ parent: Transform; }>)
     {
         event.data.parent.off('sizeChanged', this._invalidateLayout, this);
         event.data.parent.off('pivotChanged', this._invalidateLayout, this);

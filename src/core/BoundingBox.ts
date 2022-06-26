@@ -1,6 +1,6 @@
 import { Box3 } from '@feng3d/math';
 import { Component } from '../ecs/Component';
-import { Node3D } from './Node3D';
+import { Transform } from './Transform';
 
 declare global
 {
@@ -25,7 +25,7 @@ declare global
  */
 export class BoundingBox
 {
-    private _node3d: Node3D;
+    private _node3d: Transform;
 
     protected _selfLocalBounds = new Box3();
     protected _selfWorldBounds = new Box3();
@@ -35,7 +35,7 @@ export class BoundingBox
     protected _selfWorldBoundsInvalid = true;
     protected _worldBoundsInvalid = true;
 
-    constructor(node3d: Node3D)
+    constructor(node3d: Transform)
     {
         this._node3d = node3d;
         node3d.on('selfBoundsChanged', this._invalidateSelfLocalBounds, this);

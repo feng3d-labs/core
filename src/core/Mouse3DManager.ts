@@ -7,7 +7,7 @@ import { Camera } from '../cameras/Camera';
 import { MouseEventMap } from '../ecs/MouseEventMap';
 import { raycaster } from '../pick/Raycaster';
 import { Scene } from '../scene/Scene';
-import { Node3D } from './Node3D';
+import { Transform } from './Transform';
 import { View } from './View';
 
 /**
@@ -55,13 +55,13 @@ export class Mouse3DManager
         this.viewport = viewport;
     }
 
-    private _selectedTransform: Node3D;
+    private _selectedTransform: Transform;
     private _mouseEventTypes: string[] = [];
 
     /**
      * 鼠标按下时的对象，用于与鼠标弹起时对象做对比，如果相同触发click
      */
-    private preMouseDownNode3D: Node3D;
+    private preMouseDownNode3D: Transform;
     /**
      * 统计处理click次数，判断是否达到dblclick
      */
@@ -109,7 +109,7 @@ export class Mouse3DManager
     /**
      * 设置选中对象
      */
-    private setSelectedNode3D(value: Node3D)
+    private setSelectedNode3D(value: Transform)
     {
         if (this._selectedTransform !== value)
         {

@@ -1,6 +1,8 @@
 import { EventEmitter } from '@feng3d/event';
+import { Vector3, Quaternion } from '@feng3d/math';
 import { Constructor, IDisposable, mathUtil } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
+import { Transform } from '../core/Transform';
 import { HideFlags } from './HideFlags';
 
 /**
@@ -128,115 +130,115 @@ export class Feng3dObject<T = any> extends EventEmitter<T> implements IDisposabl
 
     }
 
-    // /**
-    //  * Clones the object original and returns the clone.
-    //  *
-    //  * This function makes a copy of an object in a similar way to the Duplicate command in the editor. If you are cloning a GameObject you can specify its position and rotation (these default to the original GameObject's position and rotation otherwise). If you are cloning a Component the GameObject it is attached to is also cloned, again with an optional position and rotation.
-    //  *
-    //  * When you clone a GameObject or Component, all child objects and components are also cloned with their properties set like those of the original object.
-    //  *
-    //  * @param original An existing object that you want to make a copy of.
-    //  * @param parent Parent that will be assigned to the new object.
-    //  * @param instantiateInWorldSpace When you assign a parent Object, pass true to position the new object directly in world space. Pass false to set the Object’s position relative to its new parent.
-    //  *
-    //  * @returns The instantiated clone.
-    //  */
-    // /**
-    //  * 克隆对象original并返回克隆。
-    //  *
-    //  * 此功能以与编辑器中的复制命令类似的方式复制对象。如果你正在克隆一个游戏对象，你可以指定它的位置和旋转（这些默认为原始游戏对象的位置和旋转，否则）。如果您正在克隆一个组件，它所附加的游戏对象也会被克隆，同样具有可选的位置和旋转。
-    //  *
-    //  * 当您克隆GameObject或Component时，所有子对象和组件也会被克隆，其属性设置与原始对象的属性设置相同。
-    //  *
-    //  * @param original 要复制的现有对象。
-    //  * @param parent 将分配给新对象的父级。
-    //  * @param instantiateInWorldSpace 分配父对象时，传递 true 以将新对象直接定位在世界空间中。传递 false 以设置对象相对于其新父对象的位置。
-    //  *
-    //  * @returns 实例化的克隆。
-    //  */
-    // static Instantiate<T extends Feng3dObject>(original: T, parent: Transform, instantiateInWorldSpace: boolean): T;
-    // /**
-    //  * Clones the object original and returns the clone.
-    //  *
-    //  * This function makes a copy of an object in a similar way to the Duplicate command in the editor. If you are cloning a GameObject you can specify its position and rotation (these default to the original GameObject's position and rotation otherwise). If you are cloning a Component the GameObject it is attached to is also cloned, again with an optional position and rotation.
-    //  *
-    //  * When you clone a GameObject or Component, all child objects and components are also cloned with their properties set like those of the original object.
-    //  *
-    //  * @param original An existing object that you want to make a copy of.
-    //  * @param parent Parent that will be assigned to the new object.
-    //  *
-    //  * @returns The instantiated clone.
-    //  */
-    // /**
-    //  * 克隆对象original并返回克隆。
-    //  *
-    //  * 此功能以与编辑器中的复制命令类似的方式复制对象。如果你正在克隆一个游戏对象，你可以指定它的位置和旋转（这些默认为原始游戏对象的位置和旋转，否则）。如果您正在克隆一个组件，它所附加的游戏对象也会被克隆，同样具有可选的位置和旋转。
-    //  *
-    //  * 当您克隆GameObject或Component时，所有子对象和组件也会被克隆，其属性设置与原始对象的属性设置相同。
-    //  *
-    //  * @param original 要复制的现有对象。
-    //  * @param parent 将分配给新对象的父级。
-    //  *
-    //  * @returns 实例化的克隆。
-    //  */
-    // static Instantiate<T extends Feng3dObject>(original: T, parent: Transform): T;
-    // /**
-    //  * Clones the object original and returns the clone.
-    //  *
-    //  * This function makes a copy of an object in a similar way to the Duplicate command in the editor. If you are cloning a GameObject you can specify its position and rotation (these default to the original GameObject's position and rotation otherwise). If you are cloning a Component the GameObject it is attached to is also cloned, again with an optional position and rotation.
-    //  *
-    //  * When you clone a GameObject or Component, all child objects and components are also cloned with their properties set like those of the original object.
-    //  *
-    //  * @param original An existing object that you want to make a copy of.
-    //  * @param position Position for the new object.
-    //  * @param rotation Orientation of the new object.
-    //  * @param parent Parent that will be assigned to the new object.
-    //  *
-    //  * @returns The instantiated clone.
-    //  */
-    // /**
-    //  * 克隆对象original并返回克隆。
-    //  *
-    //  * 此功能以与编辑器中的复制命令类似的方式复制对象。如果你正在克隆一个游戏对象，你可以指定它的位置和旋转（这些默认为原始游戏对象的位置和旋转，否则）。如果您正在克隆一个组件，它所附加的游戏对象也会被克隆，同样具有可选的位置和旋转。
-    //  *
-    //  * 当您克隆GameObject或Component时，所有子对象和组件也会被克隆，其属性设置与原始对象的属性设置相同。
-    //  *
-    //  * @param original 要复制的现有对象。
-    //  * @param position 新对象的位置。
-    //  * @param rotation 新对象的方向。
-    //  * @param parent 将分配给新对象的父级。
-    //  *
-    //  * @returns 实例化的克隆。
-    //  */
-    // static Instantiate<T extends Feng3dObject>(original: T, position: Vector3, rotation: Quaternion, parent: Transform): T;
-    // /**
-    //  * Clones the object original and returns the clone.
-    //  *
-    //  * This function makes a copy of an object in a similar way to the Duplicate command in the editor. If you are cloning a GameObject you can specify its position and rotation (these default to the original GameObject's position and rotation otherwise). If you are cloning a Component the GameObject it is attached to is also cloned, again with an optional position and rotation.
-    //  *
-    //  * When you clone a GameObject or Component, all child objects and components are also cloned with their properties set like those of the original object.
-    //  *
-    //  * @param _original An existing object that you want to make a copy of.
-    //  *
-    //  * @returns The instantiated clone.
-    //  */
-    // /**
-    //  * 克隆对象original并返回克隆。
-    //  *
-    //  * 此功能以与编辑器中的复制命令类似的方式复制对象。如果你正在克隆一个游戏对象，你可以指定它的位置和旋转（这些默认为原始游戏对象的位置和旋转，否则）。如果您正在克隆一个组件，它所附加的游戏对象也会被克隆，同样具有可选的位置和旋转。
-    //  *
-    //  * 当您克隆GameObject或Component时，所有子对象和组件也会被克隆，其属性设置与原始对象的属性设置相同。
-    //  *
-    //  * @param _original 要复制的现有对象。
-    //  *
-    //  * @returns 实例化的克隆。
-    //  */
-    // static Instantiate<T extends Feng3dObject>(_original: T): T
-    // {
-    //     // position; rotation; parent; instantiateInWorldSpace;
+    /**
+     * Clones the object original and returns the clone.
+     *
+     * This function makes a copy of an object in a similar way to the Duplicate command in the editor. If you are cloning a GameObject you can specify its position and rotation (these default to the original GameObject's position and rotation otherwise). If you are cloning a Component the GameObject it is attached to is also cloned, again with an optional position and rotation.
+     *
+     * When you clone a GameObject or Component, all child objects and components are also cloned with their properties set like those of the original object.
+     *
+     * @param original An existing object that you want to make a copy of.
+     * @param parent Parent that will be assigned to the new object.
+     * @param instantiateInWorldSpace When you assign a parent Object, pass true to position the new object directly in world space. Pass false to set the Object’s position relative to its new parent.
+     *
+     * @returns The instantiated clone.
+     */
+    /**
+     * 克隆对象original并返回克隆。
+     *
+     * 此功能以与编辑器中的复制命令类似的方式复制对象。如果你正在克隆一个游戏对象，你可以指定它的位置和旋转（这些默认为原始游戏对象的位置和旋转，否则）。如果您正在克隆一个组件，它所附加的游戏对象也会被克隆，同样具有可选的位置和旋转。
+     *
+     * 当您克隆GameObject或Component时，所有子对象和组件也会被克隆，其属性设置与原始对象的属性设置相同。
+     *
+     * @param original 要复制的现有对象。
+     * @param parent 将分配给新对象的父级。
+     * @param instantiateInWorldSpace 分配父对象时，传递 true 以将新对象直接定位在世界空间中。传递 false 以设置对象相对于其新父对象的位置。
+     *
+     * @returns 实例化的克隆。
+     */
+    static Instantiate<T extends Feng3dObject>(original: T, parent: Transform, instantiateInWorldSpace: boolean): T;
+    /**
+     * Clones the object original and returns the clone.
+     *
+     * This function makes a copy of an object in a similar way to the Duplicate command in the editor. If you are cloning a GameObject you can specify its position and rotation (these default to the original GameObject's position and rotation otherwise). If you are cloning a Component the GameObject it is attached to is also cloned, again with an optional position and rotation.
+     *
+     * When you clone a GameObject or Component, all child objects and components are also cloned with their properties set like those of the original object.
+     *
+     * @param original An existing object that you want to make a copy of.
+     * @param parent Parent that will be assigned to the new object.
+     *
+     * @returns The instantiated clone.
+     */
+    /**
+     * 克隆对象original并返回克隆。
+     *
+     * 此功能以与编辑器中的复制命令类似的方式复制对象。如果你正在克隆一个游戏对象，你可以指定它的位置和旋转（这些默认为原始游戏对象的位置和旋转，否则）。如果您正在克隆一个组件，它所附加的游戏对象也会被克隆，同样具有可选的位置和旋转。
+     *
+     * 当您克隆GameObject或Component时，所有子对象和组件也会被克隆，其属性设置与原始对象的属性设置相同。
+     *
+     * @param original 要复制的现有对象。
+     * @param parent 将分配给新对象的父级。
+     *
+     * @returns 实例化的克隆。
+     */
+    static Instantiate<T extends Feng3dObject>(original: T, parent: Transform): T;
+    /**
+     * Clones the object original and returns the clone.
+     *
+     * This function makes a copy of an object in a similar way to the Duplicate command in the editor. If you are cloning a GameObject you can specify its position and rotation (these default to the original GameObject's position and rotation otherwise). If you are cloning a Component the GameObject it is attached to is also cloned, again with an optional position and rotation.
+     *
+     * When you clone a GameObject or Component, all child objects and components are also cloned with their properties set like those of the original object.
+     *
+     * @param original An existing object that you want to make a copy of.
+     * @param position Position for the new object.
+     * @param rotation Orientation of the new object.
+     * @param parent Parent that will be assigned to the new object.
+     *
+     * @returns The instantiated clone.
+     */
+    /**
+     * 克隆对象original并返回克隆。
+     *
+     * 此功能以与编辑器中的复制命令类似的方式复制对象。如果你正在克隆一个游戏对象，你可以指定它的位置和旋转（这些默认为原始游戏对象的位置和旋转，否则）。如果您正在克隆一个组件，它所附加的游戏对象也会被克隆，同样具有可选的位置和旋转。
+     *
+     * 当您克隆GameObject或Component时，所有子对象和组件也会被克隆，其属性设置与原始对象的属性设置相同。
+     *
+     * @param original 要复制的现有对象。
+     * @param position 新对象的位置。
+     * @param rotation 新对象的方向。
+     * @param parent 将分配给新对象的父级。
+     *
+     * @returns 实例化的克隆。
+     */
+    static Instantiate<T extends Feng3dObject>(original: T, position: Vector3, rotation: Quaternion, parent: Transform): T;
+    /**
+     * Clones the object original and returns the clone.
+     *
+     * This function makes a copy of an object in a similar way to the Duplicate command in the editor. If you are cloning a GameObject you can specify its position and rotation (these default to the original GameObject's position and rotation otherwise). If you are cloning a Component the GameObject it is attached to is also cloned, again with an optional position and rotation.
+     *
+     * When you clone a GameObject or Component, all child objects and components are also cloned with their properties set like those of the original object.
+     *
+     * @param _original An existing object that you want to make a copy of.
+     *
+     * @returns The instantiated clone.
+     */
+    /**
+     * 克隆对象original并返回克隆。
+     *
+     * 此功能以与编辑器中的复制命令类似的方式复制对象。如果你正在克隆一个游戏对象，你可以指定它的位置和旋转（这些默认为原始游戏对象的位置和旋转，否则）。如果您正在克隆一个组件，它所附加的游戏对象也会被克隆，同样具有可选的位置和旋转。
+     *
+     * 当您克隆GameObject或Component时，所有子对象和组件也会被克隆，其属性设置与原始对象的属性设置相同。
+     *
+     * @param _original 要复制的现有对象。
+     *
+     * @returns 实例化的克隆。
+     */
+    static Instantiate<T extends Feng3dObject>(_original: T): T
+    {
+        // position; rotation; parent; instantiateInWorldSpace;
 
-    //     return null;
-    // }
+        return null;
+    }
 
     // /**
     //  * Destroys the object obj immediately. You are strongly recommended to use Destroy instead.

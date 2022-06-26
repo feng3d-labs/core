@@ -1,7 +1,7 @@
 import { Ray3, Vector2, Vector3 } from '@feng3d/math';
 import { ObjectUtils } from '@feng3d/polyfill';
 import { CullFace } from '@feng3d/renderer';
-import { Node3D } from '../core/Node3D';
+import { Transform } from '../core/Transform';
 import { RayCastable } from '../core/RayCastable';
 import { Geometry } from '../geometry/Geometry';
 
@@ -16,7 +16,7 @@ export class Raycaster
      * @param transforms 实体列表
      * @return
      */
-    pick(ray3D: Ray3, transforms: Node3D[])
+    pick(ray3D: Ray3, transforms: Transform[])
     {
         if (transforms.length === 0) return null;
 
@@ -68,7 +68,7 @@ export class Raycaster
      * @param node3ds 实体列表
      * @return
      */
-    pickAll(ray3D: Ray3, node3ds: Node3D[])
+    pickAll(ray3D: Ray3, node3ds: Transform[])
     {
         if (node3ds.length === 0) return [];
 
@@ -117,7 +117,7 @@ export interface PickingCollisionVO
     /**
      * 第一个穿过的物体
      */
-    node3d: Node3D;
+    node3d: Transform;
 
     /**
      * 碰撞的uv坐标

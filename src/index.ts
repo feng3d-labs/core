@@ -26,7 +26,7 @@ export * from './controllers/LookAtController';
 export * from './core/BoundingBox';
 export * from './core/MeshRenderer';
 export * from './core/Mouse3DManager';
-export * from './core/Node3D';
+export * from './core/Transform';
 export * from './core/RayCastable';
 export * from './core/Renderable';
 export * from './core/RunEnvironment';

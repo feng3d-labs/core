@@ -1,5 +1,5 @@
 import { mathUtil } from '@feng3d/polyfill';
-import { Node3D } from '../core/Node3D';
+import { Transform } from '../core/Transform';
 import { LookAtController } from './LookAtController';
 
 export class HoverController extends LookAtController
@@ -150,7 +150,7 @@ export class HoverController extends LookAtController
     }
 
     // eslint-disable-next-line max-params
-    constructor(node3d?: Node3D, lookAtObject?: Node3D, panAngle = 0, tiltAngle = 90, distance = 1000, minTiltAngle = -90, maxTiltAngle = 90, minPanAngle = NaN, maxPanAngle = NaN, steps = 8, yFactor = 2, wrapPanAngle = false)
+    constructor(node3d?: Transform, lookAtObject?: Transform, panAngle = 0, tiltAngle = 90, distance = 1000, minTiltAngle = -90, maxTiltAngle = 90, minPanAngle = NaN, maxPanAngle = NaN, steps = 8, yFactor = 2, wrapPanAngle = false)
     {
         super(node3d, lookAtObject);
         this.distance = distance;

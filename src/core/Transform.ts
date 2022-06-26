@@ -16,51 +16,51 @@ declare global
         /**
          * 添加了子对象，当child被添加到parent中时派发冒泡事件
          */
-        addChild: { parent: Node3D, child: Node3D }
+        addChild: { parent: Transform, child: Transform }
 
         /**
          * 删除了子对象，当child被parent移除时派发冒泡事件
          */
-        removeChild: { parent: Node3D, child: Node3D };
+        removeChild: { parent: Transform, child: Transform };
 
         /**
          * 自身被添加到父对象中事件
          */
-        added: { parent: Node3D };
+        added: { parent: Transform };
 
         /**
          * 自身从父对象中移除事件
          */
-        removed: { parent: Node3D };
+        removed: { parent: Transform };
 
         /**
          * 当GameObject的scene属性被设置是由Scene派发
          */
-        addedToScene: Node3D;
+        addedToScene: Transform;
 
         /**
          * 当GameObject的scene属性被清空时由Scene派发
          */
-        removedFromScene: Node3D;
+        removedFromScene: Transform;
 
         /**
          * 变换矩阵变化
          */
-        transformChanged: Node3D;
+        transformChanged: Transform;
         /**
          *
          */
-        updateLocalToWorldMatrix: Node3D;
+        updateLocalToWorldMatrix: Transform;
 
         /**
          * 场景矩阵变化
          */
-        scenetransformChanged: Node3D;
+        scenetransformChanged: Transform;
     }
-    interface MixinsComponentMap { Node3D: Node3D; }
+    interface MixinsComponentMap { Node3D: Transform; }
 }
 
-export interface Node3D extends MixinsNode3D
+export interface Transform extends MixinsNode3D
 {
 
 }
@@ -72,11 +72,11 @@ export interface Node3D extends MixinsNode3D
  *
  * 场景中的每个对象都有一个变换。它用于存储和操作对象的位置、旋转和缩放。每个转换都可以有一个父元素，它允许您分层应用位置、旋转和缩放
  */
-@RegisterComponent({ name: 'Node3D', single: true })
+@RegisterComponent({ name: 'Transform', single: true })
 @decoratorRegisterClass()
-export class Node3D extends Component
+export class Transform extends Component
 {
-    __class__: 'Node3D';
+    __class__: 'Transform';
 
     /**
      * 预设资源编号
@@ -691,7 +691,7 @@ export class Node3D extends Component
      *
      * @param name 对象名称
      */
-    find(name: string): Node3D
+    find(name: string): Transform
     {
         if (this.name === name)
         { return this; }
@@ -710,7 +710,7 @@ export class Node3D extends Component
      *
      * @param child 可能的子孙对象
      */
-    contains(child: Node3D)
+    contains(child: Transform)
     {
         let checkitem = child;
         do
@@ -728,7 +728,7 @@ export class Node3D extends Component
      *
      * @param child 子对象
      */
-    addChild(child: Node3D)
+    addChild(child: Transform)
     {
         if (ObjectUtils.objectIsEmpty(child))
         { return; }
@@ -762,7 +762,7 @@ export class Node3D extends Component
      *
      * @param children 子对象
      */
-    addChildren(...children: Node3D[])
+    addChildren(...children: Transform[])
     {
         for (let i = 0; i < children.length; i++)
         {
@@ -794,7 +794,7 @@ export class Node3D extends Component
      *
      * @param child 子对象
      */
-    removeChild(child: Node3D)
+    removeChild(child: Transform)
     {
         if (ObjectUtils.objectIsEmpty(child)) return;
         const childIndex = this._children.indexOf(child);
@@ -1114,8 +1114,8 @@ export class Node3D extends Component
     protected readonly _localToWorldRotationMatrix = new Matrix4x4();
     protected _localToWorldRotationMatrixInvalid = false;
 
-    protected _parent: Node3D;
-    protected _children: Node3D[] = [];
+    protected _parent: Transform;
+    protected _children: Transform[] = [];
     protected _scene: Scene;
 
     private _renderAtomic = new RenderAtomic();
@@ -1135,7 +1135,7 @@ export class Node3D extends Component
         this._invalidateTransform();
     }
 
-    private _setParent(value: Node3D)
+    private _setParent(value: Transform)
     {
         this._parent = value;
         this.updateScene();
@@ -1170,7 +1170,7 @@ export class Node3D extends Component
         }
     }
 
-    private removeChildInternal(childIndex: number, child: Node3D)
+    private removeChildInternal(childIndex: number, child: Transform)
     {
         this._children.splice(childIndex, 1);
         child._setParent(null);

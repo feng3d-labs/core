@@ -6,7 +6,7 @@ import { Animation } from '../animation/Animation';
 import { Camera } from '../cameras/Camera';
 import { Behaviour } from '../component/Behaviour';
 import { Component3D } from '../component/Component3D';
-import { Node3D } from '../core/Node3D';
+import { Transform } from '../core/Transform';
 import { Renderable } from '../core/Renderable';
 import { RunEnvironment } from '../core/RunEnvironment';
 import { Component, RegisterComponent } from '../ecs/Component';
@@ -233,7 +233,7 @@ export class Scene extends Component3D
         return this._activeBehaviours;
     }
 
-    get mouseCheckObjects(): Node3D[]
+    get mouseCheckObjects(): Transform[]
     {
         if (this._mouseCheckTransforms)
         { return this._mouseCheckTransforms; }
@@ -325,7 +325,7 @@ export class Scene extends Component3D
     }
 
     //
-    private _mouseCheckTransforms: Node3D[];
+    private _mouseCheckTransforms: Transform[];
     private _models: Renderable[];
     private _visibleAndEnabledModels: Renderable[];
     private _skyBoxs: SkyBox[];

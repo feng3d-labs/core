@@ -1,5 +1,5 @@
 import { Constructor } from '@feng3d/polyfill';
-import { Node3D } from '../core/Node3D';
+import { Transform } from '../core/Transform';
 import { Component, RegisterComponent } from '../ecs/Component';
 
 /**
@@ -7,7 +7,7 @@ import { Component, RegisterComponent } from '../ecs/Component';
  *
  * 所有基于3D空间的组件均可继承于该组件。
  */
-@RegisterComponent({ name: 'Component3D', dependencies: [Node3D] })
+@RegisterComponent({ name: 'Component3D', dependencies: [Transform] })
 export class Component3D extends Component
 {
     /**
@@ -17,7 +17,7 @@ export class Component3D extends Component
      */
     get node3d()
     {
-        return this._entity?.getComponent(Node3D);
+        return this._entity?.getComponent(Transform);
     }
 
     /**

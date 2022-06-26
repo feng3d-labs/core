@@ -1,16 +1,16 @@
 import { Vector3 } from '@feng3d/math';
-import { Node3D } from '../core/Node3D';
+import { Transform } from '../core/Transform';
 import { ControllerBase } from './ControllerBase';
 
 export class LookAtController extends ControllerBase
 {
     protected _lookAtPosition: Vector3;
-    protected _lookAtNode3D: Node3D;
+    protected _lookAtNode3D: Transform;
     protected _origin: Vector3 = new Vector3(0.0, 0.0, 0.0);
     protected _upAxis: Vector3 = Vector3.Y_AXIS;
     protected _pos: Vector3 = new Vector3();
 
-    constructor(node3d?: Node3D, Node3D?: Node3D)
+    constructor(node3d?: Transform, Node3D?: Transform)
     {
         super(node3d);
 
