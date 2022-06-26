@@ -27,6 +27,7 @@ export class Feng3dObject<T = any> extends EventEmitter<T>
      *
      * 组件与游戏对象和所有附加组件共享相同的名称。如果一个类从 MonoBehaviour 派生，它会从 MonoBehaviour 继承“名称”字段。如果此类也附加到 GameObject，则“name”字段设置为该 GameObject 的名称。
      */
+    @serialize
     get name()
     {
         return this._name;

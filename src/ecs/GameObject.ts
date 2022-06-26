@@ -2,6 +2,8 @@ import { IEvent } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
 import { Constructor, ObjectUtils } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
+import { Transform } from '../core/Transform';
+import { Scene } from '../scene/Scene';
 import { Component, ComponentMap, ComponentNames } from './Component';
 import { Feng3dObject } from './Feng3dObject';
 import { MouseEventMap } from './MouseEventMap';
@@ -32,32 +34,102 @@ export interface GameObjectEventMap extends MixinsEntityEventMap, MouseEventMap
 }
 
 /**
- * 实体，场景唯一存在的对象类型
+ * Base class for all entities in feng3d Scenes.
+ *
+ * @see https://docs.unity3d.com/2021.3/Documentation/ScriptReference/GameObject.html
+ */
+/**
+ * feng3d 场景中所有实体的基类。
+ *
+ * @see https://docs.unity3d.com/2021.3/Documentation/ScriptReference/GameObject.html
  */
 export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> extends Feng3dObject<T>
 {
     __class__: 'GameObject';
 
     /**
-     * 名称
+     * Defines whether the GameObject is active in the Scene.
      */
-    @serialize
-    @oav({ component: 'OAVEntityName' })
-    get name()
+    /**
+     * 定义 GameObject 在场景中是否处于活动状态。
+     */
+    get activeInHierarchy()
     {
-        return this._name;
+        return this.activeSelf;
     }
-    set name(v)
-    {
-        this._name = v;
-    }
-    protected _name: string = null;
 
     /**
-     * 标签
+     * The local active state of this GameObject.
+     */
+    /**
+     * 此游戏对象的本地活动状态
+     */
+    activeSelf = true;
+
+    /**
+     * Scene that the GameObject is part of.
+     */
+    /**
+     * GameObject 所属的场景。
+     */
+    get scene(): Scene
+    {
+        return null;
+    }
+
+    /**
+     * The tag of this game object.
+     *
+     * A tag can be used to identify a game object. Tags must be declared in the Tags and Layers manager before using them.
+     */
+    /**
+     * 此游戏对象的标签。
+     *
+     * 标签可用于识别游戏对象。在使用标签之前，标签必须在标签和层管理器中声明。
      */
     @serialize
     tag: string;
+
+    /**
+     * The Transform attached to this GameObject.
+     */
+    /**
+     * 附加到此游戏对象的变换。
+     */
+    get transform(): Transform
+    {
+        return this._transform;
+    }
+    private _transform: Transform;
+
+    /**
+     * Creates a new game object, named name.
+     *
+     * Transform is always added to the GameObject that is being created.
+     *
+     * @param name The name that the GameObject is created with.
+     * @param components A list of Components to add to the GameObject on creation.
+     */
+    /**
+     * 创建一个名为name的新游戏对象。
+     *
+     * 变换总是在GameObject创建时被添加。
+     *
+     * @param name 创建游戏对象的名称。
+     * @param components Components创建时添加到游戏对象的列表。
+     */
+    constructor(name = 'GameObject', components: Constructor<Component>[] = [])
+    {
+        super();
+        this.name = name;
+        this._transform = this.addComponent(Transform);
+        components.forEach((v) =>
+        {
+            this.addComponent(v);
+        });
+
+        this.onAny(this._onAnyListener, this);
+    }
 
     // ------------------------------------------
     // Variables
@@ -85,20 +157,6 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
             if (!component) continue;
             this.addComponentAt(value[i], this.numComponents);
         }
-    }
-
-    // ------------------------------------------
-    // Functions
-    // ------------------------------------------
-    /**
-     * 构建3D对象
-     */
-    constructor()
-    {
-        super();
-        this.name = 'Entity';
-
-        this.onAny(this._onAnyListener, this);
     }
 
     /**
