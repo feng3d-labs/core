@@ -131,6 +131,42 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
         this.onAny(this._onAnyListener, this);
     }
 
+    /**
+     * Adds a component class of type componentType to the game object.
+     *
+     * @param ComponentType A component class of type.
+     * @param callback
+     * @returns The component that is added.
+     */
+    /**
+     * Adds a component class of type componentType to the game object.
+     *
+     * @param ComponentType 组件类定义。
+     * @param callback
+     * @returns 被添加的组件。
+     */
+    addComponent<T extends Component>(ComponentType: Constructor<T>, callback?: (component: T) => void): T
+    {
+        let component = this.getComponent(ComponentType);
+        if (component && Component.isSingleComponent(ComponentType))
+        {
+            // alert(`The compnent ${param["name"]} can't be added because ${this.name} already contains the same component.`);
+            return component;
+        }
+        const dependencies = Component.getDependencies(ComponentType);
+        // 先添加依赖
+        dependencies.forEach((dependency) =>
+        {
+            this.addComponent(dependency);
+        });
+        //
+        component = new ComponentType();
+        this.addComponentAt(component, this._components.length);
+        callback && callback(component);
+
+        return component;
+    }
+
     // ------------------------------------------
     // Variables
     // ------------------------------------------
@@ -170,33 +206,6 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
         console.assert(index < this.numComponents, '给出索引超出范围');
 
         return this._components[index];
-    }
-
-    /**
-     * 添加指定组件类型到实体
-     *
-     * @type type 被添加组件类定义
-     */
-    addComponent<T extends Component>(Type: Constructor<T>, callback?: (component: T) => void): T
-    {
-        let component = this.getComponent(Type);
-        if (component && Component.isSingleComponent(Type))
-        {
-            // alert(`The compnent ${param["name"]} can't be added because ${this.name} already contains the same component.`);
-            return component;
-        }
-        const dependencies = Component.getDependencies(Type);
-        // 先添加依赖
-        dependencies.forEach((dependency) =>
-        {
-            this.addComponent(dependency);
-        });
-        //
-        component = new Type();
-        this.addComponentAt(component, this._components.length);
-        callback && callback(component);
-
-        return component;
     }
 
     // /**
