@@ -227,13 +227,10 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
      */
     getComponentInChildren<T extends Component>(type: Constructor<T>, includeInactive = false): T
     {
-        for (let i = 0; i < this._components.length; i++)
+        const component = this.getComponent(type);
+        if (component)
         {
-            const component = this._components[i];
-            if (component instanceof type)
-            {
-                return component as T;
-            }
+            return component;
         }
 
         for (let i = 0; i < this.transform.children.length; i++)
@@ -251,56 +248,137 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
     }
 
     /**
-     * 从自身与子代（孩子，孩子的孩子，...）Entity 中获取所有指定类型的组件
+     * Retrieves the component of Type type in the GameObject or any of its parents.
      *
-     * @param type 要检索的组件的类型。
-     * @returns         返回与给出类定义一致的组件
+     * This method recurses upwards until it finds a GameObject with a matching component. Only components on active GameObjects are matched.
+     *
+     * @param type Type of component to find.
+     * @param includeInactive Should Components on inactive GameObjects be included in the found set?
+     * @returns Returns a component if a component matching the type is found. Returns null otherwise.
      */
-    getComponentsInChildren<T extends Component>(type?: Constructor<T>, filter?: (compnent: T) => {
-        /**
-         * 是否继续查找子项
-         */
-        findchildren: boolean,
-        /**
-         * 是否为需要查找的组件
-         */
-        value: boolean
-    }, result?: T[]): T[]
+    /**
+     * 检索GameObject或其任何父项type中的 Type 组件。
+     *
+     * 此方法向上递归，直到找到具有匹配组件的 GameObject。仅匹配活动游戏对象上的组件。
+     *
+     * @param type 要查找的组件类型。
+     * @param includeInactive 是否包含不活跃组件。
+     * @returns 如果找到与类型匹配的组件，则返回一个组件。否则返回 null。
+     */
+    getComponentInParent<T extends Component>(type: Constructor<T>, includeInactive = false): T
     {
-        result = result || [];
-        let findchildren = true;
-        const cls = type;
-        const components = this.components;
-        for (let i = 0, n = components.length; i < n; i++)
+        if (includeInactive || this.activeSelf)
         {
-            const item = components[i] as T;
-            if (!cls)
+            const component = this.getComponent(type);
+            if (component)
             {
-                result.push(item);
-            }
-            else if (item instanceof cls)
-            {
-                if (filter)
-                {
-                    const filterresult = filter(item);
-                    filterresult && filterresult.value && result.push(item);
-                    findchildren = filterresult ? (filterresult && filterresult.findchildren) : false;
-                }
-                else
-                {
-                    result.push(item);
-                }
-            }
-        }
-        if (findchildren)
-        {
-            for (let i = 0, n = this.transform.numChildren; i < n; i++)
-            {
-                this.transform.children[i].gameObject.getComponentsInChildren(type, filter, result);
+                return component;
             }
         }
 
-        return result;
+        if (this.transform.parent)
+        {
+            const component = this.transform.parent.gameObject.getComponentInParent(type, includeInactive);
+            if (component)
+            {
+                return component;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns all components of Type `type` in the GameObject.
+     *
+     * @param type The type of component to retrieve.
+     * @param results List to receive the results.
+     * @returns all components of Type type in the GameObject.
+     */
+    /**
+     * 返回GameObject中指定类型的所有组件。
+     *
+     * @param type 要检索的组件类型。
+     * @param results 列出接收找到的组件。
+     * @returns GameObject中指定类型的所有组件。
+     */
+    getComponents<T extends Component>(type: Constructor<T>, results: T[] = []): T[]
+    {
+        for (let i = 0; i < this._components.length; i++)
+        {
+            const component = this._components[i];
+            if (component instanceof type)
+            {
+                results.push(component);
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * Returns all components of Type type in the GameObject or any of its children children using depth first search. Works recursively.
+     *
+     * Unity searches for components recursively on child GameObjects. This means that it also includes all the child GameObjects of the target GameObject, and all subsequent child GameObjects.
+     *
+     * @param type The type of Component to retrieve.
+     * @param includeInactive Should Components on inactive GameObjects be included in the found set?
+     * @param results List to receive found Components.
+     * @returns All found Components.
+     */
+    /**
+     * 使用深度优先搜索返回 GameObject 或其任何子子项中 Type 的所有组件。递归工作。
+     *
+     * Unity 在子游戏对象上递归搜索组件。这意味着它还包括目标 GameObject 的所有子 GameObject，以及所有后续子 GameObject。
+     *
+     * @param type 要检索的组件类型。
+     * @param includeInactive 非活动游戏对象上的组件是否应该包含在搜索结果中？
+     * @param results 列出接收找到的组件。
+     * @returns 所有找到的组件。
+     */
+    getComponentsInChildren<T extends Component>(type: Constructor<T>, includeInactive = false, results: T[] = []): T[]
+    {
+        this.getComponents(type, results);
+
+        for (let i = 0; i < this.transform.children.length; i++)
+        {
+            const gameObject = this.transform.children[i].gameObject;
+            if (!includeInactive && !gameObject.activeSelf) continue;
+            gameObject.getComponentsInChildren(type, includeInactive, results);
+        }
+
+        return results;
+    }
+
+    /**
+     * Returns all components of Type type in the GameObject or any of its parents.
+     *
+     * @param type The type of Component to retrieve.
+     * @param includeInactive Should inactive Components be included in the found set?
+     * @param results List holding the found Components.
+     * @returns All components of Type type in the GameObject or any of its parents.
+     */
+    /**
+     * 返回GameObject或其任何父级中指定的所有组件。
+     *
+     * @param type 要检索的组件类型。
+     * @param includeInactive 非活动组件是否应该包含在搜索结果中？
+     * @param results 列出找到的组件。
+     * @returns GameObject或其任何父级中指定的所有组件。
+     */
+    getComponentsInParent<T extends Component>(type: Constructor<T>, includeInactive = false, results: T[] = []): T[]
+    {
+        if (includeInactive || this.activeSelf)
+        {
+            this.getComponents(type, results);
+        }
+
+        if (this.transform.parent)
+        {
+            this.transform.parent.gameObject.getComponentsInParent(type, includeInactive, results);
+        }
+
+        return results;
     }
 
     /**
@@ -354,28 +432,6 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
 
     //     return scriptComponent;
     // }
-
-    /**
-     * 获取实体上所有指定类型的组件数组
-     *
-     * @param type 类定义
-     * @returns         返回与给出类定义一致的组件
-     */
-    getComponents<T extends Component>(type: Constructor<T>): T[]
-    {
-        console.assert(!!type, `类型不能为空！`);
-
-        const cls = type;
-        if (!cls)
-        {
-            console.warn(`无法找到 ${type.name} 组件类定义，请使用 @RegisterComponent() 在组件类上标记。`);
-
-            return [];
-        }
-        const filterResult: any = this._components.filter((v) => v instanceof cls);
-
-        return filterResult;
-    }
 
     /**
      * 设置子组件的位置
@@ -624,21 +680,6 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
         component.init();
         // 派发添加组件事件
         this.emit('addComponent', { component, entity: this }, true);
-    }
-
-    /**
-     * Returns the name of the object.
-     *
-     * @return The name returned by ToString.
-     */
-    /**
-     * 返回对象的名称。
-     *
-     * @return ToString 返回的名称。
-     */
-    ToString()
-    {
-        return this._name;
     }
 
     // /**
