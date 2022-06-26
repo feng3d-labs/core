@@ -16,10 +16,6 @@ import { RayCastable } from './RayCastable';
 declare global
 {
     interface MixinsComponentMap { Renderable: Renderable; }
-
-    interface MixinsNode3D
-    {
-    }
 }
 
 /**

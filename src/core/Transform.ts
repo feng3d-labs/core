@@ -60,11 +60,6 @@ declare global
     interface MixinsComponentMap { Node3D: Transform; }
 }
 
-export interface Transform extends MixinsNode3D
-{
-
-}
-
 /**
  * 变换
  *
