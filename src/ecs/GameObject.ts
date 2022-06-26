@@ -135,17 +135,15 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
      * Adds a component class of type componentType to the game object.
      *
      * @param ComponentType A component class of type.
-     * @param callback
      * @returns The component that is added.
      */
     /**
      * Adds a component class of type componentType to the game object.
      *
      * @param ComponentType 组件类定义。
-     * @param callback
      * @returns 被添加的组件。
      */
-    addComponent<T extends Component>(ComponentType: Constructor<T>, callback?: (component: T) => void): T
+    addComponent<T extends Component>(ComponentType: Constructor<T>): T
     {
         let component = this.getComponent(ComponentType);
         if (component && Component.isSingleComponent(ComponentType))
@@ -162,14 +160,34 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
         //
         component = new ComponentType();
         this.addComponentAt(component, this._components.length);
-        callback && callback(component);
 
         return component;
     }
 
-    // ------------------------------------------
-    // Variables
-    // ------------------------------------------
+    /**
+     * Returns the component of Type type if the game object has one attached, null if it doesn't.
+     *
+     * Using gameObject.GetComponent will return the first component that is found. If you expect there to be more than one component of the
+     * same type, use gameObject.GetComponents instead, and cycle through the returned components testing for some unique property.
+     *
+     * @param type The type of Component to retrieve.
+     * @returns The component to retrieve.
+     */
+    /**
+     * 如果游戏对象附加了一个，则返回 Type 的组件，type如果没有，则返回 null。
+     *
+     * 使用 gameObject.GetComponent 将返回找到的第一个组件。如果您希望有多个相同类型的组件，请改用 gameObject.GetComponents，并循环通过返回的组件测试某些唯一属性。
+     *
+     * @param type 要检索的组件类型。
+     * @returns 要检索的组件。
+     */
+    getComponent<T extends Component>(type: Constructor<T>): T
+    {
+        const component = this.getComponents(type)[0];
+
+        return component;
+    }
+
     /**
      * 子组件个数
      */
@@ -221,19 +239,6 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
 
     //     return scriptComponent;
     // }
-
-    /**
-     * 获取实体上第一个指定类型的组件，不存在时返回null
-     *
-     * @param type 类定义
-     * @returns                  返回指定类型组件
-     */
-    getComponent<T extends Component>(type: Constructor<T>): T
-    {
-        const component = this.getComponents(type)[0];
-
-        return component;
-    }
 
     /**
      * 获取实体上所有指定类型的组件数组
