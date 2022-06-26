@@ -3,19 +3,19 @@ import { Rectangle } from '@feng3d/math';
 import { GL, RenderAtomic } from '@feng3d/renderer';
 import { windowEventProxy } from '@feng3d/shortcut';
 import { Renderable } from '../../core/Renderable';
-import { Entity, EntityEventMap } from '../../ecs/Entity';
+import { GameObject, GameObjectEventMap } from '../../ecs/GameObject';
 
 /**
  * 鼠标拾取渲染器
  */
 export class MouseRenderer extends EventEmitter
 {
-    private objects: Entity[] = [];
+    private objects: GameObject[] = [];
 
     /**
      * 渲染
      */
-    draw(gl: GL, viewRect: Rectangle): Entity<EntityEventMap>
+    draw(gl: GL, viewRect: Rectangle): GameObject<GameObjectEventMap>
     {
         const mouseX = windowEventProxy.clientX;
         const mouseY = windowEventProxy.clientY;

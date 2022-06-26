@@ -1,4 +1,4 @@
-import { Entity } from '../ecs/Entity';
+import { GameObject } from '../ecs/GameObject';
 import { Transform } from './Transform';
 import { ScriptComponent } from './ScriptComponent';
 
@@ -10,7 +10,7 @@ export class Script
     /**
      * The game object this component is attached to. A component is always attached to a game object.
      */
-    get entity(): Entity
+    get entity(): GameObject
     {
         return this.component.entity;
     }

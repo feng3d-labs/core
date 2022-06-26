@@ -8,17 +8,17 @@ import { MouseEventMap } from './MouseEventMap';
 
 type Components = ComponentMap[ComponentNames];
 
-export interface EntityEventMap extends MixinsEntityEventMap, MouseEventMap
+export interface GameObjectEventMap extends MixinsEntityEventMap, MouseEventMap
 {
     /**
      * 添加子组件事件
      */
-    addComponent: { entity: Entity, component: Component };
+    addComponent: { entity: GameObject, component: Component };
 
     /**
      * 移除子组件事件
      */
-    removeComponent: { entity: Entity, component: Component };
+    removeComponent: { entity: GameObject, component: Component };
 
     // /**
     //  * 包围盒失效
@@ -34,9 +34,9 @@ export interface EntityEventMap extends MixinsEntityEventMap, MouseEventMap
 /**
  * 实体，场景唯一存在的对象类型
  */
-export class Entity<T extends EntityEventMap = EntityEventMap> extends Feng3dObject<T> implements IDisposable
+export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> extends Feng3dObject<T> implements IDisposable
 {
-    __class__: 'feng3d.Entity';
+    __class__: 'GameObject';
 
     /**
      * 名称
@@ -364,7 +364,7 @@ export class Entity<T extends EntityEventMap = EntityEventMap> extends Feng3dObj
      */
     static find(name: string)
     {
-        const entitys = Feng3dObject.getObjects(Entity);
+        const entitys = Feng3dObject.getObjects(GameObject);
         const result = entitys.filter((v) => !v.disposed && (v.name === name));
 
         return result[0];

@@ -3,15 +3,15 @@ import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { PerspectiveLens } from '../cameras/lenses/PerspectiveLens';
 import { RegisterComponent } from '../ecs/Component';
-import { Entity } from '../ecs/Entity';
-import { EntityFactory } from '../EntityFactory';
+import { GameObject } from '../ecs/GameObject';
+import { GameObjectFactory } from '../GameObjectFactory';
 import { AddComponentMenu } from '../Menu';
 import { Light } from './Light';
 import { LightType } from './LightType';
 
 declare global
 {
-    interface MixinsPrimitiveEntity { 'Point light': Entity; }
+    interface MixinsPrimitiveEntity { 'Point light': GameObject; }
     interface MixinsComponentMap { PointLight: PointLight; }
 }
 
@@ -64,7 +64,7 @@ export class PointLight extends Light
     }
 }
 
-EntityFactory.registerPrimitive('Point light', (g) =>
+GameObjectFactory.registerPrimitive('Point light', (g) =>
 {
     g.addComponent(PointLight);
 });

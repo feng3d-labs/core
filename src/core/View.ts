@@ -4,7 +4,7 @@ import { serialization } from '@feng3d/serialization';
 import { windowEventProxy } from '@feng3d/shortcut';
 import { AudioListener } from '../audio/AudioListener';
 import { Camera } from '../cameras/Camera';
-import { Entity } from '../ecs/Entity';
+import { GameObject } from '../ecs/GameObject';
 import { Feng3dObject } from '../ecs/Feng3dObject';
 import { DirectionalLight } from '../light/DirectionalLight';
 import { ShadowType } from '../light/shadow/ShadowType';
@@ -47,7 +47,7 @@ export class View extends Feng3dObject
             const cameras = this.scene.getComponentsInChildren(Camera);
             if (cameras.length === 0)
             {
-                this._camera = serialization.setValue(new Entity(), { name: 'defaultCamera' }).addComponent(Camera);
+                this._camera = serialization.setValue(new GameObject(), { name: 'defaultCamera' }).addComponent(Camera);
                 this.scene.node3d.addChild(this._camera.node3d);
             }
             else
@@ -171,7 +171,7 @@ export class View extends Feng3dObject
             console.log('GraphicsDevice: WebGL context restored.');
         }, false);
 
-        this.scene = scene || serialization.setValue(new Entity(), { name: 'scene' }).addComponent(Scene);
+        this.scene = scene || serialization.setValue(new GameObject(), { name: 'scene' }).addComponent(Scene);
         this.camera = camera;
 
         this.start();
@@ -343,7 +343,7 @@ export class View extends Feng3dObject
 
     static createNewScene()
     {
-        const scene = serialization.setValue(new Entity(), { name: 'Untitled' }).addComponent(Scene);
+        const scene = serialization.setValue(new GameObject(), { name: 'Untitled' }).addComponent(Scene);
         scene.background.setTo(0.2784, 0.2784, 0.2784);
         scene.ambientColor.setTo(0.4, 0.4, 0.4);
 

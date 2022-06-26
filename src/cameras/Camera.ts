@@ -3,8 +3,8 @@ import { oav } from '@feng3d/objectview';
 import { serialization, serialize } from '@feng3d/serialization';
 import { Component3D } from '../component/Component3D';
 import { RegisterComponent } from '../ecs/Component';
-import { Entity } from '../ecs/Entity';
-import { EntityFactory } from '../EntityFactory';
+import { GameObject } from '../ecs/GameObject';
+import { GameObjectFactory } from '../GameObjectFactory';
 import { AddComponentMenu } from '../Menu';
 import { LensBase } from './lenses/LensBase';
 import { OrthographicLens } from './lenses/OrthographicLens';
@@ -22,7 +22,7 @@ declare global
     }
     interface MixinsPrimitiveEntity
     {
-        Camera: Entity;
+        Camera: GameObject;
     }
     interface MixinsComponentMap
     {
@@ -39,7 +39,7 @@ export class Camera extends Component3D
 {
     static create(name = 'Camera')
     {
-        const entity = new Entity();
+        const entity = new GameObject();
         entity.name = name;
         const camera = entity.addComponent(Camera);
 
@@ -219,7 +219,7 @@ export class Camera extends Component3D
     private _frustumInvalid = true;
 }
 
-EntityFactory.registerPrimitive('Camera', (g) =>
+GameObjectFactory.registerPrimitive('Camera', (g) =>
 {
     g.addComponent(Camera);
 });

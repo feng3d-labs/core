@@ -10,7 +10,7 @@ import { Transform } from '../core/Transform';
 import { Renderable } from '../core/Renderable';
 import { RunEnvironment } from '../core/RunEnvironment';
 import { Component, RegisterComponent } from '../ecs/Component';
-import { Entity } from '../ecs/Entity';
+import { GameObject } from '../ecs/GameObject';
 import { HideFlags } from '../ecs/HideFlags';
 import { DirectionalLight } from '../light/DirectionalLight';
 import { PointLight } from '../light/PointLight';
@@ -26,8 +26,8 @@ declare global
      */
     interface MixinsEntityEventMap
     {
-        addToScene: Entity;
-        removeFromScene: Entity;
+        addToScene: GameObject;
+        removeFromScene: GameObject;
         addComponentToScene: Component;
     }
     interface MixinsComponentMap { Scene: Scene; }

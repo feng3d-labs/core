@@ -2,8 +2,8 @@ import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { MeshRenderer } from '../core/MeshRenderer';
-import { Entity } from '../ecs/Entity';
-import { EntityFactory } from '../EntityFactory';
+import { GameObject } from '../ecs/GameObject';
+import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
 
 declare global
@@ -251,13 +251,13 @@ declare global
     }
     export interface MixinsPrimitiveEntity
     {
-        Torus: Entity;
+        Torus: GameObject;
     }
 }
 
 Geometry.setDefault('Torus', new TorusGeometry());
 
-EntityFactory.registerPrimitive('Torus', (g) =>
+GameObjectFactory.registerPrimitive('Torus', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Torus');
 });

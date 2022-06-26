@@ -2,8 +2,8 @@ import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { MeshRenderer } from '../core/MeshRenderer';
-import { Entity } from '../ecs/Entity';
-import { EntityFactory } from '../EntityFactory';
+import { GameObject } from '../ecs/GameObject';
+import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
 
 declare global
@@ -517,13 +517,13 @@ declare global
     }
     interface MixinsPrimitiveEntity
     {
-        Cube: Entity;
+        Cube: GameObject;
     }
 }
 
 Geometry.setDefault('Cube', new CubeGeometry());
 
-EntityFactory.registerPrimitive('Cube', (g) =>
+GameObjectFactory.registerPrimitive('Cube', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cube');
 });

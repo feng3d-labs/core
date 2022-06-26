@@ -4,8 +4,8 @@ import { serialization } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { Renderable } from '../core/Renderable';
 import { RegisterComponent } from '../ecs/Component';
-import { Entity } from '../ecs/Entity';
-import { EntityFactory } from '../EntityFactory';
+import { GameObject } from '../ecs/GameObject';
+import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
 import { Material } from '../materials/Material';
 import { AddComponentMenu } from '../Menu';
@@ -22,7 +22,7 @@ declare global
     }
     interface MixinsPrimitiveEntity
     {
-        Water: Entity;
+        Water: GameObject;
     }
 }
 
@@ -87,7 +87,7 @@ export class Water extends Renderable
         target.reflect(normal).negate();
         target.add(mirrorWorldPosition);
 
-        const mirrorCamera = serialization.setValue(new Entity(), { name: 'waterMirrorCamera' }).addComponent(Camera);
+        const mirrorCamera = serialization.setValue(new GameObject(), { name: 'waterMirrorCamera' }).addComponent(Camera);
         mirrorCamera.node3d.x = view.x;
         mirrorCamera.node3d.y = view.y;
         mirrorCamera.node3d.z = view.z;
@@ -148,7 +148,7 @@ export class Water extends Renderable
     }
 }
 
-EntityFactory.registerPrimitive('Water', (g) =>
+GameObjectFactory.registerPrimitive('Water', (g) =>
 {
     g.addComponent(Water);
 });

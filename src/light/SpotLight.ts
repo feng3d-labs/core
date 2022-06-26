@@ -4,14 +4,14 @@ import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { PerspectiveLens } from '../cameras/lenses/PerspectiveLens';
 import { RegisterComponent } from '../ecs/Component';
-import { Entity } from '../ecs/Entity';
-import { EntityFactory } from '../EntityFactory';
+import { GameObject } from '../ecs/GameObject';
+import { GameObjectFactory } from '../GameObjectFactory';
 import { Light } from './Light';
 import { LightType } from './LightType';
 
 declare global
 {
-    interface MixinsPrimitiveEntity { 'Spot light': Entity; }
+    interface MixinsPrimitiveEntity { 'Spot light': GameObject; }
     interface MixinsComponentMap { SpotLight: SpotLight; }
 }
 
@@ -80,7 +80,7 @@ export class SpotLight extends Light
     }
 }
 
-EntityFactory.registerPrimitive('Spot light', (g) =>
+GameObjectFactory.registerPrimitive('Spot light', (g) =>
 {
     g.addComponent(SpotLight);
 });

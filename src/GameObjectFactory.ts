@@ -1,17 +1,9 @@
 import { gPartial } from '@feng3d/polyfill';
 import { serialization } from '@feng3d/serialization';
-import { Camera } from './cameras/Camera';
-import { MeshRenderer } from './core/MeshRenderer';
 import { Transform } from './core/Transform';
-import { Entity } from './ecs/Entity';
-import { Geometry } from './geometry/Geometry';
-import { SegmentGeometry } from './geometry/SegmentGeometry';
-import { DirectionalLight } from './light/DirectionalLight';
-import { PointLight } from './light/PointLight';
-import { SpotLight } from './light/SpotLight';
-import { Material } from './materials/Material';
+import { GameObject } from './ecs/GameObject';
 
-export class EntityFactory
+export class GameObjectFactory
 {
     /**
      * 创建指定类型的实体。
@@ -19,9 +11,9 @@ export class EntityFactory
      * @param type 实体类型。
      * @param param 实体参数。
      */
-    static createPrimitive<K extends keyof MixinsPrimitiveEntity>(type: K, param?: gPartial<Entity>)
+    static createPrimitive<K extends keyof MixinsPrimitiveEntity>(type: K, param?: gPartial<GameObject>)
     {
-        const g = new Entity();
+        const g = new GameObject();
         g.name = type;
 
         const createHandler = this._registerPrimitives[type];
@@ -38,13 +30,13 @@ export class EntityFactory
      * @param type 原始实体类型。
      * @param handler 构建原始实体的函数。
      */
-    static registerPrimitive<K extends keyof MixinsPrimitiveEntity>(type: K, handler: (entity: Entity) => void)
+    static registerPrimitive<K extends keyof MixinsPrimitiveEntity>(type: K, handler: (entity: GameObject) => void)
     {
         if (this._registerPrimitives[type])
         { console.warn(`重复注册原始实体 ${type} ！`); }
         this._registerPrimitives[type] = handler;
     }
-    static _registerPrimitives: { [type: string]: (gameObject: Entity) => void } = {};
+    static _registerPrimitives: { [type: string]: (gameObject: GameObject) => void } = {};
 }
 
 declare global

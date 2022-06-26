@@ -4,8 +4,8 @@ import { Camera } from '../cameras/Camera';
 import { OrthographicLens } from '../cameras/lenses/OrthographicLens';
 import { Renderable } from '../core/Renderable';
 import { RegisterComponent } from '../ecs/Component';
-import { Entity } from '../ecs/Entity';
-import { EntityFactory } from '../EntityFactory';
+import { GameObject } from '../ecs/GameObject';
+import { GameObjectFactory } from '../GameObjectFactory';
 import { AddComponentMenu } from '../Menu';
 import { Scene } from '../scene/Scene';
 import { Light } from './Light';
@@ -25,7 +25,7 @@ export class DirectionalLight extends Light
 {
     static create(name = 'DirectionalLight')
     {
-        const entity = new Entity();
+        const entity = new GameObject();
         entity.name = name;
         const directionalLight = entity.addComponent(DirectionalLight);
 
@@ -85,12 +85,12 @@ export class DirectionalLight extends Light
     }
 }
 
-EntityFactory.registerPrimitive('Directional light', (g) =>
+GameObjectFactory.registerPrimitive('Directional light', (g) =>
 {
     g.addComponent(DirectionalLight);
 });
 
 declare global
 {
-    interface MixinsPrimitiveEntity { 'Directional light': Entity; }
+    interface MixinsPrimitiveEntity { 'Directional light': GameObject; }
 }

@@ -4,7 +4,7 @@ import { serialize } from '@feng3d/serialization';
 import { Component3D } from '../../component/Component3D';
 import { Transform } from '../../core/Transform';
 import { RegisterComponent } from '../../ecs/Component';
-import { Entity } from '../../ecs/Entity';
+import { GameObject } from '../../ecs/GameObject';
 import { HideFlags } from '../../ecs/HideFlags';
 import { SkeletonJoint } from './Skeleton';
 
@@ -167,7 +167,7 @@ export class SkeletonComponent extends Component3D
             let jointTransform = parentNode3D.find(skeletonJoint.name);
             if (!jointTransform)
             {
-                const entity = new Entity();
+                const entity = new GameObject();
                 entity.name = skeletonJoint.name;
                 entity.hideFlags = HideFlags.DontSave;
                 jointTransform = entity.addComponent(Transform);

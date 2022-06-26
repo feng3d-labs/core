@@ -6,7 +6,7 @@ import { Camera } from '../cameras/Camera';
 import { Behaviour } from '../component/Behaviour';
 import { BillboardComponent } from '../component/BillboardComponent';
 import { MeshRenderer } from '../core/MeshRenderer';
-import { Entity } from '../ecs/Entity';
+import { GameObject } from '../ecs/GameObject';
 import { HideFlags } from '../ecs/HideFlags';
 import { Geometry } from '../geometry/Geometry';
 import { Material } from '../materials/Material';
@@ -122,7 +122,7 @@ export class Light extends Behaviour
     constructor()
     {
         super();
-        this.shadowCamera = serialization.setValue(new Entity(), { name: 'LightShadowCamera' }).addComponent(Camera);
+        this.shadowCamera = serialization.setValue(new GameObject(), { name: 'LightShadowCamera' }).addComponent(Camera);
     }
 
     updateDebugShadowMap(scene: Scene, viewCamera: Camera)
@@ -130,7 +130,7 @@ export class Light extends Behaviour
         let model = this.debugShadowMapModel;
         if (!model)
         {
-            const entity = new Entity();
+            const entity = new GameObject();
             entity.name = 'debugShadowMapObject';
             model = entity.addComponent(MeshRenderer);
             model.geometry = Geometry.getDefault('Plane');

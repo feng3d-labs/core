@@ -1,6 +1,6 @@
 import { MeshRenderer } from '../core/MeshRenderer';
-import { Entity } from '../ecs/Entity';
-import { EntityFactory } from '../EntityFactory';
+import { GameObject } from '../ecs/GameObject';
+import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
 import { geometryUtils } from '../geometry/GeometryUtils';
 
@@ -41,12 +41,12 @@ declare global
     }
     interface MixinsPrimitiveEntity
     {
-        Quad: Entity;
+        Quad: GameObject;
     }
 }
 Geometry.setDefault('Quad', new QuadGeometry());
 
-EntityFactory.registerPrimitive('Quad', (g) =>
+GameObjectFactory.registerPrimitive('Quad', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Quad');
 });

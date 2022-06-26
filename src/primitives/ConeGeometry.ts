@@ -1,6 +1,6 @@
 import { MeshRenderer } from '../core/MeshRenderer';
-import { Entity } from '../ecs/Entity';
-import { EntityFactory } from '../EntityFactory';
+import { GameObject } from '../ecs/GameObject';
+import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
 import { CylinderGeometry } from './CylinderGeometry';
 
@@ -32,7 +32,7 @@ export class ConeGeometry extends CylinderGeometry
 
 Geometry.setDefault('Cone', new ConeGeometry());
 
-EntityFactory.registerPrimitive('Cone', (g) =>
+GameObjectFactory.registerPrimitive('Cone', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cone');
 });
@@ -45,6 +45,6 @@ declare global
     }
     interface MixinsPrimitiveEntity
     {
-        Cone: Entity;
+        Cone: GameObject;
     }
 }

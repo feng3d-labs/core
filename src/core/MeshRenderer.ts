@@ -1,5 +1,5 @@
 import { RegisterComponent } from '../ecs/Component';
-import { Entity } from '../ecs/Entity';
+import { GameObject } from '../ecs/GameObject';
 import { Renderable } from './Renderable';
 
 declare global
@@ -17,7 +17,7 @@ export class MeshRenderer extends Renderable
 
     static create(name = 'Mesh', callback?: (component: MeshRenderer) => void)
     {
-        const entity = new Entity();
+        const entity = new GameObject();
         entity.name = name;
         const meshRenderer = entity.addComponent(MeshRenderer, callback);
 

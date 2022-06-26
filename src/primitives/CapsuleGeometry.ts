@@ -2,8 +2,8 @@ import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { MeshRenderer } from '../core/MeshRenderer';
-import { Entity } from '../ecs/Entity';
-import { EntityFactory } from '../EntityFactory';
+import { GameObject } from '../ecs/GameObject';
+import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
 
 declare global
@@ -229,7 +229,7 @@ export class CapsuleGeometry extends Geometry
 
 Geometry.setDefault('Capsule', new CapsuleGeometry());
 
-EntityFactory.registerPrimitive('Capsule', (g) =>
+GameObjectFactory.registerPrimitive('Capsule', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Capsule');
 });
@@ -238,7 +238,7 @@ declare global
 {
     interface MixinsPrimitiveEntity
     {
-        Capsule: Entity;
+        Capsule: GameObject;
     }
     interface MixinsDefaultGeometry
     {
