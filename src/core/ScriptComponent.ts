@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { RegisterComponent } from '@feng3d/ecs';
 import { globalEmitter } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
 import { classUtils } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { Behaviour } from '../component/Behaviour';
+import { RegisterComponent } from '../ecs/Component';
 import { AddComponentMenu } from '../Menu';
 import { RunEnvironment } from './RunEnvironment';
 import { Script } from './Script';

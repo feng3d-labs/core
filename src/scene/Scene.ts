@@ -1,4 +1,3 @@
-import { Component, Entity, HideFlags, RegisterComponent } from '@feng3d/ecs';
 import { Color4, Ray3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { RenderMode } from '@feng3d/renderer';
@@ -10,6 +9,9 @@ import { Component3D } from '../component/Component3D';
 import { Node3D } from '../core/Node3D';
 import { Renderable } from '../core/Renderable';
 import { RunEnvironment } from '../core/RunEnvironment';
+import { Component, RegisterComponent } from '../ecs/Component';
+import { Entity } from '../ecs/Entity';
+import { HideFlags } from '../ecs/HideFlags';
 import { DirectionalLight } from '../light/DirectionalLight';
 import { PointLight } from '../light/PointLight';
 import { SpotLight } from '../light/SpotLight';

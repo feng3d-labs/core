@@ -1,9 +1,9 @@
-import { RegisterComponent } from '@feng3d/ecs';
 import { oav } from '@feng3d/objectview';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { Component3D } from '../component/Component3D';
+import { RegisterComponent } from '../ecs/Component';
 import { AddComponentMenu } from '../Menu';
 import { Scene } from '../scene/Scene';
 import { TextureCube } from '../textures/TextureCube';

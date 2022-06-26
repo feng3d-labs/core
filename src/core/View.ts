@@ -1,10 +1,11 @@
-import { Entity, Feng3dObject } from '@feng3d/ecs';
 import { Ray3, Rectangle, Vector2, Vector3 } from '@feng3d/math';
 import { GL } from '@feng3d/renderer';
 import { serialization } from '@feng3d/serialization';
 import { windowEventProxy } from '@feng3d/shortcut';
 import { AudioListener } from '../audio/AudioListener';
 import { Camera } from '../cameras/Camera';
+import { Entity } from '../ecs/Entity';
+import { Feng3dObject } from '../ecs/Feng3dObject';
 import { DirectionalLight } from '../light/DirectionalLight';
 import { ShadowType } from '../light/shadow/ShadowType';
 import { forwardRenderer } from '../render/renderer/ForwardRenderer';

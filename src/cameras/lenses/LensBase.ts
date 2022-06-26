@@ -1,8 +1,8 @@
-import { Feng3dObject } from '@feng3d/ecs';
 import { Matrix4x4, Ray3, Vector3, Vector4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { Feng3dObject } from '../../ecs/Feng3dObject';
 import { Projection } from '../Projection';
 
 /**

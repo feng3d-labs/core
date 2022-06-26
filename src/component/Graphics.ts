@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Component } from '@feng3d/ecs';
 import { dataTransform } from '@feng3d/polyfill';
+import { Component } from '../ecs/Component';
 
 /**
  * Graphics 类包含一组可用来创建矢量形状的方法。

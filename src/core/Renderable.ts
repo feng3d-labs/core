@@ -1,4 +1,3 @@
-import { RegisterComponent } from '@feng3d/ecs';
 import { IEvent as Event } from '@feng3d/event';
 import { Box3, Ray3, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
@@ -6,6 +5,7 @@ import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
+import { RegisterComponent } from '../ecs/Component';
 import { Geometry, GeometryLike } from '../geometry/Geometry';
 import { LightPicker } from '../light/pickers/LightPicker';
 import { Material } from '../materials/Material';

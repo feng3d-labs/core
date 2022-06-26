@@ -1,5 +1,5 @@
-import { Component, ComponentNames } from '@feng3d/ecs';
 import { Constructor } from '@feng3d/polyfill';
+import { Component, ComponentNames } from './ecs/Component';
 
 /**
  * 添加组件菜单

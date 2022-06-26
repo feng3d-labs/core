@@ -1,4 +1,5 @@
-import { Entity, RegisterComponent } from '@feng3d/ecs';
+import { RegisterComponent } from '../ecs/Component';
+import { Entity } from '../ecs/Entity';
 import { Renderable } from './Renderable';
 
 declare global

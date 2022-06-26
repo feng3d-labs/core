@@ -1,9 +1,9 @@
-import { Entity } from '@feng3d/ecs';
 import { gPartial } from '@feng3d/polyfill';
 import { serialization } from '@feng3d/serialization';
 import { Camera } from './cameras/Camera';
 import { MeshRenderer } from './core/MeshRenderer';
 import { Node3D } from './core/Node3D';
+import { Entity } from './ecs/Entity';
 import { Geometry } from './geometry/Geometry';
 import { SegmentGeometry } from './geometry/SegmentGeometry';
 import { DirectionalLight } from './light/DirectionalLight';

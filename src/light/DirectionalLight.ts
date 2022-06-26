@@ -1,9 +1,10 @@
-import { Entity, RegisterComponent } from '@feng3d/ecs';
 import { Box3, Vector3 } from '@feng3d/math';
 import { serialization } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { OrthographicLens } from '../cameras/lenses/OrthographicLens';
 import { Renderable } from '../core/Renderable';
+import { RegisterComponent } from '../ecs/Component';
+import { Entity } from '../ecs/Entity';
 import { EntityFactory } from '../EntityFactory';
 import { AddComponentMenu } from '../Menu';
 import { Scene } from '../scene/Scene';

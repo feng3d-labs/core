@@ -1,5 +1,5 @@
-import { Entity } from '@feng3d/ecs';
 import { MeshRenderer } from '../core/MeshRenderer';
+import { Entity } from '../ecs/Entity';
 import { EntityFactory } from '../EntityFactory';
 import { Geometry } from '../geometry/Geometry';
 import { geometryUtils } from '../geometry/GeometryUtils';

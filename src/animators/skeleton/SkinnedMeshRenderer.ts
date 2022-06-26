@@ -1,4 +1,3 @@
-import { HideFlags, RegisterComponent } from '@feng3d/ecs';
 import { Matrix4x4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { RenderAtomic } from '@feng3d/renderer';
@@ -6,6 +5,8 @@ import { serialize } from '@feng3d/serialization';
 import { Animation } from '../../animation/Animation';
 import { Camera } from '../../cameras/Camera';
 import { Renderable } from '../../core/Renderable';
+import { RegisterComponent } from '../../ecs/Component';
+import { HideFlags } from '../../ecs/HideFlags';
 import { Scene } from '../../scene/Scene';
 import { SkeletonComponent } from './SkeletonComponent';
 

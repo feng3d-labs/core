@@ -1,8 +1,9 @@
-import { Entity, RegisterComponent } from '@feng3d/ecs';
 import { Frustum, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialization, serialize } from '@feng3d/serialization';
 import { Component3D } from '../component/Component3D';
+import { RegisterComponent } from '../ecs/Component';
+import { Entity } from '../ecs/Entity';
 import { EntityFactory } from '../EntityFactory';
 import { AddComponentMenu } from '../Menu';
 import { LensBase } from './lenses/LensBase';

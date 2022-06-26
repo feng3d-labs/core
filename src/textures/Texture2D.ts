@@ -1,6 +1,6 @@
-import { HideFlags } from '@feng3d/ecs';
 import { TextureFormat, TextureType } from '@feng3d/renderer';
 import { serialization } from '@feng3d/serialization';
+import { HideFlags } from '../ecs/HideFlags';
 import { ImageDatas, TextureInfo } from '../render/data/TextureInfo';
 
 export interface Texture2DEventMap

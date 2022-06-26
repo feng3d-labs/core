@@ -1,4 +1,3 @@
-import { RegisterComponent } from '@feng3d/ecs';
 import { IEvent as Event } from '@feng3d/event';
 import { Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
@@ -7,6 +6,7 @@ import { serialize } from '@feng3d/serialization';
 import { watcher } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
 import { Component3D } from '../component/Component3D';
+import { RegisterComponent } from '../ecs/Component';
 import { AddComponentMenu } from '../Menu';
 import { Scene } from '../scene/Scene';
 import { ticker } from '../utils/Ticker';

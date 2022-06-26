@@ -1,9 +1,10 @@
-import { Entity, RegisterComponent } from '@feng3d/ecs';
 import { Matrix4x4, Plane, Vector3, Vector4 } from '@feng3d/math';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialization } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { Renderable } from '../core/Renderable';
+import { RegisterComponent } from '../ecs/Component';
+import { Entity } from '../ecs/Entity';
 import { EntityFactory } from '../EntityFactory';
 import { Geometry } from '../geometry/Geometry';
 import { Material } from '../materials/Material';

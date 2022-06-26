@@ -1,9 +1,9 @@
-import { Entity } from '@feng3d/ecs';
 import { Color4, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { MeshRenderer } from '../core/MeshRenderer';
+import { Entity } from '../ecs/Entity';
 import { EntityFactory } from '../EntityFactory';
 import { Material } from '../materials/Material';
 import { Geometry } from './Geometry';

@@ -1,6 +1,6 @@
-import { Component, RegisterComponent } from '@feng3d/ecs';
 import { Constructor } from '@feng3d/polyfill';
 import { Node3D } from '../core/Node3D';
+import { Component, RegisterComponent } from '../ecs/Component';
 
 /**
  * 3D组件

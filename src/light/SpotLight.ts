@@ -1,9 +1,10 @@
-import { Entity, RegisterComponent } from '@feng3d/ecs';
 import { oav } from '@feng3d/objectview';
 import { mathUtil } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { PerspectiveLens } from '../cameras/lenses/PerspectiveLens';
+import { RegisterComponent } from '../ecs/Component';
+import { Entity } from '../ecs/Entity';
 import { EntityFactory } from '../EntityFactory';
 import { Light } from './Light';
 import { LightType } from './LightType';

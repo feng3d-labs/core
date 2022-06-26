@@ -1,4 +1,3 @@
-import { RegisterComponent } from '@feng3d/ecs';
 import { IEvent as Event } from '@feng3d/event';
 import { Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
@@ -6,6 +5,7 @@ import { ObjectUtils } from '@feng3d/polyfill';
 import { windowEventProxy } from '@feng3d/shortcut';
 import { Behaviour } from '../component/Behaviour';
 import { RunEnvironment } from '../core/RunEnvironment';
+import { RegisterComponent } from '../ecs/Component';
 import { AddComponentMenu } from '../Menu';
 
 declare global

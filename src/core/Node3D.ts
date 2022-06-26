@@ -1,4 +1,3 @@
-import { Component, RegisterComponent } from '@feng3d/ecs';
 import type { IVector3 } from '@feng3d/math';
 import { Box3, Matrix4x4, Quaternion, Ray3, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
@@ -6,6 +5,7 @@ import { Constructor, decoratorRegisterClass, mathUtil, ObjectUtils } from '@fen
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
+import { Component, RegisterComponent } from '../ecs/Component';
 import { Scene } from '../scene/Scene';
 import { BoundingBox } from './BoundingBox';
 

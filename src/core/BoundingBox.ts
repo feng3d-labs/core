@@ -1,5 +1,5 @@
-import { Component } from '@feng3d/ecs';
 import { Box3 } from '@feng3d/math';
+import { Component } from '../ecs/Component';
 import { Node3D } from './Node3D';
 
 declare global

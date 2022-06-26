@@ -1,9 +1,11 @@
-import { Entity, HideFlags, RegisterComponent } from '@feng3d/ecs';
 import { Matrix4x4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { Component3D } from '../../component/Component3D';
 import { Node3D } from '../../core/Node3D';
+import { RegisterComponent } from '../../ecs/Component';
+import { Entity } from '../../ecs/Entity';
+import { HideFlags } from '../../ecs/HideFlags';
 import { SkeletonJoint } from './Skeleton';
 
 declare global

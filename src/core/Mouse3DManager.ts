@@ -1,10 +1,10 @@
-import { MouseEventMap } from '@feng3d/ecs';
 import { EventEmitter, IEvent } from '@feng3d/event';
 import { Rectangle } from '@feng3d/math';
 import { Lazy, lazy } from '@feng3d/polyfill';
 import { windowEventProxy } from '@feng3d/shortcut';
 import { watch } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
+import { MouseEventMap } from '../ecs/MouseEventMap';
 import { raycaster } from '../pick/Raycaster';
 import { Scene } from '../scene/Scene';
 import { Node3D } from './Node3D';

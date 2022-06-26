@@ -1,10 +1,11 @@
-import { Feng3dObject, HideFlags } from '@feng3d/ecs';
 import { globalEmitter } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
 import { gPartial, ObjectUtils } from '@feng3d/polyfill';
 import { RenderAtomic, RenderMode, RenderParams, Shader, shaderlib } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { Feng3dObject } from '../ecs/Feng3dObject';
+import { HideFlags } from '../ecs/HideFlags';
 
 export interface UniformsTypes extends MixinsUniformsTypes { }
 export type ShaderNames = keyof UniformsTypes;

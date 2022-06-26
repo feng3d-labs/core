@@ -1,10 +1,10 @@
-import { Feng3dObject } from '@feng3d/ecs';
 import { Color4, ColorKeywords, Vector2 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { dataTransform, mathUtil } from '@feng3d/polyfill';
 import { GL, Texture, TextureDataType, TextureFormat, TextureMagFilter, TextureMinFilter, TextureType, TextureWrap } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { Feng3dObject } from '../../ecs/Feng3dObject';
 import { ImageUtil } from '../../utils/ImageUtil';
 
 export enum ImageDatas
