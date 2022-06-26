@@ -1,7 +1,7 @@
 import type { IVector3 } from '@feng3d/math';
 import { Box3, Matrix4x4, Quaternion, Ray3, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { Constructor, decoratorRegisterClass, mathUtil, ObjectUtils } from '@feng3d/polyfill';
+import { decoratorRegisterClass, mathUtil, ObjectUtils } from '@feng3d/polyfill';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
@@ -688,13 +688,15 @@ export class Transform extends Component
      */
     find(name: string): Transform
     {
-        if (this.name === name)
+        if (this.gameObject.name === name)
         { return this; }
         for (let i = 0; i < this._children.length; i++)
         {
             const target = this._children[i].find(name);
             if (target)
-            { return target; }
+            {
+                return target;
+            }
         }
 
         return null;
@@ -988,26 +990,6 @@ export class Transform extends Component
         this.worldToLocalMatrix.transformRay(worldRay, localRay);
 
         return localRay;
-    }
-
-    /**
-     * 从父代（父亲，父亲的父亲，...）中获取组件
-     *
-     * @param type 类定义
-     * @returns         返回与给出类定义一致的组件
-     */
-    getComponentsInParents<T extends Component>(type?: Constructor<T>, result?: T[]): T[]
-    {
-        result = result || [];
-        let parent = this.parent;
-        while (parent)
-        {
-            const compnent = parent.getComponent(type);
-            compnent && result.push(compnent);
-            parent = parent.parent;
-        }
-
-        return result;
     }
 
     beforeRender(renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)

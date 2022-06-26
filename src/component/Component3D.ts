@@ -1,4 +1,3 @@
-import { Constructor } from '@feng3d/polyfill';
 import { Transform } from '../core/Transform';
 import { Component, RegisterComponent } from '../ecs/Component';
 
@@ -18,28 +17,5 @@ export class Component3D extends Component
     get node3d()
     {
         return this._gameObject?.getComponent(Transform);
-    }
-
-    /**
-     * Returns all components of Type type in the Entity.
-     *
-     * 返回 Entity 或其任何子项中类型为 type 的所有组件。
-     *
-     * @param type 类定义
-     * @returns         返回与给出类定义一致的组件
-     */
-    getComponentsInChildren<T extends Component>(type?: Constructor<T>, filter?: (compnent: T) => { findchildren: boolean, value: boolean }, result?: T[]): T[]
-    {
-        return this.node3d.getComponentsInChildren(type, filter, result);
-    }
-
-    /**
-     * 从父类中获取组件
-     * @param type 类定义
-     * @returns         返回与给出类定义一致的组件
-     */
-    getComponentsInParents<T extends Component>(type?: Constructor<T>, result?: T[]): T[]
-    {
-        return this.node3d.getComponentsInParents(type, result);
     }
 }

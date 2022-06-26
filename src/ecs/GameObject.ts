@@ -48,23 +48,6 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
     __class__: 'GameObject';
 
     /**
-     * The name of the object.
-     */
-    /**
-     * 对象的名称。
-     */
-    @serialize
-    get name()
-    {
-        return this._name;
-    }
-    set name(v)
-    {
-        this._name = v;
-    }
-    protected _name: string;
-
-    /**
      * Defines whether the GameObject is active in the Scene.
      */
     /**
@@ -191,7 +174,7 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
      * @returns The component to retrieve.
      */
     /**
-     * 如果游戏对象附加了一个，则返回 Type 的组件，type如果没有，则返回 null。
+     * 返回游戏对象附加的一个指定类型的组件，如果没有，则返回 null。
      *
      * 使用 gameObject.GetComponent 将返回找到的第一个组件。如果您希望有多个相同类型的组件，请改用 gameObject.GetComponents，并循环通过返回的组件测试某些唯一属性。
      *
@@ -278,7 +261,7 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
 
         if (this.transform.parent)
         {
-            const component = this.transform.parent.gameObject.getComponentInParent(type, includeInactive);
+            const component = this.transform.parent.getComponentInParent(type, includeInactive);
             if (component)
             {
                 return component;
@@ -375,7 +358,7 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
 
         if (this.transform.parent)
         {
-            this.transform.parent.gameObject.getComponentsInParent(type, includeInactive, results);
+            this.transform.parent.getComponentsInParent(type, includeInactive, results);
         }
 
         return results;

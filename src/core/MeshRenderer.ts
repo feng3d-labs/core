@@ -15,11 +15,11 @@ export class MeshRenderer extends Renderable
 {
     __class__: 'feng3d.MeshRenderer';
 
-    static create(name = 'Mesh', callback?: (component: MeshRenderer) => void)
+    static create(name = 'Mesh')
     {
-        const entity = new GameObject();
-        entity.name = name;
-        const meshRenderer = entity.addComponent(MeshRenderer, callback);
+        const gameObject = new GameObject();
+        gameObject.name = name;
+        const meshRenderer = gameObject.addComponent(MeshRenderer);
 
         return meshRenderer;
     }

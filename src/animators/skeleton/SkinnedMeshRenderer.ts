@@ -41,7 +41,7 @@ export class SkinnedMeshRenderer extends Renderable
         super.beforeRender(renderAtomic, scene, camera);
 
         let frameId: string = null;
-        const animation = this.getComponentsInParents(Animation)[0];
+        const animation = this.getComponentInParent(Animation);
         if (animation)
         {
             frameId = `${animation.clipName}&${animation.frame}`;

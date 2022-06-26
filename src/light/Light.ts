@@ -136,7 +136,7 @@ export class Light extends Behaviour
             model.geometry = Geometry.getDefault('Plane');
             model.hideFlags = HideFlags.Hide | HideFlags.DontSave;
             model.node3d.mouseEnabled = false;
-            model.addComponent(BillboardComponent);
+            model.gameObject.addComponent(BillboardComponent);
 
             // 材质
             model.geometry = serialization.setValue(new PlaneGeometry(), { width: this.lightType === LightType.Point ? 1 : 0.5, height: 0.5, segmentsW: 1, segmentsH: 1, yUp: false });

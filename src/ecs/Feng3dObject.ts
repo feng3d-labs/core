@@ -18,6 +18,23 @@ import { HideFlags } from './HideFlags';
 export class Feng3dObject<T = any> extends EventEmitter<T>
 {
     /**
+     * The name of the object.
+     */
+    /**
+     * 对象的名称。
+     */
+    @serialize
+    get name()
+    {
+        return this._name;
+    }
+    set name(v)
+    {
+        this._name = v;
+    }
+    protected _name: string;
+
+    /**
      * Should the object be hidden, saved with the Scene or modifiable by the user?
      */
     /**
