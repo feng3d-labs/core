@@ -137,42 +137,18 @@ export class Component<T extends GameObjectEventMap = GameObjectEventMap> extend
         return isSingle;
     }
 
-    // ------------------------------------------
-    // Variables
-    // ------------------------------------------
     /**
-     * 此组件附加到的实体。组件总是附加到实体上。
+     * The game object this component is attached to. A component is always attached to a game object.
      */
+    /**
+     * 此组件附加到的游戏对象。组件始终附加到游戏对象。
+     */
+    get gameObject()
+    {
+        return this._gameObject;
+    }
     @serialize
-    get entity()
-    {
-        return this._entity;
-    }
-
-    set entity(v)
-    {
-        if (this._entity === v)
-        {
-            return;
-        }
-        console.assert(!this._entity, '组件无法再次加入其它Entity中!');
-        this._entity = v;
-    }
-
-    /**
-     * 名称。
-     *
-     * 组件与实体及所有附加组件使用相同的名称。
-     */
-    get name()
-    {
-        return this._entity?.name;
-    }
-
-    set name(v)
-    {
-        this._entity.name = v;
-    }
+    protected _gameObject: GameObject;
 
     /**
      * 此实体的标签。
@@ -181,12 +157,12 @@ export class Component<T extends GameObjectEventMap = GameObjectEventMap> extend
      */
     get tag()
     {
-        return this._entity.tag;
+        return this._gameObject.tag;
     }
 
     set tag(v)
     {
-        this._entity.tag = v;
+        this._gameObject.tag = v;
     }
 
     // ------------------------------------------
@@ -211,130 +187,11 @@ export class Component<T extends GameObjectEventMap = GameObjectEventMap> extend
     }
 
     /**
-     * 获取指定位置索引的子组件
-     * @param index 位置索引
-     * @returns             子组件
-     */
-    getComponentAt(index: number): Component
-    {
-        return this.entity.getComponentAt(index);
-    }
-
-    /**
-     * 添加指定组件类型到实体
-     *
-     * @type type 被添加组件
-     */
-    addComponent<T extends Component>(type: Constructor<T>, callback: (component: T) => void = null): T
-    {
-        return this.entity.addComponent(type, callback);
-    }
-
-    // /**
-    //  * 添加脚本
-    //  * @param script 脚本路径
-    //  */
-    //  addScript(scriptName: string): ScriptComponent
-    //  {
-    //      return this.entity.addScript(scriptName);
-    //  }
-
-    /**
-     * 获取实体上第一个指定类型的组件，不存在时返回null
-     *
-     * @param type 类定义
-     * @returns                  返回指定类型组件
-     */
-    getComponent<T extends Component>(type: Constructor<T>): T
-    {
-        return this.entity.getComponent(type);
-    }
-
-    /**
-     * 获取实体上所有指定类型的组件数组
-     *
-     * @param type 类定义
-     * @returns         返回与给出类定义一致的组件
-     */
-    getComponents<T extends Component>(type: Constructor<T>): T[]
-    {
-        return this.entity.getComponents(type);
-    }
-
-    /**
-     * 设置子组件的位置
-     * @param component 子组件
-     * @param index 位置索引
-     */
-    setComponentIndex(component: Component, index: number): void
-    {
-        this.entity.setComponentIndex(component, index);
-    }
-
-    /**
-     * 设置组件到指定位置
-     * @param component 被设置的组件
-     * @param index 索引
-     */
-    setComponentAt(component: Component, index: number)
-    {
-        this.entity.setComponentAt(component, index);
-    }
-
-    /**
-     * 移除组件
-     * @param component 被移除组件
-     */
-    removeComponent(component: Component): void
-    {
-        this.entity.removeComponent(component);
-    }
-
-    /**
-     * 获取组件在容器的索引位置
-     * @param component 查询的组件
-     * @returns                 组件在容器的索引位置
-     */
-    getComponentIndex(component: Component): number
-    {
-        return this.entity.getComponentIndex(component);
-    }
-
-    /**
-     * 移除组件
-     * @param index 要删除的 Component 的子索引。
-     */
-    removeComponentAt(index: number): Component
-    {
-        return this.entity.removeComponentAt(index);
-    }
-
-    /**
-     * 交换子组件位置
-     * @param index1 第一个子组件的索引位置
-     * @param index2 第二个子组件的索引位置
-     */
-    swapComponentsAt(index1: number, index2: number): void
-    {
-        this.swapComponentsAt(index1, index2);
-    }
-
-    /**
-     * 交换子组件位置
-     * @param a 第一个子组件
-     * @param b 第二个子组件
-     */
-    swapComponents(a: Component, b: Component): void
-    {
-        this.swapComponents(a, b);
-    }
-
-    /**
      * 销毁
      */
     dispose()
     {
-        this._entity = null;
+        this._gameObject = null;
         this._disposed = true;
     }
 
@@ -348,8 +205,8 @@ export class Component<T extends GameObjectEventMap = GameObjectEventMap> extend
      */
     private _onAnyListener(e: IEvent<any>)
     {
-        if (this._entity)
-        { this._entity.emitEvent(e); }
+        if (this._gameObject)
+        { this._gameObject.emitEvent(e); }
     }
 
     /**
@@ -360,24 +217,7 @@ export class Component<T extends GameObjectEventMap = GameObjectEventMap> extend
      */
     _setEntity(entity: GameObject)
     {
-        this._entity = entity;
+        this._gameObject = entity;
     }
-
-    // ------------------------------------------
-    // Static Functions
-    // ------------------------------------------
-
-    // ------------------------------------------
-    // Protected Properties
-    // ------------------------------------------
-    protected _entity: GameObject;
-
-    // ------------------------------------------
-    // Protected Functions
-    // ------------------------------------------
-
-    // ------------------------------------------
-    // Private Properties
-    // ------------------------------------------
 }
 

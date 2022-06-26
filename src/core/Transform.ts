@@ -991,59 +991,6 @@ export class Transform extends Component
     }
 
     /**
-     * 从自身与子代（孩子，孩子的孩子，...）Entity 中获取所有指定类型的组件
-     *
-     * @param type 要检索的组件的类型。
-     * @returns         返回与给出类定义一致的组件
-     */
-    getComponentsInChildren<T extends Component>(type?: Constructor<T>, filter?: (compnent: T) => {
-        /**
-         * 是否继续查找子项
-         */
-        findchildren: boolean,
-        /**
-         * 是否为需要查找的组件
-         */
-        value: boolean
-    }, result?: T[]): T[]
-    {
-        result = result || [];
-        let findchildren = true;
-        const cls = type;
-        const components = this.entity.components;
-        for (let i = 0, n = components.length; i < n; i++)
-        {
-            const item = components[i] as T;
-            if (!cls)
-            {
-                result.push(item);
-            }
-            else if (item instanceof cls)
-            {
-                if (filter)
-                {
-                    const filterresult = filter(item);
-                    filterresult && filterresult.value && result.push(item);
-                    findchildren = filterresult ? (filterresult && filterresult.findchildren) : false;
-                }
-                else
-                {
-                    result.push(item);
-                }
-            }
-        }
-        if (findchildren)
-        {
-            for (let i = 0, n = this.numChildren; i < n; i++)
-            {
-                this._children[i].getComponentsInChildren(type, filter, result);
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * 从父代（父亲，父亲的父亲，...）中获取组件
      *
      * @param type 类定义
@@ -1195,7 +1142,7 @@ export class Transform extends Component
 
         this.emit('scenetransformChanged', this);
         //
-        if (this.entity)
+        if (this.gameObject)
         {
             for (let i = 0, n = this.numChildren; i < n; i++)
             {

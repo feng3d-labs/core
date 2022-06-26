@@ -348,7 +348,7 @@ export class View extends Feng3dObject
         scene.ambientColor.setTo(0.4, 0.4, 0.4);
 
         const camera = Camera.create('Main Camera');
-        camera.entity.addComponent(AudioListener);
+        camera.gameObject.addComponent(AudioListener);
         camera.node3d.x = 0;
         camera.node3d.y = 1;
         camera.node3d.z = -10;

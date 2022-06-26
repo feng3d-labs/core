@@ -93,7 +93,7 @@ export class Renderable extends RayCastable
         this.material.beforeRender(renderAtomic);
         this._lightPicker.beforeRender(renderAtomic);
 
-        this.entity.components.forEach((element) =>
+        this.gameObject.components.forEach((element) =>
         {
             if (element !== this)
             {

@@ -51,7 +51,7 @@ export class MouseRenderer extends EventEmitter
     {
         if (renderable.node3d.mouseEnabled)
         {
-            const object = renderable.entity;
+            const object = renderable.gameObject;
             const uObjectID = this.objects.length;
             this.objects[uObjectID] = object;
 

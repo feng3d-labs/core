@@ -17,7 +17,7 @@ export class Component3D extends Component
      */
     get node3d()
     {
-        return this._entity?.getComponent(Transform);
+        return this._gameObject?.getComponent(Transform);
     }
 
     /**

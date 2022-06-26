@@ -12,7 +12,7 @@ export class Script
      */
     get entity(): GameObject
     {
-        return this.component.entity;
+        return this.component.gameObject;
     }
 
     /**

@@ -18,27 +18,6 @@ import { HideFlags } from './HideFlags';
 export class Feng3dObject<T = any> extends EventEmitter<T>
 {
     /**
-     * The name of the object.
-     *
-     * Components share the same name with the game object and all attached components. If a class derives from MonoBehaviour it inherits the "name" field from MonoBehaviour. If this class is also attached to GameObject, then "name" field is set to the name of that GameObject.
-     */
-    /**
-     * 对象的名称。
-     *
-     * 组件与游戏对象和所有附加组件共享相同的名称。如果一个类从 MonoBehaviour 派生，它会从 MonoBehaviour 继承“名称”字段。如果此类也附加到 GameObject，则“name”字段设置为该 GameObject 的名称。
-     */
-    @serialize
-    get name()
-    {
-        return this._name;
-    }
-    set name(v)
-    {
-        this._name = v;
-    }
-    protected _name: string;
-
-    /**
      * Should the object be hidden, saved with the Scene or modifiable by the user?
      */
     /**
@@ -89,21 +68,6 @@ export class Feng3dObject<T = any> extends EventEmitter<T>
     GetInstanceID()
     {
         return 0;
-    }
-
-    /**
-     * Returns the name of the object.
-     *
-     * @return The name returned by ToString.
-     */
-    /**
-     * 返回对象的名称。
-     *
-     * @return ToString 返回的名称。
-     */
-    ToString()
-    {
-        return this._name;
     }
 
     /**

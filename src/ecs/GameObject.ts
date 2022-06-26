@@ -48,6 +48,23 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
     __class__: 'GameObject';
 
     /**
+     * The name of the object.
+     */
+    /**
+     * 对象的名称。
+     */
+    @serialize
+    get name()
+    {
+        return this._name;
+    }
+    set name(v)
+    {
+        this._name = v;
+    }
+    protected _name: string;
+
+    /**
      * Defines whether the GameObject is active in the Scene.
      */
     /**
@@ -183,9 +200,107 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
      */
     getComponent<T extends Component>(type: Constructor<T>): T
     {
-        const component = this.getComponents(type)[0];
+        for (let i = 0; i < this._components.length; i++)
+        {
+            if (this._components[i] instanceof type)
+            {
+                return this._components[i] as T;
+            }
+        }
 
-        return component;
+        return null;
+    }
+
+    /**
+     * Returns the component of Type type in the GameObject or any of its children using depth first search.
+     *
+     * @param type The type of Component to retrieve.
+     * @param includeInactive Should Components on inactive GameObjects be included in the found set?
+     * @returns A component of the matching type, if found.
+     */
+    /**
+     * 使用深度优先搜索返回 GameObject 或其任何子项中的 Type 组件。
+     *
+     * @param type 要检索的组件类型。
+     * @param includeInactive 是否包含不活跃组件。
+     * @returns 匹配类型的组件（如果找到）。
+     */
+    getComponentInChildren<T extends Component>(type: Constructor<T>, includeInactive = false): T
+    {
+        for (let i = 0; i < this._components.length; i++)
+        {
+            const component = this._components[i];
+            if (component instanceof type)
+            {
+                return component as T;
+            }
+        }
+
+        for (let i = 0; i < this.transform.children.length; i++)
+        {
+            const gameObject = this.transform.children[i].gameObject;
+            if (!includeInactive && !gameObject.activeSelf) continue;
+            const compnent = gameObject.getComponentInChildren(type, includeInactive);
+            if (compnent)
+            {
+                return compnent;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 从自身与子代（孩子，孩子的孩子，...）Entity 中获取所有指定类型的组件
+     *
+     * @param type 要检索的组件的类型。
+     * @returns         返回与给出类定义一致的组件
+     */
+    getComponentsInChildren<T extends Component>(type?: Constructor<T>, filter?: (compnent: T) => {
+        /**
+         * 是否继续查找子项
+         */
+        findchildren: boolean,
+        /**
+         * 是否为需要查找的组件
+         */
+        value: boolean
+    }, result?: T[]): T[]
+    {
+        result = result || [];
+        let findchildren = true;
+        const cls = type;
+        const components = this.components;
+        for (let i = 0, n = components.length; i < n; i++)
+        {
+            const item = components[i] as T;
+            if (!cls)
+            {
+                result.push(item);
+            }
+            else if (item instanceof cls)
+            {
+                if (filter)
+                {
+                    const filterresult = filter(item);
+                    filterresult && filterresult.value && result.push(item);
+                    findchildren = filterresult ? (filterresult && filterresult.findchildren) : false;
+                }
+                else
+                {
+                    result.push(item);
+                }
+            }
+        }
+        if (findchildren)
+        {
+            for (let i = 0, n = this.transform.numChildren; i < n; i++)
+            {
+                this.transform.children[i].gameObject.getComponentsInChildren(type, filter, result);
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -509,6 +624,21 @@ export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> exten
         component.init();
         // 派发添加组件事件
         this.emit('addComponent', { component, entity: this }, true);
+    }
+
+    /**
+     * Returns the name of the object.
+     *
+     * @return The name returned by ToString.
+     */
+    /**
+     * 返回对象的名称。
+     *
+     * @return ToString 返回的名称。
+     */
+    ToString()
+    {
+        return this._name;
     }
 
     // /**

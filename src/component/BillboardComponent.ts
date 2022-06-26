@@ -41,7 +41,7 @@ export class BillboardComponent extends Component3D
     private _invalidHoldSizeMatrix()
     {
         // @ts-ignore
-        if (this._entity) this.node3d._invalidateSceneTransform();
+        if (this._gameObject) this.node3d._invalidateSceneTransform();
     }
 
     private _onUpdateLocalToWorldMatrix()

@@ -72,8 +72,8 @@ export class Scene extends Component3D
     init()
     {
         super.init();
-        this.entity.hideFlags = this.entity.hideFlags | HideFlags.Hide;
-        this.entity.hideFlags = this.entity.hideFlags | HideFlags.DontTransform;
+        this.gameObject.hideFlags = this.gameObject.hideFlags | HideFlags.Hide;
+        this.gameObject.hideFlags = this.gameObject.hideFlags | HideFlags.DontTransform;
         //
         this.node3d._setScene(this);
     }

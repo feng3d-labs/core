@@ -53,7 +53,7 @@ export class HoldSizeComponent extends Component3D
     private _invalidateSceneTransform()
     {
         // @ts-ignore
-        if (this._entity) this.node3d._invalidateSceneTransform();
+        if (this._gameObject) this.node3d._invalidateSceneTransform();
     }
 
     private _onUpdateLocalToWorldMatrix()
