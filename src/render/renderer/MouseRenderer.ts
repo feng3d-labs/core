@@ -3,7 +3,7 @@ import { Rectangle } from '@feng3d/math';
 import { GL, RenderAtomic } from '@feng3d/renderer';
 import { windowEventProxy } from '@feng3d/shortcut';
 import { Renderable } from '../../core/Renderable';
-import { GameObject, GameObjectEventMap } from '../../ecs/GameObject';
+import { GameObject } from '../../ecs/GameObject';
 
 /**
  * 鼠标拾取渲染器
@@ -15,7 +15,7 @@ export class MouseRenderer extends EventEmitter
     /**
      * 渲染
      */
-    draw(gl: GL, viewRect: Rectangle): GameObject<GameObjectEventMap>
+    draw(gl: GL, viewRect: Rectangle)
     {
         const mouseX = windowEventProxy.clientX;
         const mouseY = windowEventProxy.clientY;

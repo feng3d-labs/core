@@ -1,3 +1,4 @@
+import { IEventTarget } from '@feng3d/event';
 import type { IVector3 } from '@feng3d/math';
 import { Box3, Matrix4x4, Quaternion, Ray3, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
@@ -69,7 +70,7 @@ declare global
  */
 @RegisterComponent({ name: 'Transform', single: true })
 @decoratorRegisterClass()
-export class Transform extends Component
+export class Transform extends Component implements IEventTarget
 {
     __class__: 'Transform';
 
@@ -1169,11 +1170,7 @@ export class Transform extends Component
         });
     }
 
-    /**
-     * 申明冒泡函数
-     * feng3d.__event_bubble_function__
-     */
-    protected __event_bubble_function__(): any[]
+    getBubbleTargets(): any[]
     {
         return [this.parent];
     }

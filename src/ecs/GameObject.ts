@@ -43,7 +43,7 @@ export interface GameObjectEventMap extends MixinsEntityEventMap, MouseEventMap
  *
  * @see https://docs.unity3d.com/2021.3/Documentation/ScriptReference/GameObject.html
  */
-export class GameObject<T extends GameObjectEventMap = GameObjectEventMap> extends Feng3dObject<T>
+export class GameObject extends Feng3dObject<GameObjectEventMap>
 {
     __class__: 'GameObject';
 

@@ -96,7 +96,7 @@ export type ComponentNames = keyof ComponentMap;
  *
  * 请注意，您的代码永远不会直接创建组件。相反，您编写脚本代码，并将脚本附加到GameObject。
  */
-export class Component<T extends GameObjectEventMap = GameObjectEventMap> extends Feng3dObject<T>
+export class Component extends Feng3dObject<GameObjectEventMap>
 {
     /**
      * 组件名称与类定义映射，由 @RegisterComponent 装饰器进行填充。
