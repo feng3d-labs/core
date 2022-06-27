@@ -89,7 +89,7 @@ export type ComponentNames = keyof ComponentMap;
 /**
  * Base class for everything attached to GameObjects.
  *
- * Note that your code will never directly create a Component. Instead, you write script code, and attach the script to a GameObject. 
+ * Note that your code will never directly create a Component. Instead, you write script code, and attach the script to a GameObject.
  */
 /**
  * 附加到GameObject的所有内容的基类。
@@ -199,6 +199,23 @@ export class Component<T extends GameObjectEventMap = GameObjectEventMap> extend
     }
 
     /**
+     * Adds a component class of type componentType to the game object.
+     *
+     * @param type A component class of type.
+     * @returns The component that is added.
+     */
+    /**
+     * Adds a component class of type componentType to the game object.
+     *
+     * @param type 组件类定义。
+     * @returns 被添加的组件。
+     */
+    addComponent<T extends Component>(type: Constructor<T>): T
+    {
+        return this._gameObject.addComponent(type);
+    }
+
+    /**
      * Returns the component of Type type if the game object has one attached, null if it doesn't.
      *
      * Using gameObject.GetComponent will return the first component that is found. If you expect there to be more than one component of the
@@ -305,7 +322,6 @@ export class Component<T extends GameObjectEventMap = GameObjectEventMap> extend
     {
         return this._gameObject.getComponentsInChildren(type, includeInactive, results);
     }
-
 
     /**
      * Returns all components of Type type in the GameObject or any of its parents.
