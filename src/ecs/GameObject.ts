@@ -41,6 +41,8 @@ export interface GameObjectEventMap extends MixinsEntityEventMap, MouseEventMap
 /**
  * feng3d 场景中所有实体的基类。
  *
+ * 第一个组件总是`Transform`。
+ *
  * @see https://docs.unity3d.com/2021.3/Documentation/ScriptReference/GameObject.html
  */
 export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEventTarget
@@ -98,9 +100,8 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
      */
     get transform(): Transform
     {
-        return this._transform;
+        return this._components[0] as Transform;
     }
-    private _transform: Transform;
 
     /**
      * Creates a new game object, named name.
@@ -122,7 +123,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
     {
         super();
         this.name = name;
-        this._transform = this.addComponent(Transform);
+        this.addComponent(Transform);
         components.forEach((v) =>
         {
             this.addComponent(v);
@@ -453,7 +454,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
      */
     removeComponent<T extends Component>(component: T): void
     {
-        console.assert(this.hasComponent(component), '只能移除在容器中的组件');
+        console.assert(this === component.gameObject, '只能移除在容器中的组件');
 
         const index = this.getComponentIndex(component);
         this.removeComponentAt(index);
@@ -515,27 +516,10 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
      */
     swapComponents<T1 extends Component, T2 extends Component>(a: T1, b: T2): void
     {
-        console.assert(this.hasComponent(a), '第一个子组件不在容器中');
-        console.assert(this.hasComponent(b), '第二个子组件不在容器中');
+        console.assert(a.gameObject === this, '第一个子组件不在容器中');
+        console.assert(b.gameObject === this, '第二个子组件不在容器中');
 
         this.swapComponentsAt(this.getComponentIndex(a), this.getComponentIndex(b));
-    }
-
-    /**
-     * 获取指定类型组件
-     *
-     * @param type 组件类型
-     */
-    getComponentsByType<T extends Component>(type: Constructor<T>)
-    {
-        const removeComponents: T[] = [];
-        for (let i = 0; i < this._components.length; i++)
-        {
-            if (this._components[i] instanceof type)
-            { removeComponents.push(this._components[i] as any); }
-        }
-
-        return removeComponents;
     }
 
     /**
@@ -589,17 +573,6 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
     protected _components: Components[] = [];
 
     /**
-     * 判断是否拥有组件
-     *
-     * @param com 被检测的组件
-     * @returns     true：拥有该组件；false：不拥有该组件。
-     */
-    private hasComponent<T extends Component>(com: T): boolean
-    {
-        return this._components.indexOf(com) !== -1;
-    }
-
-    /**
      * 添加组件到指定位置
      *
      * @param component 被添加的组件
@@ -611,7 +584,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
         { return; }
         console.assert(index >= 0 && index <= this.numComponents, '给出索引超出范围');
 
-        if (this.hasComponent(component))
+        if (component.gameObject === this)
         {
             index = Math.min(index, this._components.length - 1);
             this.setComponentIndex(component, index);
@@ -622,7 +595,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
         const type = component.constructor as Constructor<Component>;
         if (Component.isSingleComponent(type))
         {
-            const oldComponents = this.getComponentsByType(type);
+            const oldComponents = this.getComponents(type);
             if (oldComponents.length > 0)
             {
                 console.assert(oldComponents.length === 1);
