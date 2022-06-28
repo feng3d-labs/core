@@ -1,4 +1,4 @@
-import { IEvent } from '@feng3d/event';
+import { IEventTarget } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
 import { Constructor, ObjectUtils } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
@@ -43,7 +43,7 @@ export interface GameObjectEventMap extends MixinsEntityEventMap, MouseEventMap
  *
  * @see https://docs.unity3d.com/2021.3/Documentation/ScriptReference/GameObject.html
  */
-export class GameObject extends Feng3dObject<GameObjectEventMap>
+export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEventTarget
 {
     __class__: 'GameObject';
 
@@ -127,8 +127,6 @@ export class GameObject extends Feng3dObject<GameObjectEventMap>
         {
             this.addComponent(v);
         });
-
-        this.onAny(this._onAnyListener, this);
     }
 
     /**
@@ -558,17 +556,6 @@ export class GameObject extends Feng3dObject<GameObjectEventMap>
     }
 
     /**
-     * 监听对象的所有事件并且传播到所有组件中
-     */
-    private _onAnyListener(e: IEvent<any>)
-    {
-        this.components.forEach((element: Component) =>
-        {
-            element.emitEvent(e);
-        });
-    }
-
-    /**
      * 销毁
      */
     dispose()
@@ -596,25 +583,10 @@ export class GameObject extends Feng3dObject<GameObjectEventMap>
         return result[0];
     }
 
-    // ------------------------------------------
-    // Protected Properties
-    // ------------------------------------------
     /**
      * 组件列表
      */
     protected _components: Components[] = [];
-
-    // ------------------------------------------
-    // Protected Functions
-    // ------------------------------------------
-
-    // ------------------------------------------
-    // Private Properties
-    // ------------------------------------------
-
-    // ------------------------------------------
-    // Private Methods
-    // ------------------------------------------
 
     /**
      * 判断是否拥有组件
@@ -663,6 +635,34 @@ export class GameObject extends Feng3dObject<GameObjectEventMap>
         component.init();
         // 派发添加组件事件
         this.emit('addComponent', { component, entity: this }, true);
+    }
+
+    /**
+     * 把事件分享到每个组件上。
+     */
+    getShareTargets()
+    {
+        return this.components;
+    }
+
+    /**
+     * 把事件汇报给父结点。
+     */
+    getBubbleTargets()
+    {
+        const targets = [this.transform?.parent?.gameObject];
+
+        return targets;
+    }
+
+    /**
+     * 把事件广播给每个子结点。
+     */
+    getBroadcastTargets()
+    {
+        const targets = this.transform?.children?.map((v) => v.gameObject);
+
+        return targets;
     }
 
     // /**

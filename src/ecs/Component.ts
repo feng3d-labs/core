@@ -1,4 +1,4 @@
-import { IEvent } from '@feng3d/event';
+import { IEventTarget } from '@feng3d/event';
 import { Constructor } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
 import { Feng3dObject } from './Feng3dObject';
@@ -92,11 +92,13 @@ export type ComponentNames = keyof ComponentMap;
  * Note that your code will never directly create a Component. Instead, you write script code, and attach the script to a GameObject.
  */
 /**
- * 附加到GameObject的所有内容的基类。
+ * 附加到`GameObject`的所有内容的基类。
  *
  * 请注意，您的代码永远不会直接创建组件。相反，您编写脚本代码，并将脚本附加到GameObject。
+ *
+ * `Component`上的所有的事件将会分享到`GameObject`上，再有`GameObject`进行分享给其他`Component`以及向上级游戏对象报告以及向下级游戏对象广播。
  */
-export class Component extends Feng3dObject<GameObjectEventMap>
+export class Component extends Feng3dObject<GameObjectEventMap> implements IEventTarget
 {
     /**
      * 组件名称与类定义映射，由 @RegisterComponent 装饰器进行填充。
@@ -344,16 +346,12 @@ export class Component extends Feng3dObject<GameObjectEventMap>
         return this.getComponentsInParent(type, includeInactive, results);
     }
 
-    // ------------------------------------------
-    // Functions
-    // ------------------------------------------
     /**
-     * 创建一个组件
+     * 把事件分享到实体上。
      */
-    constructor()
+    getShareTargets()
     {
-        super();
-        this.onAny(this._onAnyListener, this);
+        return [this._gameObject];
     }
 
     /**
@@ -377,15 +375,6 @@ export class Component extends Feng3dObject<GameObjectEventMap>
     beforeRender(_renderAtomic: any, _scene: any, _camera: any)
     {
 
-    }
-
-    /**
-     * 监听对象的所有事件并且传播到所有组件中
-     */
-    private _onAnyListener(e: IEvent<any>)
-    {
-        if (this._gameObject)
-        { this._gameObject.emitEvent(e); }
     }
 
     /**
