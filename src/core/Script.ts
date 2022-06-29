@@ -10,7 +10,7 @@ export class Script
     /**
      * The game object this component is attached to. A component is always attached to a game object.
      */
-    get entity(): GameObject
+    get gameObject(): GameObject
     {
         return this.component.gameObject;
     }
@@ -18,9 +18,9 @@ export class Script
     /**
      * The Transform attached to this Entity (null if there is none attached).
      */
-    get node3d(): Transform
+    get transform(): Transform
     {
-        return this.component.node3d;
+        return this.component.transform;
     }
 
     /**

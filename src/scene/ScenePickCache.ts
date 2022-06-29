@@ -40,7 +40,7 @@ export class ScenePickCache
         const models: Renderable[] = this._activeModels = [];
         const frustum = this.camera.frustum;
 
-        let node3ds = [this.scene.node3d];
+        let node3ds = [this.scene.transform];
         while (node3ds.length > 0)
         {
             const node3d = node3ds.pop();
@@ -71,10 +71,10 @@ export class ScenePickCache
         { return this._blenditems; }
 
         const models = this.activeModels;
-        const camerapos = this.camera.node3d.worldPosition;
+        const camerapos = this.camera.transform.worldPosition;
 
         const blenditems = this._blenditems = models.filter((item) =>
-            item.material.renderParams.enableBlend).sort((b, a) => a.node3d.worldPosition.subTo(camerapos).lengthSquared - b.node3d.worldPosition.subTo(camerapos).lengthSquared);
+            item.material.renderParams.enableBlend).sort((b, a) => a.transform.worldPosition.subTo(camerapos).lengthSquared - b.transform.worldPosition.subTo(camerapos).lengthSquared);
 
         return blenditems;
     }
@@ -88,10 +88,10 @@ export class ScenePickCache
         { return this._unblenditems; }
 
         const models = this.activeModels;
-        const camerapos = this.camera.node3d.worldPosition;
+        const camerapos = this.camera.transform.worldPosition;
 
         const unblenditems = this._unblenditems = models.filter((item) =>
-            !item.material.renderParams.enableBlend).sort((a, b) => a.node3d.worldPosition.subTo(camerapos).lengthSquared - b.node3d.worldPosition.subTo(camerapos).lengthSquared);
+            !item.material.renderParams.enableBlend).sort((a, b) => a.transform.worldPosition.subTo(camerapos).lengthSquared - b.transform.worldPosition.subTo(camerapos).lengthSquared);
 
         return unblenditems;
     }

@@ -117,7 +117,7 @@ export class Camera extends Component3D
         if (this._viewProjectionInvalid)
         {
             // 场景空间转摄像机空间
-            this._viewProjection.copy(this.node3d.worldToLocalMatrix);
+            this._viewProjection.copy(this.transform.worldToLocalMatrix);
             // +摄像机空间转投影空间 = 场景空间转投影空间
             this._viewProjection.append(this.lens.matrix);
             this._viewProjectionInvalid = false;
@@ -160,7 +160,7 @@ export class Camera extends Component3D
      */
     getRay3D(x: number, y: number, ray3D = new Ray3()): Ray3
     {
-        return this.lens.unprojectRay(x, y, ray3D).applyMatri4x4(this.node3d.localToWorldMatrix);
+        return this.lens.unprojectRay(x, y, ray3D).applyMatri4x4(this.transform.localToWorldMatrix);
     }
 
     /**
@@ -170,7 +170,7 @@ export class Camera extends Component3D
      */
     project(point3d: Vector3): Vector3
     {
-        const v: Vector3 = this.lens.project(this.node3d.worldToLocalMatrix.transformPoint3(point3d));
+        const v: Vector3 = this.lens.project(this.transform.worldToLocalMatrix.transformPoint3(point3d));
 
         return v;
     }
@@ -185,7 +185,7 @@ export class Camera extends Component3D
      */
     unproject(sX: number, sY: number, sZ: number, v = new Vector3()): Vector3
     {
-        return this.node3d.localToWorldMatrix.transformPoint3(this.lens.unprojectWithDepth(sX, sY, sZ, v), v);
+        return this.transform.localToWorldMatrix.transformPoint3(this.lens.unprojectWithDepth(sX, sY, sZ, v), v);
     }
 
     /**

@@ -37,7 +37,7 @@ export class SceneUtil
         const renderers: Renderable[] = [];
         const frustum = camera.frustum;
 
-        let node3ds = [scene.node3d];
+        let node3ds = [scene.transform];
         while (node3ds.length > 0)
         {
             const node3d = node3ds.pop();

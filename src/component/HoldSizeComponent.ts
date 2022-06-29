@@ -33,13 +33,13 @@ export class HoldSizeComponent extends Component3D
 
     init()
     {
-        this.node3d.on('updateLocalToWorldMatrix', this._onUpdateLocalToWorldMatrix, this);
+        this.transform.on('updateLocalToWorldMatrix', this._onUpdateLocalToWorldMatrix, this);
     }
 
     destroy()
     {
         this.camera = null;
-        this.node3d.off('updateLocalToWorldMatrix', this._onUpdateLocalToWorldMatrix, this);
+        this.transform.off('updateLocalToWorldMatrix', this._onUpdateLocalToWorldMatrix, this);
         super.destroy();
     }
 
@@ -53,13 +53,13 @@ export class HoldSizeComponent extends Component3D
     private _invalidateSceneTransform()
     {
         // @ts-ignore
-        if (this._gameObject) this.node3d._invalidateSceneTransform();
+        if (this._gameObject) this.transform._invalidateSceneTransform();
     }
 
     private _onUpdateLocalToWorldMatrix()
     {
         // @ts-ignore
-        const _localToWorldMatrix = this.node3d._localToWorldMatrix;
+        const _localToWorldMatrix = this.transform._localToWorldMatrix;
         if (this.holdSize && this.camera && _localToWorldMatrix)
         {
             const depthScale = this._getDepthScale(this.camera);
@@ -73,8 +73,8 @@ export class HoldSizeComponent extends Component3D
 
     private _getDepthScale(camera: Camera)
     {
-        const cameraTranform = camera.node3d.localToWorldMatrix;
-        const distance = this.node3d.worldPosition.subTo(cameraTranform.getPosition());
+        const cameraTranform = camera.transform.localToWorldMatrix;
+        const distance = this.transform.worldPosition.subTo(cameraTranform.getPosition());
         if (distance.length === 0)
         { distance.x = 1; }
         const depth = distance.dot(cameraTranform.getAxisZ());

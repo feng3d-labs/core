@@ -54,7 +54,7 @@ export class Light extends Behaviour
      */
     get position(): Vector3
     {
-        return this.node3d.worldPosition;
+        return this.transform.worldPosition;
     }
 
     /**
@@ -62,7 +62,7 @@ export class Light extends Behaviour
      */
     get direction(): Vector3
     {
-        return this.node3d.localToWorldMatrix.getAxisZ();
+        return this.transform.localToWorldMatrix.getAxisZ();
     }
 
     /**
@@ -135,7 +135,7 @@ export class Light extends Behaviour
             model = entity.addComponent(MeshRenderer);
             model.geometry = Geometry.getDefault('Plane');
             model.hideFlags = HideFlags.Hide | HideFlags.DontSave;
-            model.node3d.mouseEnabled = false;
+            model.transform.mouseEnabled = false;
             model.gameObject.addComponent(BillboardComponent);
 
             // 材质
@@ -153,20 +153,20 @@ export class Light extends Behaviour
         }
 
         const depth = viewCamera.lens.near * 2;
-        const position = viewCamera.node3d.worldPosition.addTo(viewCamera.node3d.localToWorldMatrix.getAxisZ().scaleNumberTo(depth));
-        model.node3d.x = position.x;
-        model.node3d.y = position.y;
-        model.node3d.z = position.z;
+        const position = viewCamera.transform.worldPosition.addTo(viewCamera.transform.localToWorldMatrix.getAxisZ().scaleNumberTo(depth));
+        model.transform.x = position.x;
+        model.transform.y = position.y;
+        model.transform.z = position.z;
         const billboardComponent = model.getComponent(BillboardComponent);
         billboardComponent.camera = viewCamera;
 
         if (this.debugShadowMap)
         {
-            scene.node3d.addChild(model.node3d);
+            scene.transform.addChild(model.transform);
         }
         else
         {
-            model.node3d.remove();
+            model.transform.remove();
         }
     }
 }

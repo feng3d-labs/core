@@ -75,7 +75,7 @@ export class Scene extends Component3D
         this.gameObject.hideFlags = this.gameObject.hideFlags | HideFlags.Hide;
         this.gameObject.hideFlags = this.gameObject.hideFlags | HideFlags.DontTransform;
         //
-        this.node3d._setScene(this);
+        this.transform._setScene(this);
     }
 
     update(interval?: number)
@@ -113,7 +113,7 @@ export class Scene extends Component3D
      */
     get models()
     {
-        this._models = this._models || this.node3d.getComponentsInChildren(Renderable);
+        this._models = this._models || this.transform.getComponentsInChildren(Renderable);
 
         return this._models;
     }
@@ -136,7 +136,7 @@ export class Scene extends Component3D
      */
     get skyBoxs()
     {
-        this._skyBoxs = this._skyBoxs || this.node3d.getComponentsInChildren(SkyBox);
+        this._skyBoxs = this._skyBoxs || this.transform.getComponentsInChildren(SkyBox);
 
         return this._skyBoxs;
     }
@@ -145,7 +145,7 @@ export class Scene extends Component3D
     {
         if (!this._activeSkyBoxs)
         {
-            this._activeSkyBoxs = this.skyBoxs.filter((i) => i.node3d.globalVisible);
+            this._activeSkyBoxs = this.skyBoxs.filter((i) => i.transform.globalVisible);
         }
 
         return this._activeSkyBoxs;
@@ -155,7 +155,7 @@ export class Scene extends Component3D
     {
         if (!this._directionalLights)
         {
-            this._directionalLights = this.node3d.getComponentsInChildren(DirectionalLight);
+            this._directionalLights = this.transform.getComponentsInChildren(DirectionalLight);
         }
 
         return this._directionalLights;
@@ -175,7 +175,7 @@ export class Scene extends Component3D
     {
         if (!this._pointLights)
         {
-            this._pointLights = this.node3d.getComponentsInChildren(PointLight);
+            this._pointLights = this.transform.getComponentsInChildren(PointLight);
         }
 
         return this._pointLights;
@@ -193,7 +193,7 @@ export class Scene extends Component3D
 
     get spotLights()
     {
-        this._spotLights = this._spotLights || this.node3d.getComponentsInChildren(SpotLight);
+        this._spotLights = this._spotLights || this.transform.getComponentsInChildren(SpotLight);
 
         return this._spotLights;
     }
@@ -207,7 +207,7 @@ export class Scene extends Component3D
 
     get animations()
     {
-        this._animations = this._animations || this.node3d.getComponentsInChildren(Animation);
+        this._animations = this._animations || this.transform.getComponentsInChildren(Animation);
 
         return this._animations;
     }
@@ -221,7 +221,7 @@ export class Scene extends Component3D
 
     get behaviours()
     {
-        this._behaviours = this._behaviours || this.node3d.getComponentsInChildren(Behaviour);
+        this._behaviours = this._behaviours || this.transform.getComponentsInChildren(Behaviour);
 
         return this._behaviours;
     }
@@ -238,7 +238,7 @@ export class Scene extends Component3D
         if (this._mouseCheckTransforms)
         { return this._mouseCheckTransforms; }
 
-        let checkList = this.node3d.getChildren();
+        let checkList = this.transform.getChildren();
         this._mouseCheckTransforms = [];
         let i = 0;
         // 获取所有需要拾取的对象并分层存储
@@ -278,7 +278,7 @@ export class Scene extends Component3D
      */
     getPickByDirectionalLight(_light: DirectionalLight)
     {
-        const openlist = [this.node3d];
+        const openlist = [this.transform];
         const targets: Renderable[] = [];
         while (openlist.length > 0)
         {

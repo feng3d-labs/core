@@ -139,7 +139,7 @@ export class FPSController extends Behaviour
             // this.targetObject.node3d.rotate(Vector3.X_AXIS, offsetPoint.y, this.targetObject.node3d.position);
             // this.targetObject.node3d.rotate(Vector3.Y_AXIS, offsetPoint.x, this.targetObject.node3d.position);
 
-            const matrix = this.node3d.localToWorldMatrix;
+            const matrix = this.transform.localToWorldMatrix;
             matrix.appendRotation(matrix.getAxisX(), offsetPoint.y, matrix.getPosition());
             const up = Vector3.Y_AXIS.clone();
             if (matrix.getAxisY().dot(up) < 0)
@@ -147,7 +147,7 @@ export class FPSController extends Behaviour
                 up.scaleNumber(-1);
             }
             matrix.appendRotation(up, offsetPoint.x, matrix.getPosition());
-            this.node3d.localToWorldMatrix = matrix;
+            this.transform.localToWorldMatrix = matrix;
             //
             this.preMousePoint = this.mousePoint;
             this.mousePoint = null;
@@ -166,9 +166,9 @@ export class FPSController extends Behaviour
         accelerationVec.scaleNumber(this.acceleration);
         // 计算速度
         this.velocity.add(accelerationVec);
-        const right = this.node3d.matrix.getAxisX();
-        const up = this.node3d.matrix.getAxisY();
-        const forward = this.node3d.matrix.getAxisZ();
+        const right = this.transform.matrix.getAxisX();
+        const up = this.transform.matrix.getAxisY();
+        const forward = this.transform.matrix.getAxisZ();
         right.scaleNumber(this.velocity.x);
         up.scaleNumber(this.velocity.y);
         forward.scaleNumber(this.velocity.z);
@@ -176,9 +176,9 @@ export class FPSController extends Behaviour
         const displacement = right.clone();
         displacement.add(up);
         displacement.add(forward);
-        this.node3d.x += displacement.x;
-        this.node3d.y += displacement.y;
-        this.node3d.z += displacement.z;
+        this.transform.x += displacement.x;
+        this.transform.y += displacement.y;
+        this.transform.z += displacement.z;
     }
     private mousePoint: Vector2 | null;
     /**

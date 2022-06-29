@@ -108,7 +108,7 @@ export class Animation extends Behaviour
         if (!propertyClip.cacheIndex)
         { propertyClip.cacheIndex = autoobjectCacheID++; }
 
-        let propertyHost: any = this.node3d;
+        let propertyHost: any = this.transform;
         const path = propertyClip.path;
 
         for (let i = 0; i < path.length; i++)

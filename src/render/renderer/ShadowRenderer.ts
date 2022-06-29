@@ -50,7 +50,7 @@ export class ShadowRenderer
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         const shadowCamera = light.shadowCamera;
-        shadowCamera.node3d.localToWorldMatrix = light.node3d.localToWorldMatrix;
+        shadowCamera.transform.localToWorldMatrix = light.transform.localToWorldMatrix;
 
         const renderAtomic = this.renderAtomic;
 
@@ -66,9 +66,9 @@ export class ShadowRenderer
         //
         renderAtomic.uniforms.u_projectionMatrix = shadowCamera.lens.matrix;
         renderAtomic.uniforms.u_viewProjection = shadowCamera.viewProjection;
-        renderAtomic.uniforms.u_viewMatrix = shadowCamera.node3d.worldToLocalMatrix;
-        renderAtomic.uniforms.u_cameraMatrix = shadowCamera.node3d.localToWorldMatrix;
-        renderAtomic.uniforms.u_cameraPos = shadowCamera.node3d.worldPosition;
+        renderAtomic.uniforms.u_viewMatrix = shadowCamera.transform.worldToLocalMatrix;
+        renderAtomic.uniforms.u_cameraMatrix = shadowCamera.transform.localToWorldMatrix;
+        renderAtomic.uniforms.u_cameraPos = shadowCamera.transform.worldPosition;
         //
         renderAtomic.uniforms.u_lightType = light.lightType;
         renderAtomic.uniforms.u_lightPosition = light.position;
@@ -123,15 +123,15 @@ export class ShadowRenderer
         cube2DViewPorts[5].init(vpWidth, 0, vpWidth, vpHeight);
 
         const shadowCamera = light.shadowCamera;
-        shadowCamera.node3d.x = light.node3d.x;
-        shadowCamera.node3d.y = light.node3d.y;
-        shadowCamera.node3d.z = light.node3d.z;
+        shadowCamera.transform.x = light.transform.x;
+        shadowCamera.transform.y = light.transform.y;
+        shadowCamera.transform.z = light.transform.z;
 
         const renderAtomic = this.renderAtomic;
 
         for (let face = 0; face < 6; face++)
         {
-            shadowCamera.node3d.lookAt(light.position.addTo(cubeDirections[face]), cubeUps[face]);
+            shadowCamera.transform.lookAt(light.position.addTo(cubeDirections[face]), cubeUps[face]);
 
             // 获取影响阴影图的渲染对象
             const models = scene.getModelsByCamera(shadowCamera);
@@ -145,9 +145,9 @@ export class ShadowRenderer
             //
             renderAtomic.uniforms.u_projectionMatrix = shadowCamera.lens.matrix;
             renderAtomic.uniforms.u_viewProjection = shadowCamera.viewProjection;
-            renderAtomic.uniforms.u_viewMatrix = shadowCamera.node3d.worldToLocalMatrix;
-            renderAtomic.uniforms.u_cameraMatrix = shadowCamera.node3d.localToWorldMatrix;
-            renderAtomic.uniforms.u_cameraPos = shadowCamera.node3d.worldPosition;
+            renderAtomic.uniforms.u_viewMatrix = shadowCamera.transform.worldToLocalMatrix;
+            renderAtomic.uniforms.u_cameraMatrix = shadowCamera.transform.localToWorldMatrix;
+            renderAtomic.uniforms.u_cameraPos = shadowCamera.transform.worldPosition;
             //
             renderAtomic.uniforms.u_lightType = light.lightType;
             renderAtomic.uniforms.u_lightPosition = light.position;
@@ -187,12 +187,12 @@ export class ShadowRenderer
         //
         renderAtomic.uniforms.u_projectionMatrix = shadowCamera.lens.matrix;
         renderAtomic.uniforms.u_viewProjection = shadowCamera.viewProjection;
-        renderAtomic.uniforms.u_viewMatrix = shadowCamera.node3d.worldToLocalMatrix;
-        renderAtomic.uniforms.u_cameraMatrix = shadowCamera.node3d.localToWorldMatrix;
-        renderAtomic.uniforms.u_cameraPos = shadowCamera.node3d.worldPosition;
+        renderAtomic.uniforms.u_viewMatrix = shadowCamera.transform.worldToLocalMatrix;
+        renderAtomic.uniforms.u_cameraMatrix = shadowCamera.transform.localToWorldMatrix;
+        renderAtomic.uniforms.u_cameraPos = shadowCamera.transform.worldPosition;
         //
         renderAtomic.uniforms.u_lightType = light.lightType;
-        renderAtomic.uniforms.u_lightPosition = shadowCamera.node3d.worldPosition;
+        renderAtomic.uniforms.u_lightPosition = shadowCamera.transform.worldPosition;
         renderAtomic.uniforms.u_shadowCameraNear = light.shadowCameraNear;
         renderAtomic.uniforms.u_shadowCameraFar = light.shadowCameraFar;
         //

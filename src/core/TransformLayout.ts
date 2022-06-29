@@ -179,7 +179,7 @@ export class TransformLayout extends Component3D
     {
         if (!this._layoutInvalid) return;
 
-        const transformLayout = this.node3d?.parent?.getComponent(TransformLayout);
+        const transformLayout = this.transform?.parent?.getComponent(TransformLayout);
         if (!transformLayout) return;
 
         // 中心点基于anchorMin的坐标
@@ -244,9 +244,9 @@ export class TransformLayout extends Component3D
         }
 
         //
-        this.node3d.x = anchorLeftTop.x + position.x;
-        this.node3d.y = anchorLeftTop.y + position.y;
-        this.node3d.z = anchorLeftTop.z + position.z;
+        this.transform.x = anchorLeftTop.x + position.x;
+        this.transform.y = anchorLeftTop.y + position.y;
+        this.transform.z = anchorLeftTop.z + position.z;
         //
         this._layoutInvalid = false;
         ticker.offframe(this._updateLayout, this);

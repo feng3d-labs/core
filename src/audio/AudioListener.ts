@@ -55,7 +55,7 @@ export class AudioListener extends Behaviour
 
     private _onScenetransformChanged()
     {
-        const localToWorldMatrix = this.node3d.localToWorldMatrix;
+        const localToWorldMatrix = this.transform.localToWorldMatrix;
         const position = localToWorldMatrix.getPosition();
         const forward = localToWorldMatrix.getAxisZ();
         const up = localToWorldMatrix.getAxisY();

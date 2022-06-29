@@ -35,7 +35,7 @@ export class Behaviour extends Component3D
      */
     get isVisibleAndEnabled()
     {
-        const v = this.enabled && this.node3d?.globalVisible;
+        const v = this.enabled && this.transform?.globalVisible;
 
         return v;
     }

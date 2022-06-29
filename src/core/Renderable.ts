@@ -111,7 +111,7 @@ export class Renderable extends RayCastable
      */
     worldRayIntersection(worldRay: Ray3)
     {
-        const localRay = this.node3d.rayWorldToLocal(worldRay);
+        const localRay = this.transform.rayWorldToLocal(worldRay);
         const pickingCollisionVO = this.localRayIntersection(localRay);
 
         return pickingCollisionVO;
@@ -135,7 +135,7 @@ export class Renderable extends RayCastable
 
         // 保存碰撞数据
         const pickingCollisionVO: PickingCollisionVO = {
-            node3d: this.node3d,
+            node3d: this.transform,
             localNormal,
             localRay,
             rayEntryDistance,

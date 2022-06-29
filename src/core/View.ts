@@ -48,7 +48,7 @@ export class View extends Feng3dObject
             if (cameras.length === 0)
             {
                 this._camera = serialization.setValue(new GameObject(), { name: 'defaultCamera' }).addComponent(Camera);
-                this.scene.node3d.addChild(this._camera.node3d);
+                this.scene.transform.addChild(this._camera.transform);
             }
             else
             {
@@ -72,7 +72,7 @@ export class View extends Feng3dObject
      */
     get root()
     {
-        return this.scene.node3d;
+        return this.scene.transform;
     }
 
     get gl()
@@ -318,7 +318,7 @@ export class View extends Feng3dObject
         //
         const transforms = this.scene.getComponentsInChildren(Transform).filter((t) =>
         {
-            if (t === this.scene.node3d) return false;
+            if (t === this.scene.transform) return false;
             const m = t.getComponent(Renderable);
             if (m)
             {
@@ -349,17 +349,17 @@ export class View extends Feng3dObject
 
         const camera = Camera.create('Main Camera');
         camera.gameObject.addComponent(AudioListener);
-        camera.node3d.x = 0;
-        camera.node3d.y = 1;
-        camera.node3d.z = -10;
-        scene.node3d.addChild(camera.node3d);
+        camera.transform.x = 0;
+        camera.transform.y = 1;
+        camera.transform.z = -10;
+        scene.transform.addChild(camera.transform);
 
         const directionalLight = DirectionalLight.create('DirectionalLight');
         directionalLight.shadowType = ShadowType.Hard_Shadows;
-        directionalLight.node3d.rx = 50;
-        directionalLight.node3d.ry = -30;
-        directionalLight.node3d.y = 3;
-        scene.node3d.addChild(directionalLight.node3d);
+        directionalLight.transform.rx = 50;
+        directionalLight.transform.ry = -30;
+        directionalLight.transform.y = 3;
+        scene.transform.addChild(directionalLight.transform);
 
         return scene;
     }

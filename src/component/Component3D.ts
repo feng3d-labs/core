@@ -14,7 +14,7 @@ export class Component3D extends Component
      *
      * 附加到此 Entity 的 Node3D。
      */
-    get node3d()
+    get transform()
     {
         return this._gameObject?.getComponent(Transform);
     }

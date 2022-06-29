@@ -81,24 +81,24 @@ export class SkinnedMeshRenderer extends Renderable
     private get u_modelMatrix()
     {
         if (this.cacheSkeletonComponent)
-        { return this.cacheSkeletonComponent.node3d.localToWorldMatrix; }
+        { return this.cacheSkeletonComponent.transform.localToWorldMatrix; }
 
-        return this.node3d.localToWorldMatrix;
+        return this.transform.localToWorldMatrix;
     }
 
     private get u_ITModelMatrix()
     {
         if (this.cacheSkeletonComponent)
-        { return this.cacheSkeletonComponent.node3d.ITlocalToWorldMatrix; }
+        { return this.cacheSkeletonComponent.transform.ITlocalToWorldMatrix; }
 
-        return this.node3d.ITlocalToWorldMatrix;
+        return this.transform.ITlocalToWorldMatrix;
     }
 
     private get u_skeletonGlobalMatriices()
     {
         if (!this.cacheSkeletonComponent)
         {
-            let node3d = this.node3d;
+            let node3d = this.transform;
             let skeletonComponent: SkeletonComponent = null;
             while (node3d && !skeletonComponent)
             {

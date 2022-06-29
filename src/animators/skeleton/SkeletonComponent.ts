@@ -161,7 +161,7 @@ export class SkeletonComponent extends Component3D
             }
             else
             {
-                parentNode3D = skeleton.node3d;
+                parentNode3D = skeleton.transform;
             }
 
             let jointTransform = parentNode3D.find(skeletonJoint.name);

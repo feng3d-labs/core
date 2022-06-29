@@ -27,7 +27,7 @@ export class BillboardComponent extends Component3D
     init()
     {
         super.init();
-        this.node3d.on('updateLocalToWorldMatrix', this._onUpdateLocalToWorldMatrix, this);
+        this.transform.on('updateLocalToWorldMatrix', this._onUpdateLocalToWorldMatrix, this);
         this._invalidHoldSizeMatrix();
     }
 
@@ -41,18 +41,18 @@ export class BillboardComponent extends Component3D
     private _invalidHoldSizeMatrix()
     {
         // @ts-ignore
-        if (this._gameObject) this.node3d._invalidateSceneTransform();
+        if (this._gameObject) this.transform._invalidateSceneTransform();
     }
 
     private _onUpdateLocalToWorldMatrix()
     {
         // @ts-ignore
-        const _localToWorldMatrix = this.node3d._localToWorldMatrix;
+        const _localToWorldMatrix = this.transform._localToWorldMatrix;
         if (_localToWorldMatrix && this.camera)
         {
             const camera = this.camera;
-            const cameraPos = camera.node3d.worldPosition;
-            const yAxis = camera.node3d.localToWorldMatrix.getAxisY();
+            const cameraPos = camera.transform.worldPosition;
+            const yAxis = camera.transform.localToWorldMatrix.getAxisY();
             _localToWorldMatrix.lookAt(cameraPos, yAxis);
         }
     }
@@ -60,7 +60,7 @@ export class BillboardComponent extends Component3D
     destroy()
     {
         this.camera = null;
-        this.node3d.off('updateLocalToWorldMatrix', this._onUpdateLocalToWorldMatrix, this);
+        this.transform.off('updateLocalToWorldMatrix', this._onUpdateLocalToWorldMatrix, this);
         super.destroy();
     }
 }

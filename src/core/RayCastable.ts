@@ -61,7 +61,7 @@ export class RayCastable extends Behaviour
      */
     protected _updateWorldBounds()
     {
-        this._selfWorldBounds = this.selfLocalBounds.applyMatrixTo(this.node3d.localToWorldMatrix);
+        this._selfWorldBounds = this.selfLocalBounds.applyMatrixTo(this.transform.localToWorldMatrix);
     }
 
     /**
