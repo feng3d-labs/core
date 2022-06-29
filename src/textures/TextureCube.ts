@@ -1,10 +1,11 @@
 import { oav } from '@feng3d/objectview';
 import { TextureType } from '@feng3d/renderer';
 import { serialization } from '@feng3d/serialization';
+import { Feng3dObjectEventMap } from '../ecs/Feng3dObject';
 import { HideFlags } from '../ecs/HideFlags';
 import { ImageDatas, TextureInfo } from '../render/data/TextureInfo';
 
-export interface TextureCubeEventMap
+export interface TextureCubeEventMap extends Feng3dObjectEventMap
 {
     /**
      * 加载完成

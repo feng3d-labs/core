@@ -1,8 +1,8 @@
+import { EventEmitter } from '@feng3d/event';
 import { Matrix4x4, Ray3, Vector3, Vector4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
-import { Feng3dObject } from '../../ecs/Feng3dObject';
 import { Projection } from '../Projection';
 
 /**
@@ -15,7 +15,7 @@ import { Projection } from '../Projection';
  * GPU空间可视区域：立方体 [(-1, -1, -1), (1, 1, 1)]
  *
  */
-export abstract class LensBase extends Feng3dObject
+export abstract class LensBase extends EventEmitter
 {
     /**
      * 摄像机投影类型

@@ -200,6 +200,12 @@ export class Component extends Feng3dObject<GameObjectEventMap> implements IEven
         return this._gameObject.transform;
     }
 
+    constructor()
+    {
+        super();
+        this.once('destroy', this._onDestroy, this);
+    }
+
     /**
      * Adds a component class of type componentType to the game object.
      *
@@ -386,6 +392,11 @@ export class Component extends Feng3dObject<GameObjectEventMap> implements IEven
     _setEntity(entity: GameObject)
     {
         this._gameObject = entity;
+    }
+
+    private _onDestroy()
+    {
+        this._gameObject = null;
     }
 }
 

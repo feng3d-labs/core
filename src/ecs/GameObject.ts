@@ -5,12 +5,12 @@ import { serialize } from '@feng3d/serialization';
 import { Transform } from '../core/Transform';
 import { Scene } from '../scene/Scene';
 import { Component, ComponentMap, ComponentNames } from './Component';
-import { Feng3dObject } from './Feng3dObject';
+import { Feng3dObject, Feng3dObjectEventMap } from './Feng3dObject';
 import { MouseEventMap } from './MouseEventMap';
 
 type Components = ComponentMap[ComponentNames];
 
-export interface GameObjectEventMap extends MixinsEntityEventMap, MouseEventMap
+export interface GameObjectEventMap extends MixinsEntityEventMap, MouseEventMap, Feng3dObjectEventMap
 {
     /**
      * 添加子组件事件
@@ -91,6 +91,11 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
      */
     @serialize
     tag: string;
+
+    /**
+     * 组件列表
+     */
+    protected _components: Components[] = [];
 
     /**
      * The Transform attached to this GameObject.
@@ -396,24 +401,8 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
      */
     getComponentAt(index: number): Component
     {
-        console.assert(index < this.numComponents, '给出索引超出范围');
-
         return this._components[index];
     }
-
-    // /**
-    //  * 添加脚本
-    //  *
-    //  * @param script 脚本路径
-    //  */
-    // addScript(scriptName: string)
-    // {
-    //     const scriptComponent = new ScriptComponent();
-    //     scriptComponent.scriptName = scriptName;
-    //     this.addComponentAt(scriptComponent, this._components.length);
-
-    //     return scriptComponent;
-    // }
 
     /**
      * 设置子组件的位置
@@ -468,8 +457,6 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
      */
     getComponentIndex<T extends Component>(component: T): number
     {
-        console.assert(this._components.indexOf(component) !== -1, '组件不在容器中');
-
         const index = this._components.indexOf(component);
 
         return index;
@@ -523,23 +510,6 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
     }
 
     /**
-     * 移除指定类型组件
-     *
-     * @param type 组件类型
-     */
-    removeComponentsByType<T extends Component>(type: Constructor<T>)
-    {
-        const removeComponents: T[] = [];
-        for (let i = this._components.length - 1; i >= 0; i--)
-        {
-            if (this._components[i].constructor === type)
-            { removeComponents.push(this.removeComponentAt(i) as T); }
-        }
-
-        return removeComponents;
-    }
-
-    /**
      * 销毁
      */
     dispose()
@@ -548,7 +518,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
         {
             this.removeComponentAt(i);
         }
-        super.dispose();
+        // super.dispose();
     }
 
     // ------------------------------------------
@@ -561,16 +531,11 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
      */
     static find(name: string)
     {
-        const entitys = Feng3dObject.getObjects(GameObject);
-        const result = entitys.filter((v) => !v.disposed && (v.name === name));
+        const entitys = Feng3dObject.FindObjectsOfType(GameObject);
+        const result = entitys.filter((v) => v.name === name);
 
         return result[0];
     }
-
-    /**
-     * 组件列表
-     */
-    protected _components: Components[] = [];
 
     /**
      * 添加组件到指定位置
@@ -637,38 +602,4 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
 
         return targets;
     }
-
-    // /**
-    //  * 为了兼容以往json序列化格式
-    //  *
-    //  * @deprecated
-    //  */
-    // // eslint-disable-next-line accessor-pairs
-    // set children(v: Entity[])
-    // {
-    //     const node3ds = v.map((v) => v.getComponent(Node3D));
-    //     const node3d = this.getComponent(Node3D);
-    //     if (node3d)
-    //     {
-    //         node3d.children = node3ds;
-    //     }
-    //     else
-    //     {
-    //         const f = (e: IEvent<{
-    //             entity: Entity;
-    //             component: Component;
-    //         }>) =>
-    //         {
-    //             if (e.data.entity === this && e.data.component instanceof Node3D)
-    //             {
-    //                 e.data.component.children = node3ds;
-    //                 this.off('addComponent', f);
-    //             }
-    //         };
-    //         this.on('addComponent', f);
-    //     }
-    //     this._children = v;
-    // }
-    // // debug
-    // private _children: Entity[];
 }

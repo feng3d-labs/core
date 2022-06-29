@@ -187,9 +187,13 @@ export class MouseInput<T = MouseEventMap> extends EventEmitter<T>
     emit<K extends keyof T & string>(type: K, data?: T[K], bubbles = false)
     {
         if (!this.enable)
-        { return null; }
+        {
+            return null;
+        }
         if (!this.catchMouseMove && type === 'mousemove')
-        { return null; }
+        {
+            return null;
+        }
 
         return super.emit(type, data, bubbles);
     }
@@ -201,9 +205,13 @@ export class MouseInput<T = MouseEventMap> extends EventEmitter<T>
     emitEvent<K extends keyof T & string>(event: IEvent<T[K]>)
     {
         if (!this.enable)
-        { return false; }
+        {
+            return event;
+        }
         if (!this.catchMouseMove && event.type === 'mousemove')
-        { return false; }
+        {
+            return event;
+        }
 
         return super.emitEvent(event);
     }

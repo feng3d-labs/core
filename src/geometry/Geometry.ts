@@ -3,7 +3,7 @@ import { oav } from '@feng3d/objectview';
 import { gPartial } from '@feng3d/polyfill';
 import { Attribute, Attributes, CullFace, Index, RenderAtomic } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
-import { Feng3dObject } from '../ecs/Feng3dObject';
+import { Feng3dObject, Feng3dObjectEventMap } from '../ecs/Feng3dObject';
 import { HideFlags } from '../ecs/HideFlags';
 import { geometryUtils } from './GeometryUtils';
 
@@ -11,7 +11,7 @@ export interface GeometryTypes extends MixinsGeometryTypes { }
 
 export type GeometryLike = GeometryTypes[keyof GeometryTypes];
 
-export interface GeometryEventMap
+export interface GeometryEventMap extends Feng3dObjectEventMap
 {
     /**
      * 包围盒失效
