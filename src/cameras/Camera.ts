@@ -1,8 +1,7 @@
 import { Frustum, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialization, serialize } from '@feng3d/serialization';
-import { Component3D } from '../component/Component3D';
-import { RegisterComponent } from '../ecs/Component';
+import { Component, RegisterComponent } from '../ecs/Component';
 import { GameObject } from '../ecs/GameObject';
 import { GameObjectFactory } from '../GameObjectFactory';
 import { AddComponentMenu } from '../Menu';
@@ -35,7 +34,7 @@ declare global
  */
 @AddComponentMenu('Rendering/Camera')
 @RegisterComponent({ name: 'Camera', single: true })
-export class Camera extends Component3D
+export class Camera extends Component
 {
     static create(name = 'Camera')
     {

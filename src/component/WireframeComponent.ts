@@ -1,7 +1,6 @@
 import { Color4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { RegisterComponent } from '../ecs/Component';
-import { Component3D } from './Component3D';
+import { Component, RegisterComponent } from '../ecs/Component';
 
 declare global
 {
@@ -12,7 +11,7 @@ declare global
  * 线框组件，将会对拥有该组件的对象绘制线框
  */
 @RegisterComponent({ name: 'WireframeComponent' })
-export class WireframeComponent extends Component3D
+export class WireframeComponent extends Component
 {
     __class__: 'feng3d.WireframeComponent';
 

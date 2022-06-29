@@ -1,9 +1,8 @@
 import { Matrix4x4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
-import { Component3D } from '../../component/Component3D';
 import { Transform } from '../../core/Transform';
-import { RegisterComponent } from '../../ecs/Component';
+import { Component, RegisterComponent } from '../../ecs/Component';
 import { GameObject } from '../../ecs/GameObject';
 import { HideFlags } from '../../ecs/HideFlags';
 import { SkeletonJoint } from './Skeleton';
@@ -13,7 +12,7 @@ declare global
     interface MixinsComponentMap { SkeletonComponent: SkeletonComponent; }
 }
 @RegisterComponent({ name: 'SkeletonComponent' })
-export class SkeletonComponent extends Component3D
+export class SkeletonComponent extends Component
 {
     __class__: 'feng3d.SkeletonComponent';
 

@@ -5,10 +5,9 @@ import { serialize } from '@feng3d/serialization';
 import { Animation } from '../animation/Animation';
 import { Camera } from '../cameras/Camera';
 import { Behaviour } from '../component/Behaviour';
-import { Component3D } from '../component/Component3D';
-import { Transform } from '../core/Transform';
 import { Renderable } from '../core/Renderable';
 import { RunEnvironment } from '../core/RunEnvironment';
+import { Transform } from '../core/Transform';
 import { Component, RegisterComponent } from '../ecs/Component';
 import { GameObject } from '../ecs/GameObject';
 import { HideFlags } from '../ecs/HideFlags';
@@ -37,7 +36,7 @@ declare global
  * 3D场景
  */
 @RegisterComponent({ name: 'Scene', single: true })
-export class Scene extends Component3D
+export class Scene extends Component
 {
     __class__: 'feng3d.Scene';
 

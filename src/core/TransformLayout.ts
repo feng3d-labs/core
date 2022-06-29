@@ -5,8 +5,7 @@ import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { watcher } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
-import { Component3D } from '../component/Component3D';
-import { RegisterComponent } from '../ecs/Component';
+import { Component, RegisterComponent } from '../ecs/Component';
 import { AddComponentMenu } from '../Menu';
 import { Scene } from '../scene/Scene';
 import { ticker } from '../utils/Ticker';
@@ -41,7 +40,7 @@ declare global
  */
 @AddComponentMenu('Layout/TransformLayout')
 @RegisterComponent({ name: 'TransformLayout', single: true })
-export class TransformLayout extends Component3D
+export class TransformLayout extends Component
 {
     /**
      * 创建一个实体，该类为虚类

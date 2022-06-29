@@ -2,9 +2,8 @@
 import { oav } from '@feng3d/objectview';
 import { watch } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
-import { RegisterComponent } from '../ecs/Component';
+import { Component, RegisterComponent } from '../ecs/Component';
 import { AddComponentMenu } from '../Menu';
-import { Component3D } from './Component3D';
 
 declare global
 {
@@ -13,7 +12,7 @@ declare global
 
 @AddComponentMenu('Layout/HoldSizeComponent')
 @RegisterComponent({ name: 'HoldSizeComponent' })
-export class HoldSizeComponent extends Component3D
+export class HoldSizeComponent extends Component
 {
     __class__: 'feng3d.HoldSizeComponent';
 

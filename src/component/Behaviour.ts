@@ -1,8 +1,7 @@
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { RunEnvironment } from '../core/RunEnvironment';
-import { RegisterComponent } from '../ecs/Component';
-import { Component3D } from './Component3D';
+import { Component, RegisterComponent } from '../ecs/Component';
 
 declare global
 {
@@ -15,7 +14,7 @@ declare global
  * 可以控制开关的组件
  */
 @RegisterComponent({ name: 'Behaviour' })
-export class Behaviour extends Component3D
+export class Behaviour extends Component
 {
     /**
      * 是否启用update方法
