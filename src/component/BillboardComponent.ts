@@ -57,10 +57,10 @@ export class BillboardComponent extends Component3D
         }
     }
 
-    dispose()
+    destroy()
     {
         this.camera = null;
         this.node3d.off('updateLocalToWorldMatrix', this._onUpdateLocalToWorldMatrix, this);
-        super.dispose();
+        super.destroy();
     }
 }

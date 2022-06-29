@@ -77,7 +77,7 @@ export class ScriptComponent extends Behaviour
                 serialization.setValue(this._scriptInstance, oldInstance);
             }
             oldInstance.component = null;
-            oldInstance.dispose();
+            oldInstance.destroy();
         }
         this._invalid = false;
     }
@@ -104,17 +104,17 @@ export class ScriptComponent extends Behaviour
     /**
      * 销毁
      */
-    dispose()
+    destroy()
     {
         this.enabled = false;
 
         if (this._scriptInstance)
         {
             this._scriptInstance.component = null;
-            this._scriptInstance.dispose();
+            this._scriptInstance.destroy();
             this._scriptInstance = null;
         }
-        super.dispose();
+        super.destroy();
 
         globalEmitter.off('asset.scriptChanged', this._invalidateScriptInstance, this);
     }

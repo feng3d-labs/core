@@ -372,10 +372,10 @@ export class Component extends Feng3dObject<GameObjectEventMap> implements IEven
     /**
      * 销毁
      */
-    dispose()
+    destroy()
     {
+        super.destroy();
         this._gameObject = null;
-        this._disposed = true;
     }
 
     beforeRender(_renderAtomic: any, _scene: any, _camera: any)

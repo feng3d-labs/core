@@ -474,7 +474,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
         const component: Component = this._components.splice(index, 1)[0];
         // 派发移除组件事件
         this.emit('removeComponent', { component, entity: this }, true);
-        component.dispose();
+        component.destroy();
 
         return component;
     }
@@ -512,13 +512,13 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEve
     /**
      * 销毁
      */
-    dispose()
+    destroy()
     {
         for (let i = this._components.length - 1; i >= 0; i--)
         {
             this.removeComponentAt(i);
         }
-        // super.dispose();
+        super.destroy();
     }
 
     // ------------------------------------------

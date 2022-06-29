@@ -67,11 +67,11 @@ export class Animation extends Behaviour
         if (this.isplaying) this.time += interval * this.playspeed;
     }
 
-    dispose()
+    destroy()
     {
         this.animation = null;
         this.animations = null;
-        super.dispose();
+        super.destroy();
     }
 
     private num = 0;

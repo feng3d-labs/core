@@ -59,8 +59,8 @@ export class Feng3dObject<T extends Feng3dObjectEventMap = Feng3dObjectEventMap>
     /**
      * 是否已销毁
      */
-    get disposed() { return this._disposed; }
-    protected _disposed = false;
+    get isDestroyed() { return this._isDestroyed; }
+    protected _isDestroyed = false;
 
     /**
      * 对象库
@@ -95,6 +95,19 @@ export class Feng3dObject<T extends Feng3dObjectEventMap = Feng3dObjectEventMap>
     GetInstanceID()
     {
         return this._instanceID;
+    }
+
+    /**
+     * 销毁对象。
+     *
+     * @param allowDestroyingAssets 是否允许销毁资产。
+     */
+    destroy(allowDestroyingAssets = false)
+    {
+        Feng3dObject.objectLib.delete(this._instanceID);
+        this._isDestroyed = true;
+        this.bubbles('destroy', this);
+        allowDestroyingAssets;
     }
 
     /**
@@ -137,13 +150,11 @@ export class Feng3dObject<T extends Feng3dObjectEventMap = Feng3dObjectEventMap>
      * 这个函数应该只在编写编辑器代码时使用，因为在编辑模式下永远不会调用延迟销毁。在游戏代码中，您应该改用Object.Destroy。销毁总是延迟的（但在同一帧内执行）。小心使用此功能，因为它会永久破坏资产！另请注意，您永远不应该遍历数组并破坏您正在迭代的元素。这将导致严重的问题（作为一般的编程实践，不仅仅是在 Unity 中）。
      *
      * @param object 要销毁的对象。
-     * @param allowDestroyingAssets 设置为 true 以允许销毁资产。
+     * @param allowDestroyingAssets 是否允许销毁资产。
      */
     static DestroyImmediate(object: Feng3dObject, allowDestroyingAssets = false)
     {
-        allowDestroyingAssets;
-        this.objectLib.delete(object._instanceID);
-        object.bubbles('destroy', object);
+        object.destroy(allowDestroyingAssets);
     }
 
     // /**

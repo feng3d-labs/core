@@ -117,7 +117,7 @@ export class FPSController extends Behaviour
     /**
      * 销毁
      */
-    dispose()
+    destroy()
     {
         this.auto = false;
     }

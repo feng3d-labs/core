@@ -52,7 +52,7 @@ export class Script
     /**
      * 销毁
      */
-    dispose()
+    destroy()
     {
 
     }

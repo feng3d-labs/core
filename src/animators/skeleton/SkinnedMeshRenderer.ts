@@ -65,10 +65,10 @@ export class SkinnedMeshRenderer extends Renderable
     /**
      * 销毁
      */
-    dispose()
+    destroy()
     {
         this.cacheSkeletonComponent = null;
-        super.dispose();
+        super.destroy();
     }
 
     /**

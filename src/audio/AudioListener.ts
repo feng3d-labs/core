@@ -94,10 +94,10 @@ export class AudioListener extends Behaviour
         }
     }
 
-    dispose()
+    destroy()
     {
         this.off('scenetransformChanged', this._onScenetransformChanged, this);
-        super.dispose();
+        super.destroy();
     }
 }
 

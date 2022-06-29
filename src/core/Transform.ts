@@ -1001,7 +1001,7 @@ export class Transform extends Component implements IEventTarget
     /**
      * 销毁
      */
-    dispose()
+    destroy()
     {
         if (this.parent)
         { this.parent.removeChild(this); }
@@ -1009,14 +1009,14 @@ export class Transform extends Component implements IEventTarget
         {
             this.removeChildAt(i);
         }
-        super.dispose();
+        super.destroy();
     }
 
-    disposeWithChildren()
+    destroyWithChildren()
     {
-        this.dispose();
+        this.destroy();
         while (this.numChildren > 0)
-        { this._children[0].dispose(); }
+        { this._children[0].destroy(); }
     }
 
     private readonly _orientation = new Quaternion();

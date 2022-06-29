@@ -339,11 +339,11 @@ export class AudioSource extends Behaviour
         { this.gain.disconnect(globalGain); }
     }
 
-    dispose()
+    destroy()
     {
         this.off('scenetransformChanged', this._onScenetransformChanged, this);
         this._disconnect();
-        super.dispose();
+        super.destroy();
     }
 }
 

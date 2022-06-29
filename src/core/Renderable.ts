@@ -150,11 +150,11 @@ export class Renderable extends RayCastable
     /**
      * 销毁
      */
-    dispose()
+    destroy()
     {
         this.geometry = null;
         this.material = null;
-        super.dispose();
+        super.destroy();
     }
 
     //

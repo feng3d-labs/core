@@ -47,9 +47,9 @@ export class Behaviour extends Component3D
     {
     }
 
-    dispose()
+    destroy()
     {
         this.enabled = false;
-        super.dispose();
+        super.destroy();
     }
 }
