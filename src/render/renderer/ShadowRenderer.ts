@@ -123,9 +123,9 @@ export class ShadowRenderer
         cube2DViewPorts[5].init(vpWidth, 0, vpWidth, vpHeight);
 
         const shadowCamera = light.shadowCamera;
-        shadowCamera.transform.x = light.transform.x;
-        shadowCamera.transform.y = light.transform.y;
-        shadowCamera.transform.z = light.transform.z;
+        shadowCamera.transform.localPosition.x = light.transform.localPosition.x;
+        shadowCamera.transform.localPosition.y = light.transform.localPosition.y;
+        shadowCamera.transform.localPosition.z = light.transform.localPosition.z;
 
         const renderAtomic = this.renderAtomic;
 

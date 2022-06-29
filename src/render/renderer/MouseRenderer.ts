@@ -49,7 +49,7 @@ export class MouseRenderer extends EventEmitter
 
     protected drawRenderables(gl: GL, renderable: Renderable)
     {
-        if (renderable.transform.mouseEnabled)
+        if (renderable.gameObject.activeSelf)
         {
             const object = renderable.gameObject;
             const uObjectID = this.objects.length;

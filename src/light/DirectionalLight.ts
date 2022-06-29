@@ -69,9 +69,9 @@ export class DirectionalLight extends Light
         const radius = worldBounds.getSize().length / 2;
         //
         const position = center.addTo(this.direction.scaleNumberTo(radius + this.shadowCameraNear).negate());
-        this.shadowCamera.transform.x = position.x;
-        this.shadowCamera.transform.y = position.y;
-        this.shadowCamera.transform.z = position.z;
+        this.shadowCamera.transform.localPosition.x = position.x;
+        this.shadowCamera.transform.localPosition.y = position.y;
+        this.shadowCamera.transform.localPosition.z = position.z;
         this.shadowCamera.transform.lookAt(center, this.shadowCamera.transform.matrix.getAxisY());
         //
         if (!this.orthographicLens)

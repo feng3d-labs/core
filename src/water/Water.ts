@@ -88,9 +88,9 @@ export class Water extends Renderable
         target.add(mirrorWorldPosition);
 
         const mirrorCamera = serialization.setValue(new GameObject(), { name: 'waterMirrorCamera' }).addComponent(Camera);
-        mirrorCamera.transform.x = view.x;
-        mirrorCamera.transform.y = view.y;
-        mirrorCamera.transform.z = view.z;
+        mirrorCamera.transform.localPosition.x = view.x;
+        mirrorCamera.transform.localPosition.y = view.y;
+        mirrorCamera.transform.localPosition.z = view.z;
         mirrorCamera.transform.lookAt(target, rotationMatrix.getAxisY());
 
         mirrorCamera.lens = camera.lens.clone();

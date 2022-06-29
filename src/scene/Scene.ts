@@ -244,7 +244,7 @@ export class Scene extends Component
         while (i < checkList.length)
         {
             const checkObject = checkList[i++];
-            if (checkObject.mouseEnabled)
+            if (checkObject.gameObject.activeSelf)
             {
                 if (checkObject.getComponents(Renderable))
                 {

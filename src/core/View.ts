@@ -349,16 +349,16 @@ export class View extends Feng3dObject
 
         const camera = Camera.create('Main Camera');
         camera.gameObject.addComponent(AudioListener);
-        camera.transform.x = 0;
-        camera.transform.y = 1;
-        camera.transform.z = -10;
+        camera.transform.localPosition.x = 0;
+        camera.transform.localPosition.y = 1;
+        camera.transform.localPosition.z = -10;
         scene.transform.addChild(camera.transform);
 
         const directionalLight = DirectionalLight.create('DirectionalLight');
         directionalLight.shadowType = ShadowType.Hard_Shadows;
-        directionalLight.transform.rx = 50;
-        directionalLight.transform.ry = -30;
-        directionalLight.transform.y = 3;
+        directionalLight.transform.localEulerAngles.x = 50;
+        directionalLight.transform.localEulerAngles.y = -30;
+        directionalLight.transform.localPosition.y = 3;
         scene.transform.addChild(directionalLight.transform);
 
         return scene;

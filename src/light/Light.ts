@@ -26,28 +26,28 @@ export class Light extends Behaviour
      * 灯光类型
      */
     @serialize
-        lightType: LightType;
+    lightType: LightType;
 
     /**
      * 颜色
      */
     @oav()
     @serialize
-        color = new Color3();
+    color = new Color3();
 
     /**
      * 光照强度
      */
     @oav()
     @serialize
-        intensity = 1;
+    intensity = 1;
 
     /**
      * 阴影类型
      */
     @oav({ component: 'OAVEnum', componentParam: { enumClass: ShadowType } })
     @serialize
-        shadowType = ShadowType.No_Shadows;
+    shadowType = ShadowType.No_Shadows;
 
     /**
      * 光源位置
@@ -115,7 +115,7 @@ export class Light extends Behaviour
     frameBufferObject = new FrameBufferObject();
 
     @oav({ tooltip: '是否调试阴影图' })
-        debugShadowMap = false;
+    debugShadowMap = false;
 
     private debugShadowMapModel: MeshRenderer;
 
@@ -135,7 +135,7 @@ export class Light extends Behaviour
             model = entity.addComponent(MeshRenderer);
             model.geometry = Geometry.getDefault('Plane');
             model.hideFlags = HideFlags.Hide | HideFlags.DontSave;
-            model.transform.mouseEnabled = false;
+            model.gameObject.activeSelf = false;
             model.gameObject.addComponent(BillboardComponent);
 
             // 材质
@@ -154,9 +154,9 @@ export class Light extends Behaviour
 
         const depth = viewCamera.lens.near * 2;
         const position = viewCamera.transform.worldPosition.addTo(viewCamera.transform.localToWorldMatrix.getAxisZ().scaleNumberTo(depth));
-        model.transform.x = position.x;
-        model.transform.y = position.y;
-        model.transform.z = position.z;
+        model.transform.localPosition.x = position.x;
+        model.transform.localPosition.y = position.y;
+        model.transform.localPosition.z = position.z;
         const billboardComponent = model.getComponent(BillboardComponent);
         billboardComponent.camera = viewCamera;
 

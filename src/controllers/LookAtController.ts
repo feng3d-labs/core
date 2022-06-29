@@ -63,7 +63,7 @@ export class LookAtController extends ControllerBase
             }
             else if (this._lookAtNode3D)
             {
-                this._pos = this._lookAtNode3D.getPosition();
+                this._pos.copy(this._lookAtNode3D.localPosition);
                 this._targetNode.lookAt(this._pos, this._upAxis);
             }
         }

@@ -176,9 +176,9 @@ export class FPSController extends Behaviour
         const displacement = right.clone();
         displacement.add(up);
         displacement.add(forward);
-        this.transform.x += displacement.x;
-        this.transform.y += displacement.y;
-        this.transform.z += displacement.z;
+        this.transform.localPosition.x += displacement.x;
+        this.transform.localPosition.y += displacement.y;
+        this.transform.localPosition.z += displacement.z;
     }
     private mousePoint: Vector2 | null;
     /**

@@ -225,7 +225,7 @@ export class HoverController extends LookAtController
                 }
                 else
                 {
-                    this._lookAtNode3D.getPosition(this._pos);
+                    this._pos.copy(this._lookAtNode3D.localPosition);
                 }
             }
             else if (this._lookAtNode3D.scene)
@@ -236,7 +236,7 @@ export class HoverController extends LookAtController
             }
             else
             {
-                this._lookAtNode3D.getPosition(this._pos);
+                this._pos.copy(this._lookAtNode3D.localPosition);
             }
         }
         else
@@ -245,9 +245,9 @@ export class HoverController extends LookAtController
             this._pos.y = this._origin.y;
             this._pos.z = this._origin.z;
         }
-        this._targetNode.x = this._pos.x + this._distance * Math.sin(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD);
-        this._targetNode.z = this._pos.z + this._distance * Math.cos(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD);
-        this._targetNode.y = this._pos.y + this._distance * Math.sin(this._currentTiltAngle * mathUtil.DEG2RAD) * this._yFactor;
+        this._targetNode.localPosition.x = this._pos.x + this._distance * Math.sin(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD);
+        this._targetNode.localPosition.z = this._pos.z + this._distance * Math.cos(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD);
+        this._targetNode.localPosition.y = this._pos.y + this._distance * Math.sin(this._currentTiltAngle * mathUtil.DEG2RAD) * this._yFactor;
         super.update();
     }
 }
