@@ -159,7 +159,7 @@ export class Transform extends Component implements IEventTarget
     get orientation()
     {
         const radian = new Vector3().copy(this.localEulerAngles).scaleNumber(mathUtil.RAD2DEG);
-        const quaternion = new Quaternion().fromEulerAngles(radian.x, radian.y, radian.z);
+        const quaternion = new Quaternion().fromEuler(radian.x, radian.y, radian.z);
 
         return quaternion;
     }
