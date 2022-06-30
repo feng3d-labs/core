@@ -89,7 +89,6 @@ export class ImageUtil
 
     /**
      * 设置指定位置颜色值
-     * @param imageData 图片数据
      * @param x 图片数据x坐标
      * @param y 图片数据y坐标
      * @param color 颜色值
@@ -268,7 +267,7 @@ export class ImageUtil
                 const bottom = leftBottom.mixTo(rightBottom, i / this.imageData.width);
                 const v = top.mixTo(bottom, j / this.imageData.height);
 
-                this.setPixel(i, j, v.toColor4());
+                this.setPixel(i, j, new Color4(v.r, v.g, v.b, 1));
             }
         }
 

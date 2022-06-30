@@ -1,4 +1,4 @@
-import { CoordinateSystem, RotationOrder } from '@feng3d/math';
+import { CoordinateSystem, RotationOrder, Euler } from '@feng3d/math';
 
 export class Setting
 {
@@ -15,15 +15,15 @@ export class Setting
      * unity    左手坐标系统。
      */
     coordinateSystem = CoordinateSystem.LEFT_HANDED;
-
-    /**
-     * 引擎中使用的旋转顺序。
-     *
-     * unity YXZ
-     * playcanvas ZYX
-     * three.js XYZ
-     */
-    defaultRotationOrder = RotationOrder.YXZ;
 }
+
+/**
+ * 引擎中使用的旋转顺序。
+ *
+ * unity YXZ
+ * playcanvas ZYX
+ * three.js XYZ
+ */
+Euler.DefaultOrder = RotationOrder.YXZ;
 
 export const setting = new Setting();
