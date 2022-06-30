@@ -1,4 +1,5 @@
-import { CoordinateSystem, RotationOrder, Euler } from '@feng3d/math';
+import { CoordinateSystem, RotationOrder } from '@feng3d/math';
+import { mathUtil } from '@feng3d/polyfill';
 
 export class Setting
 {
@@ -24,6 +25,6 @@ export class Setting
  * playcanvas ZYX
  * three.js XYZ
  */
-Euler.DefaultOrder = RotationOrder.YXZ;
+mathUtil.DefaultOrder = RotationOrder.YXZ;
 
 export const setting = new Setting();
