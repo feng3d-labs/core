@@ -1,4 +1,4 @@
-import { Euler, Vector4 } from '@feng3d/math';
+import { Vector4 } from '@feng3d/math';
 import { lazy, LazyObject, mathUtil } from '@feng3d/polyfill';
 import { GL, Uniforms } from '@feng3d/renderer';
 import { Camera } from '../../cameras/Camera';
@@ -46,7 +46,7 @@ export class ForwardRenderer
             renderAtomic.uniforms.u_ITMVMatrix = () =>
                 lazy.getvalue(renderAtomic.uniforms.u_mvMatrix).clone().invert().transpose();
 
-            renderAtomic.shaderMacro.RotationOrder = mathUtil.DefaultOrder;
+            renderAtomic.shaderMacro.RotationOrder = mathUtil.DefaultRotationOrder;
 
             renderable.beforeRender(renderAtomic, scene, camera);
 

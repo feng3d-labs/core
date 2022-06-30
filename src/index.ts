@@ -85,7 +85,6 @@ export * from './render/shader/ShaderLib';
 export * from './scene/Scene';
 export * from './scene/ScenePickCache';
 export * from './scene/SceneUtil';
-export * from './setting';
 export * from './ShaderConfig';
 export * from './skybox/SkyBox';
 export * from './skybox/SkyBoxRenderer';
