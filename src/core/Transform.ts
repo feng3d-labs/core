@@ -151,7 +151,7 @@ export class Transform extends Component implements IEventTarget
      */
     @serialize
     @oav()
-    localScale = new Vector3();
+    localScale = new Vector3(1, 1, 1);
 
     /**
      * 相对于父对象的四元素旋转。
