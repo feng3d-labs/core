@@ -50,7 +50,7 @@ export class PointGeometry extends Geometry
             const position = (element && element.position) || Vector3.ZERO;
             const color = (element && element.color) || Color4.WHITE;
             const normal = (element && element.normal) || Vector3.ZERO;
-            const uv = (element && element.uv) || Vector2.ZERO;
+            const uv = (element && element.uv) || Vector2.zero;
             indices[i] = i;
             positionData.push(position.x, position.y, position.z);
             normalData.push(normal.x, normal.y, normal.z);
