@@ -1,3 +1,4 @@
+import { FS } from '@feng3d/filesystem';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
@@ -48,6 +49,14 @@ export class AudioSource extends Behaviour
 
     @watch('_enabledChanged')
     enabled = true;
+
+    /**
+     * 声音文件路径
+     */
+    @serialize
+    @oav({ component: 'OAVPick', tooltip: '声音文件路径', componentParam: { accepttype: 'audio' } })
+    @watch('_onUrlChanged')
+    url = '';
 
     /**
      * 是否循环播放
@@ -296,6 +305,30 @@ export class AudioSource extends Behaviour
         {
             panner.setPosition(scenePosition.x, scenePosition.y, -scenePosition.z);
             panner.setOrientation(1, 0, 0);
+        }
+    }
+
+    private _onUrlChanged()
+    {
+        this.stop();
+        if (this.url)
+        {
+            const url = this.url;
+            FS.fs.readArrayBuffer(this.url, (err, data) =>
+            {
+                if (err)
+                {
+                    console.warn(err);
+
+                    return;
+                }
+                if (url !== this.url)
+                { return; }
+                audioCtx.decodeAudioData(data, (buffer) =>
+                {
+                    this.buffer = buffer;
+                });
+            });
         }
     }
 

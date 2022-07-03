@@ -61,6 +61,11 @@ declare global
     interface MixinsComponentMap { Node3D: Transform; }
 }
 
+export interface Transform extends MixinsNode3D
+{
+
+}
+
 /**
  * 变换
  *
@@ -956,6 +961,55 @@ export class Transform extends Component implements IEventTarget
         { this._localToWorldMatrix.append(this.parent.localToWorldMatrix); }
         this.emit('updateLocalToWorldMatrix', this);
         console.assert(!isNaN(this._localToWorldMatrix.elements[0]));
+    }
+
+
+    /**
+     * 是否加载完成
+     */
+    get isLoaded()
+    {
+        if (!this.isSelfLoaded) return false;
+        for (let i = 0; i < this.children.length; i++)
+        {
+            const element = this.children[i];
+            if (!element.isLoaded) return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 已加载完成或者加载完成时立即调用
+     * @param callback 完成回调
+     */
+    onLoadCompleted(callback: () => void)
+    {
+        let loadingNum = 0;
+        if (!this.isSelfLoaded)
+        {
+            loadingNum++;
+            this.onSelfLoadCompleted(() =>
+            {
+                loadingNum--;
+                if (loadingNum === 0) callback();
+            });
+        }
+        for (let i = 0; i < this.children.length; i++)
+        {
+            const element = this.children[i];
+            if (!element.isLoaded)
+            {
+                loadingNum++;
+                // eslint-disable-next-line no-loop-func
+                element.onLoadCompleted(() =>
+                {
+                    loadingNum--;
+                    if (loadingNum === 0) callback();
+                });
+            }
+        }
+        if (loadingNum === 0) callback();
     }
 
     protected _updateGlobalVisible()

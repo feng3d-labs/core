@@ -4,8 +4,11 @@ import { gPartial, ObjectUtils } from '@feng3d/polyfill';
 import { RenderAtomic, RenderMode, RenderParams, Shader, shaderlib } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { AssetData } from '../core/AssetData';
 import { Feng3dObject } from '../ecs/Feng3dObject';
 import { HideFlags } from '../ecs/HideFlags';
+import { Texture2D } from '../textures/Texture2D';
+import { TextureCube } from '../textures/TextureCube';
 
 export interface UniformsTypes extends MixinsUniformsTypes { }
 export type ShaderNames = keyof UniformsTypes;
@@ -93,6 +96,52 @@ export class Material extends Feng3dObject
         renderAtomic.shaderMacro.IS_POINTS_MODE = this.renderParams.renderMode === RenderMode.POINTS;
     }
 
+    /**
+     * 是否加载完成
+     */
+    get isLoaded()
+    {
+        const uniforms = this.uniforms;
+        for (const key in uniforms)
+        {
+            const texture = uniforms[key];
+            if (texture instanceof Texture2D || texture instanceof TextureCube)
+            {
+                if (!texture.isLoaded) return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 已加载完成或者加载完成时立即调用
+     * @param callback 完成回调
+     */
+    onLoadCompleted(callback: () => void)
+    {
+        let loadingNum = 0;
+        const uniforms = this.uniforms;
+        for (const key in uniforms)
+        {
+            const texture = uniforms[key];
+            if (texture instanceof Texture2D || texture instanceof TextureCube)
+            {
+                if (!texture.isLoaded)
+                {
+                    loadingNum++;
+                    // eslint-disable-next-line no-loop-func
+                    (texture as Texture2D).on('loadCompleted', () =>
+                    {
+                        loadingNum--;
+                        if (loadingNum === 0) callback();
+                    });
+                }
+            }
+        }
+        if (loadingNum === 0) callback();
+    }
+
     private _onShaderChanged()
     {
         const Cls = shaderlib.shaderConfig.shaders[this.shaderName].cls;
@@ -138,6 +187,7 @@ export class Material extends Feng3dObject
         const newMaterial = this._defaultMaterials[name] = new Material();
         serialization.setValue(newMaterial, material);
         serialization.setValue(newMaterial, { name, hideFlags: HideFlags.NotEditable });
+        AssetData.addAssetData(name, newMaterial);
     }
 
     /**

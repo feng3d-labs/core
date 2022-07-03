@@ -12,10 +12,24 @@ import { Material } from '../materials/Material';
 import { PickingCollisionVO } from '../pick/Raycaster';
 import { Scene } from '../scene/Scene';
 import { RayCastable } from './RayCastable';
+import { Transform } from './Transform';
 
 declare global
 {
     interface MixinsComponentMap { Renderable: Renderable; }
+
+    interface MixinsNode3D
+    {
+        /**
+         * 是否加载完成
+         */
+        isSelfLoaded: boolean;
+        /**
+         * 已加载完成或者加载完成时立即调用
+         * @param callback 完成回调
+         */
+        onSelfLoadCompleted(callback: () => void): void;
+    }
 }
 
 /**
@@ -148,6 +162,24 @@ export class Renderable extends RayCastable
     }
 
     /**
+     * 是否加载完成
+     */
+    get isLoaded()
+    {
+        return this.material.isLoaded;
+    }
+
+    /**
+     * 已加载完成或者加载完成时立即调用
+     * @param callback 完成回调
+     */
+    onLoadCompleted(callback: () => void)
+    {
+        if (this.isLoaded) callback();
+        this.material.onLoadCompleted(callback);
+    }
+
+    /**
      * 销毁
      */
     destroy()
@@ -184,3 +216,29 @@ export class Renderable extends RayCastable
         event.data.bounds.push(this.geometry.bounding);
     }
 }
+
+Object.defineProperty(Transform.prototype, 'isSelfLoaded', {
+    get: function get(this: Transform)
+    {
+        const model = this.getComponent(Renderable);
+        if (model) return model.isLoaded;
+
+        return true;
+    }
+});
+
+Transform.prototype.onSelfLoadCompleted = function onSelfLoadCompleted(this: Transform, callback: () => void)
+{
+    if (this.isSelfLoaded)
+    {
+        callback();
+
+        return;
+    }
+    const model = this.getComponent(Renderable);
+    if (model)
+    {
+        model.onLoadCompleted(callback);
+    }
+    else callback();
+};
