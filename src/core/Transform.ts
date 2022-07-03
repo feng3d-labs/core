@@ -1,7 +1,7 @@
 import { IEventTarget } from '@feng3d/event';
 import { Box3, Matrix4x4, Quaternion, Ray3, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { decoratorRegisterClass, mathUtil, ObjectUtils } from '@feng3d/polyfill';
+import { decoratorRegisterClass, mathUtil } from '@feng3d/polyfill';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { watcher } from '@feng3d/watcher';
@@ -14,36 +14,6 @@ declare global
 {
     interface MixinsEntityEventMap
     {
-        /**
-         * 添加了子对象，当child被添加到parent中时派发冒泡事件
-         */
-        addChild: { parent: Transform, child: Transform }
-
-        /**
-         * 删除了子对象，当child被parent移除时派发冒泡事件
-         */
-        removeChild: { parent: Transform, child: Transform };
-
-        /**
-         * 自身被添加到父对象中事件
-         */
-        added: { parent: Transform };
-
-        /**
-         * 自身从父对象中移除事件
-         */
-        removed: { parent: Transform };
-
-        /**
-         * 当GameObject的scene属性被设置是由Scene派发
-         */
-        addedToScene: Transform;
-
-        /**
-         * 当GameObject的scene属性被清空时由Scene派发
-         */
-        removedFromScene: Transform;
-
         /**
          * 变换矩阵变化
          */
@@ -59,11 +29,6 @@ declare global
         scenetransformChanged: Transform;
     }
     interface MixinsComponentMap { Node3D: Transform; }
-}
-
-export interface Transform extends MixinsNode3D
-{
-
 }
 
 /**
@@ -90,17 +55,6 @@ export class Transform extends Component implements IEventTarget
      */
     @serialize
     assetId: string;
-
-    /**
-     * The number of children the parent Transform has.
-     */
-    /**
-     * 父 Transform 拥有的子代数。
-     */
-    get childCount()
-    {
-        return this._children.length;
-    }
 
     /**
      * X轴坐标。
@@ -218,6 +172,23 @@ export class Transform extends Component implements IEventTarget
         this.localScale.z = v;
     }
 
+    get parent()
+    {
+        return this.gameObject.parent?.transform;
+    }
+
+    get numChildren()
+    {
+        return this.gameObject.numChilren;
+    }
+
+    get children()
+    {
+        const children = this.gameObject.children.map((v) => v.transform);
+
+        return children;
+    }
+
     /**
      * 创建一个实体，该类为虚类
      */
@@ -293,38 +264,6 @@ export class Transform extends Component implements IEventTarget
     }
 
     /**
-     * 是否显示
-     */
-    @serialize
-    get visible()
-    {
-        return this._visible;
-    }
-    set visible(v)
-    {
-        if (this._visible === v) return;
-        this._visible = v;
-        this._invalidateGlobalVisible();
-    }
-    private _visible = true;
-
-    /**
-     * 全局是否可见
-     */
-    get globalVisible()
-    {
-        if (this._globalVisibleInvalid)
-        {
-            this._updateGlobalVisible();
-            this._globalVisibleInvalid = false;
-        }
-
-        return this._globalVisible;
-    }
-    protected _globalVisible = false;
-    protected _globalVisibleInvalid = true;
-
-    /**
      * 本地变换矩阵
      */
     get matrix()
@@ -378,38 +317,6 @@ export class Transform extends Component implements IEventTarget
         return this._boundingBox;
     }
     private _boundingBox: BoundingBox;
-
-    get parent()
-    {
-        return this._parent;
-    }
-
-    get scene()
-    {
-        return this._scene;
-    }
-
-    /**
-     * 子对象
-     */
-    @serialize
-    get children()
-    {
-        return this._children.concat();
-    }
-
-    set children(value)
-    {
-        if (!value) return;
-        for (let i = this._children.length - 1; i >= 0; i--)
-        {
-            this.removeChildAt(i);
-        }
-        for (let i = 0; i < value.length; i++)
-        {
-            this.addChild(value[i]);
-        }
-    }
 
     moveForward(distance: number)
     {
@@ -599,7 +506,9 @@ export class Transform extends Component implements IEventTarget
         {
             this._localToWorldRotationMatrix.copy(this.rotationMatrix);
             if (this.parent)
-            { this._localToWorldRotationMatrix.append(this.parent.localToWorldRotationMatrix); }
+            {
+                this._localToWorldRotationMatrix.append(this.parent.localToWorldRotationMatrix);
+            }
 
             this._localToWorldRotationMatrixInvalid = false;
         }
@@ -613,153 +522,6 @@ export class Transform extends Component implements IEventTarget
         mat.invert();
 
         return mat;
-    }
-
-    /**
-     * 根据名称查找对象
-     *
-     * @param name 对象名称
-     */
-    find(name: string): Transform
-    {
-        if (this.gameObject.name === name)
-        { return this; }
-        for (let i = 0; i < this._children.length; i++)
-        {
-            const target = this._children[i].find(name);
-            if (target)
-            {
-                return target;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * 是否包含指定对象
-     *
-     * @param child 可能的子孙对象
-     */
-    contains(child: Transform)
-    {
-        let checkitem = child;
-        do
-        {
-            if (checkitem === this)
-            { return true; }
-            checkitem = checkitem.parent;
-        } while (checkitem);
-
-        return false;
-    }
-
-    /**
-     * 添加子对象
-     *
-     * @param child 子对象
-     */
-    addChild(child: Transform)
-    {
-        if (ObjectUtils.objectIsEmpty(child))
-        { return; }
-        if (child.parent === this)
-        {
-            // 把子对象移动到最后
-            const childIndex = this._children.indexOf(child);
-            if (childIndex !== -1) this._children.splice(childIndex, 1);
-            this._children.push(child);
-        }
-        else
-        {
-            if (child.contains(this))
-            {
-                console.error('无法添加到自身中!');
-
-                return;
-            }
-            if (child._parent) child._parent.removeChild(child);
-            child._setParent(this);
-            this._children.push(child);
-            child.emit('added', { parent: this });
-            this.emit('addChild', { child, parent: this }, true);
-        }
-
-        return child;
-    }
-
-    /**
-     * 添加子对象
-     *
-     * @param children 子对象
-     */
-    addChildren(...children: Transform[])
-    {
-        for (let i = 0; i < children.length; i++)
-        {
-            this.addChild(children[i]);
-        }
-    }
-
-    /**
-     * 移除自身
-     */
-    remove()
-    {
-        if (this.parent) this.parent.removeChild(this);
-    }
-
-    /**
-     * 移除所有子对象
-     */
-    removeChildren()
-    {
-        for (let i = this.childCount - 1; i >= 0; i--)
-        {
-            this.removeChildAt(i);
-        }
-    }
-
-    /**
-     * 移除子对象
-     *
-     * @param child 子对象
-     */
-    removeChild(child: Transform)
-    {
-        if (ObjectUtils.objectIsEmpty(child)) return;
-        const childIndex = this._children.indexOf(child);
-        if (childIndex !== -1) this.removeChildInternal(childIndex, child);
-    }
-
-    /**
-     * 删除指定位置的子对象
-     *
-     * @param index 需要删除子对象的所有
-     */
-    removeChildAt(index: number)
-    {
-        const child = this._children[index];
-
-        return this.removeChildInternal(index, child);
-    }
-
-    /**
-     * 获取指定位置的子对象
-     *
-     * @param index
-     */
-    getChildAt(index: number)
-    {
-        return this._children[index];
-    }
-
-    /**
-     * 获取子对象列表（备份）
-     */
-    getChildren()
-    {
-        return this._children.concat();
     }
 
     /**
@@ -936,20 +698,7 @@ export class Transform extends Component implements IEventTarget
      */
     destroy()
     {
-        if (this.parent)
-        { this.parent.removeChild(this); }
-        for (let i = this._children.length - 1; i >= 0; i--)
-        {
-            this.removeChildAt(i);
-        }
         super.destroy();
-    }
-
-    destroyWithChildren()
-    {
-        this.destroy();
-        while (this.childCount > 0)
-        { this._children[0].destroy(); }
     }
 
     protected readonly _matrix = new Matrix4x4();
@@ -970,10 +719,6 @@ export class Transform extends Component implements IEventTarget
     protected readonly _localToWorldRotationMatrix = new Matrix4x4();
     protected _localToWorldRotationMatrixInvalid = false;
 
-    protected _parent: Transform;
-    protected _children: Transform[] = [];
-    protected _scene: Scene;
-
     private _renderAtomic = new RenderAtomic();
 
     private _onPositionChanged()
@@ -991,50 +736,6 @@ export class Transform extends Component implements IEventTarget
         this._invalidateTransform();
     }
 
-    private _setParent(value: Transform)
-    {
-        this._parent = value;
-        this.updateScene();
-        this._invalidateSceneTransform();
-    }
-
-    private updateScene()
-    {
-        const newScene = this._parent?._scene;
-        if (this._scene === newScene)
-        { return; }
-        if (this._scene)
-        {
-            this.emit('removedFromScene', this);
-        }
-        this._scene = newScene;
-        if (this._scene)
-        {
-            this.emit('addedToScene', this);
-        }
-        this._updateChildrenScene();
-    }
-
-    /**
-     * @private
-     */
-    private _updateChildrenScene()
-    {
-        for (let i = 0, n = this._children.length; i < n; i++)
-        {
-            this._children[i].updateScene();
-        }
-    }
-
-    private removeChildInternal(childIndex: number, child: Transform)
-    {
-        this._children.splice(childIndex, 1);
-        child._setParent(null);
-
-        child.emit('removed', { parent: this });
-        this.emit('removeChild', { child, parent: this }, true);
-    }
-
     private _invalidateTransform()
     {
         if (this._matrixInvalid) return;
@@ -1045,7 +746,7 @@ export class Transform extends Component implements IEventTarget
         this._invalidateSceneTransform();
     }
 
-    private _invalidateSceneTransform()
+    _invalidateSceneTransform()
     {
         if (this._localToWorldMatrixInvalid) return;
 
@@ -1058,7 +759,7 @@ export class Transform extends Component implements IEventTarget
         //
         if (this.gameObject)
         {
-            for (let i = 0, n = this.childCount; i < n; i++)
+            for (let i = 0, n = this.numChildren; i < n; i++)
             {
                 this.children[i]._invalidateSceneTransform();
             }
@@ -1079,89 +780,8 @@ export class Transform extends Component implements IEventTarget
         console.assert(!isNaN(this._localToWorldMatrix.elements[0]));
     }
 
-
-    /**
-     * 是否加载完成
-     */
-    get isLoaded()
-    {
-        if (!this.isSelfLoaded) return false;
-        for (let i = 0; i < this.children.length; i++)
-        {
-            const element = this.children[i];
-            if (!element.isLoaded) return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * 已加载完成或者加载完成时立即调用
-     * @param callback 完成回调
-     */
-    onLoadCompleted(callback: () => void)
-    {
-        let loadingNum = 0;
-        if (!this.isSelfLoaded)
-        {
-            loadingNum++;
-            this.onSelfLoadCompleted(() =>
-            {
-                loadingNum--;
-                if (loadingNum === 0) callback();
-            });
-        }
-        for (let i = 0; i < this.children.length; i++)
-        {
-            const element = this.children[i];
-            if (!element.isLoaded)
-            {
-                loadingNum++;
-                // eslint-disable-next-line no-loop-func
-                element.onLoadCompleted(() =>
-                {
-                    loadingNum--;
-                    if (loadingNum === 0) callback();
-                });
-            }
-        }
-        if (loadingNum === 0) callback();
-    }
-
-    protected _updateGlobalVisible()
-    {
-        let visible = this.visible;
-        if (this.parent)
-        {
-            visible = visible && this.parent.globalVisible;
-        }
-        this._globalVisible = visible;
-    }
-
-    protected _invalidateGlobalVisible()
-    {
-        if (this._globalVisibleInvalid) return;
-
-        this._globalVisibleInvalid = true;
-
-        this._children.forEach((c) =>
-        {
-            c._invalidateGlobalVisible();
-        });
-    }
-
     getBubbleTargets(): any[]
     {
         return [this.parent];
-    }
-
-    /**
-     * @private
-     * @param v
-     */
-    _setScene(v: Scene)
-    {
-        this._scene = v;
-        this._updateChildrenScene();
     }
 }

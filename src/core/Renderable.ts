@@ -6,6 +6,7 @@ import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
 import { RegisterComponent } from '../ecs/Component';
+import { GameObject } from '../ecs/GameObject';
 import { Geometry, GeometryLike } from '../geometry/Geometry';
 import { LightPicker } from '../light/pickers/LightPicker';
 import { Material } from '../materials/Material';
@@ -217,7 +218,7 @@ export class Renderable extends RayCastable
     }
 }
 
-Object.defineProperty(Transform.prototype, 'isSelfLoaded', {
+Object.defineProperty(GameObject.prototype, 'isSelfLoaded', {
     get: function get(this: Transform)
     {
         const model = this.getComponent(Renderable);
@@ -227,7 +228,7 @@ Object.defineProperty(Transform.prototype, 'isSelfLoaded', {
     }
 });
 
-Transform.prototype.onSelfLoadCompleted = function onSelfLoadCompleted(this: Transform, callback: () => void)
+GameObject.prototype.onSelfLoadCompleted = function onSelfLoadCompleted(this: GameObject, callback: () => void)
 {
     if (this.isSelfLoaded)
     {
