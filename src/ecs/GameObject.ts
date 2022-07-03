@@ -1,6 +1,6 @@
 import { IEventTarget } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
-import { Constructor, ObjectUtils } from '@feng3d/polyfill';
+import { Constructor, decoratorRegisterClass, ObjectUtils } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
 import { Transform } from '../core/Transform';
 import { Scene } from '../scene/Scene';
@@ -45,6 +45,7 @@ export interface GameObjectEventMap extends MixinsEntityEventMap, MouseEventMap,
  *
  * @see https://docs.unity3d.com/2021.3/Documentation/ScriptReference/GameObject.html
  */
+@decoratorRegisterClass()
 export class GameObject extends Feng3dObject<GameObjectEventMap> implements IEventTarget
 {
     __class__: 'GameObject';

@@ -1,3 +1,4 @@
+import { decoratorRegisterClass } from '@feng3d/polyfill';
 import { RegisterComponent } from '../ecs/Component';
 import { GameObject } from '../ecs/GameObject';
 import { Renderable } from './Renderable';
@@ -11,6 +12,7 @@ declare global
  * 网格渲染器
  */
 @RegisterComponent({ name: 'MeshRenderer' })
+@decoratorRegisterClass()
 export class MeshRenderer extends Renderable
 {
     __class__: 'feng3d.MeshRenderer';

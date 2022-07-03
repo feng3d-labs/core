@@ -1,5 +1,6 @@
 import { Frustum, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
+import { decoratorRegisterClass } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
 import { Component, RegisterComponent } from '../ecs/Component';
 import { GameObject } from '../ecs/GameObject';
@@ -34,6 +35,7 @@ declare global
  */
 @AddComponentMenu('Rendering/Camera')
 @RegisterComponent({ name: 'Camera', single: true })
+@decoratorRegisterClass()
 export class Camera extends Component
 {
     static create(name = 'Camera')
@@ -44,7 +46,7 @@ export class Camera extends Component
 
         return camera;
     }
-    __class__: 'feng3d.Camera';
+    __class__: 'Camera';
 
     @oav({ component: 'OAVEnum', componentParam: { enumClass: Projection } })
     get projection()

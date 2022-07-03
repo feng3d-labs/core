@@ -1,7 +1,7 @@
 import { IEvent as Event } from '@feng3d/event';
 import { Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { ObjectUtils } from '@feng3d/polyfill';
+import { decoratorRegisterClass, ObjectUtils } from '@feng3d/polyfill';
 import { windowEventProxy } from '@feng3d/shortcut';
 import { Behaviour } from '../component/Behaviour';
 import { RunEnvironment } from '../core/RunEnvironment';
@@ -17,6 +17,7 @@ declare global
  */
 @AddComponentMenu('Controller/FPSController')
 @RegisterComponent({ name: 'FPSController' })
+@decoratorRegisterClass()
 export class FPSController extends Behaviour
 {
     /**

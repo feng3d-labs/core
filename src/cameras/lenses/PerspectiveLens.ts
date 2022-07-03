@@ -1,5 +1,6 @@
 import { Vector3, Vector4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
+import { decoratorRegisterClass } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { Projection } from '../Projection';
@@ -8,6 +9,7 @@ import { LensBase } from './LensBase';
 /**
  * 透视摄像机镜头
  */
+@decoratorRegisterClass()
 export class PerspectiveLens extends LensBase
 {
     /**

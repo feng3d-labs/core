@@ -1,4 +1,5 @@
 import { Box3, Vector3 } from '@feng3d/math';
+import { decoratorRegisterClass } from '@feng3d/polyfill';
 import { serialization } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { OrthographicLens } from '../cameras/lenses/OrthographicLens';
@@ -21,6 +22,7 @@ declare global
  */
 @AddComponentMenu('Rendering/DirectionalLight')
 @RegisterComponent({ name: 'DirectionalLight' })
+@decoratorRegisterClass()
 export class DirectionalLight extends Light
 {
     static create(name = 'DirectionalLight')
