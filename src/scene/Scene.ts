@@ -7,7 +7,6 @@ import { Camera } from '../cameras/Camera';
 import { Behaviour } from '../component/Behaviour';
 import { Renderable } from '../core/Renderable';
 import { RunEnvironment } from '../core/RunEnvironment';
-import { Transform } from '../core/Transform';
 import { Component, RegisterComponent } from '../ecs/Component';
 import { GameObject } from '../ecs/GameObject';
 import { HideFlags } from '../ecs/HideFlags';
@@ -74,14 +73,14 @@ export class Scene extends Component
         this.gameObject.hideFlags = this.gameObject.hideFlags | HideFlags.Hide;
         this.gameObject.hideFlags = this.gameObject.hideFlags | HideFlags.DontTransform;
         //
-        this.transform._setScene(this);
+        this.gameObject._setScene(this);
     }
 
     update(interval?: number)
     {
         interval = interval || (1000 / ticker.frameRate);
 
-        this._mouseCheckTransforms = null;
+        this._mouseCheckGameObject = null;
         this._models = null;
         this._visibleAndEnabledModels = null;
         this._skyBoxs = null;
@@ -144,7 +143,7 @@ export class Scene extends Component
     {
         if (!this._activeSkyBoxs)
         {
-            this._activeSkyBoxs = this.skyBoxs.filter((i) => i.transform.globalVisible);
+            this._activeSkyBoxs = this.skyBoxs.filter((i) => i.gameObject.globalVisible);
         }
 
         return this._activeSkyBoxs;
@@ -232,29 +231,29 @@ export class Scene extends Component
         return this._activeBehaviours;
     }
 
-    get mouseCheckObjects(): Transform[]
+    get mouseCheckObjects(): GameObject[]
     {
-        if (this._mouseCheckTransforms)
-        { return this._mouseCheckTransforms; }
+        if (this._mouseCheckGameObject)
+        { return this._mouseCheckGameObject; }
 
-        let checkList = this.transform.getChildren();
-        this._mouseCheckTransforms = [];
+        let checkList = this.gameObject.getChildren();
+        this._mouseCheckGameObject = [];
         let i = 0;
         // 获取所有需要拾取的对象并分层存储
         while (i < checkList.length)
         {
             const checkObject = checkList[i++];
-            if (checkObject.gameObject.activeSelf)
+            if (checkObject.activeSelf)
             {
                 if (checkObject.getComponents(Renderable))
                 {
-                    this._mouseCheckTransforms.push(checkObject);
+                    this._mouseCheckGameObject.push(checkObject);
                 }
                 checkList = checkList.concat(checkObject.getChildren());
             }
         }
 
-        return this._mouseCheckTransforms;
+        return this._mouseCheckGameObject;
     }
 
     /**
@@ -277,7 +276,7 @@ export class Scene extends Component
      */
     getPickByDirectionalLight(_light: DirectionalLight)
     {
-        const openlist = [this.transform];
+        const openlist = [this.gameObject];
         const targets: Renderable[] = [];
         while (openlist.length > 0)
         {
@@ -324,7 +323,7 @@ export class Scene extends Component
     }
 
     //
-    private _mouseCheckTransforms: Transform[];
+    private _mouseCheckGameObject: GameObject[];
     private _models: Renderable[];
     private _visibleAndEnabledModels: Renderable[];
     private _skyBoxs: SkyBox[];
