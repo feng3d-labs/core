@@ -103,6 +103,122 @@ export class Transform extends Component implements IEventTarget
     }
 
     /**
+     * X轴坐标。
+     */
+    get x()
+    {
+        return this.localPosition.x;
+    }
+
+    set x(v)
+    {
+        this.localPosition.x = v;
+    }
+
+    /**
+     * Y轴坐标。
+     */
+    get y()
+    {
+        return this.localPosition.y;
+    }
+
+    set y(v)
+    {
+        this.localPosition.y = v;
+    }
+
+    /**
+     * Z轴坐标。
+     */
+    get z()
+    {
+        return this.localPosition.z;
+    }
+
+    set z(v)
+    {
+        this.localPosition.z = v;
+    }
+
+    /**
+     * X轴旋转角度。
+     */
+    get rx()
+    {
+        return this.localEulerAngles.x;
+    }
+
+    set rx(v)
+    {
+        this.localEulerAngles.x = v;
+    }
+
+    /**
+     * Y轴旋转角度。
+     */
+    get ry()
+    {
+        return this.localEulerAngles.y;
+    }
+
+    set ry(v)
+    {
+        this.localEulerAngles.y = v;
+    }
+
+    /**
+     * Z轴旋转角度。
+     */
+    get rz()
+    {
+        return this.localEulerAngles.z;
+    }
+    set rz(v)
+    {
+        this.localEulerAngles.z = v;
+    }
+
+    /**
+     * X轴缩放。
+     */
+    get sx()
+    {
+        return this.localScale.x;
+    }
+
+    set sx(v)
+    {
+        this.localScale.x = v;
+    }
+
+    /**
+     * Y轴缩放。
+     */
+    get sy()
+    {
+        return this.localScale.y;
+    }
+
+    set sy(v)
+    {
+        this.localScale.y = v;
+    }
+
+    /**
+     * Z轴缩放。
+     */
+    get sz()
+    {
+        return this.localScale.z;
+    }
+
+    set sz(v)
+    {
+        this.localScale.z = v;
+    }
+
+    /**
      * 创建一个实体，该类为虚类
      */
     constructor()

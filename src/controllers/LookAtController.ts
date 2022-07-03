@@ -5,19 +5,23 @@ import { ControllerBase } from './ControllerBase';
 export class LookAtController extends ControllerBase
 {
     protected _lookAtPosition: Vector3;
-    protected _lookAtNode3D: Transform;
+    protected _lookAtObject: Transform;
     protected _origin: Vector3 = new Vector3(0.0, 0.0, 0.0);
     protected _upAxis: Vector3 = Vector3.Y_AXIS;
     protected _pos: Vector3 = new Vector3();
 
-    constructor(node3d?: Transform, Node3D?: Transform)
+    constructor(target?: Transform, lookAtObject?: Transform)
     {
-        super(node3d);
+        super(target);
 
-        if (Node3D)
-        { this.lookAtObject = Node3D; }
+        if (lookAtObject)
+        {
+            this.lookAtObject = lookAtObject;
+        }
         else
-        { this.lookAtPosition = new Vector3(); }
+        {
+            this.lookAtPosition = new Vector3();
+        }
     }
 
     get upAxis(): Vector3
@@ -42,29 +46,31 @@ export class LookAtController extends ControllerBase
 
     get lookAtObject()
     {
-        return this._lookAtNode3D;
+        return this._lookAtObject;
     }
 
     set lookAtObject(value)
     {
-        if (this._lookAtNode3D === value)
-        { return; }
+        if (this._lookAtObject === value)
+        {
+            return;
+        }
 
-        this._lookAtNode3D = value;
+        this._lookAtObject = value;
     }
 
     update(_interpolate = true): void
     {
-        if (this._targetNode)
+        if (this._target)
         {
             if (this._lookAtPosition)
             {
-                this._targetNode.lookAt(this.lookAtPosition, this._upAxis);
+                this._target.lookAt(this.lookAtPosition, this._upAxis);
             }
-            else if (this._lookAtNode3D)
+            else if (this._lookAtObject)
             {
-                this._pos.copy(this._lookAtNode3D.localPosition);
-                this._targetNode.lookAt(this._pos, this._upAxis);
+                this._pos.copy(this._lookAtObject.localPosition);
+                this._target.lookAt(this._pos, this._upAxis);
             }
         }
     }

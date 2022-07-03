@@ -5,14 +5,14 @@ export class ControllerBase
     /**
      * 控制对象
      */
-    protected _targetNode: Transform | undefined;
+    protected _target: Transform | undefined;
 
     /**
      * 控制器基类，用于动态调整3D对象的属性
      */
-    constructor(node3d?: Transform)
+    constructor(target?: Transform)
     {
-        this.targetNode = node3d;
+        this.target = target;
     }
 
     /**
@@ -23,13 +23,13 @@ export class ControllerBase
         throw new Error('Abstract method');
     }
 
-    get targetNode()
+    get target()
     {
-        return this._targetNode;
+        return this._target;
     }
 
-    set targetNode(val)
+    set target(val)
     {
-        this._targetNode = val;
+        this._target = val;
     }
 }

@@ -204,7 +204,7 @@ export class HoverController extends LookAtController
                 this._currentPanAngle = this._panAngle;
             }
         }
-        if (!this._targetNode)
+        if (!this._target)
         { return; }
         if (this._lookAtPosition)
         {
@@ -212,31 +212,31 @@ export class HoverController extends LookAtController
             this._pos.y = this._lookAtPosition.y;
             this._pos.z = this._lookAtPosition.z;
         }
-        else if (this._lookAtNode3D)
+        else if (this._lookAtObject)
         {
-            if (this._targetNode.parent && this._lookAtNode3D.parent)
+            if (this._target.parent && this._lookAtObject.parent)
             {
-                if (this._targetNode.parent !== this._lookAtNode3D.parent)
+                if (this._target.parent !== this._lookAtObject.parent)
                 {
-                    this._pos.x = this._lookAtNode3D.worldPosition.x;
-                    this._pos.y = this._lookAtNode3D.worldPosition.y;
-                    this._pos.z = this._lookAtNode3D.worldPosition.z;
-                    this._targetNode.parent.worldToLocalMatrix.transformPoint3(this._pos, this._pos);
+                    this._pos.x = this._lookAtObject.worldPosition.x;
+                    this._pos.y = this._lookAtObject.worldPosition.y;
+                    this._pos.z = this._lookAtObject.worldPosition.z;
+                    this._target.parent.worldToLocalMatrix.transformPoint3(this._pos, this._pos);
                 }
                 else
                 {
-                    this._pos.copy(this._lookAtNode3D.localPosition);
+                    this._pos.copy(this._lookAtObject.localPosition);
                 }
             }
-            else if (this._lookAtNode3D.scene)
+            else if (this._lookAtObject.scene)
             {
-                this._pos.x = this._lookAtNode3D.worldPosition.x;
-                this._pos.y = this._lookAtNode3D.worldPosition.y;
-                this._pos.z = this._lookAtNode3D.worldPosition.z;
+                this._pos.x = this._lookAtObject.worldPosition.x;
+                this._pos.y = this._lookAtObject.worldPosition.y;
+                this._pos.z = this._lookAtObject.worldPosition.z;
             }
             else
             {
-                this._pos.copy(this._lookAtNode3D.localPosition);
+                this._pos.copy(this._lookAtObject.localPosition);
             }
         }
         else
@@ -245,9 +245,9 @@ export class HoverController extends LookAtController
             this._pos.y = this._origin.y;
             this._pos.z = this._origin.z;
         }
-        this._targetNode.localPosition.x = this._pos.x + this._distance * Math.sin(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD);
-        this._targetNode.localPosition.z = this._pos.z + this._distance * Math.cos(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD);
-        this._targetNode.localPosition.y = this._pos.y + this._distance * Math.sin(this._currentTiltAngle * mathUtil.DEG2RAD) * this._yFactor;
+        this._target.localPosition.x = this._pos.x + this._distance * Math.sin(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD);
+        this._target.localPosition.z = this._pos.z + this._distance * Math.cos(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD);
+        this._target.localPosition.y = this._pos.y + this._distance * Math.sin(this._currentTiltAngle * mathUtil.DEG2RAD) * this._yFactor;
         super.update();
     }
 }
