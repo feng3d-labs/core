@@ -1,16 +1,16 @@
-import { Transform } from '../core/Transform';
+import { GameObject } from '../ecs/GameObject';
 
 export class ControllerBase
 {
     /**
      * 控制对象
      */
-    protected _target: Transform | undefined;
+    protected _target: GameObject | undefined;
 
     /**
      * 控制器基类，用于动态调整3D对象的属性
      */
-    constructor(target?: Transform)
+    constructor(target?: GameObject)
     {
         this.target = target;
     }

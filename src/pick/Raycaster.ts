@@ -4,6 +4,7 @@ import { CullFace } from '@feng3d/renderer';
 import { Transform } from '../core/Transform';
 import { RayCastable } from '../core/RayCastable';
 import { Geometry } from '../geometry/Geometry';
+import { GameObject } from '../ecs/GameObject';
 
 /**
  * 射线投射拾取器
@@ -16,7 +17,7 @@ export class Raycaster
      * @param transforms 实体列表
      * @return
      */
-    pick(ray3D: Ray3, transforms: Transform[])
+    pick(ray3D: Ray3, transforms: GameObject[])
     {
         if (transforms.length === 0) return null;
 

@@ -22,7 +22,7 @@ export class LightPicker
         let directionalLights: DirectionalLight[] = [];
         let spotLights: SpotLight[] = [];
 
-        const scene = this._model.transform.scene;
+        const scene = this._model.gameObject.scene;
         if (scene)
         {
             pointLights = scene.activePointLights;

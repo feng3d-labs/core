@@ -35,12 +35,14 @@ export class ScenePickCache
     get activeModels()
     {
         if (this._activeModels)
-        { return this._activeModels; }
+        {
+            return this._activeModels;
+        }
 
         const models: Renderable[] = this._activeModels = [];
         const frustum = this.camera.frustum;
 
-        let node3ds = [this.scene.transform];
+        let node3ds = [this.scene.gameObject];
         while (node3ds.length > 0)
         {
             const node3d = node3ds.pop();

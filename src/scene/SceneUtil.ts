@@ -37,13 +37,15 @@ export class SceneUtil
         const renderers: Renderable[] = [];
         const frustum = camera.frustum;
 
-        let node3ds = [scene.transform];
+        let node3ds = [scene.gameObject];
         while (node3ds.length > 0)
         {
             const node3d = node3ds.pop();
 
             if (!node3d.visible)
-            { continue; }
+            {
+                continue;
+            }
             const renderer = node3d.getComponent(Renderable);
             if (renderer && renderer.enabled)
             {

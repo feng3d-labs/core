@@ -4,8 +4,8 @@ import { serialization } from '@feng3d/serialization';
 import { windowEventProxy } from '@feng3d/shortcut';
 import { AudioListener } from '../audio/AudioListener';
 import { Camera } from '../cameras/Camera';
-import { GameObject } from '../ecs/GameObject';
 import { Feng3dObject } from '../ecs/Feng3dObject';
+import { GameObject } from '../ecs/GameObject';
 import { DirectionalLight } from '../light/DirectionalLight';
 import { ShadowType } from '../light/shadow/ShadowType';
 import { forwardRenderer } from '../render/renderer/ForwardRenderer';
@@ -16,8 +16,8 @@ import { Scene } from '../scene/Scene';
 import { skyboxRenderer } from '../skybox/SkyBoxRenderer';
 import { ticker } from '../utils/Ticker';
 import { Mouse3DManager, WindowMouseInput } from './Mouse3DManager';
-import { Transform } from './Transform';
 import { Renderable } from './Renderable';
+import { Transform } from './Transform';
 
 declare global
 {
@@ -48,7 +48,7 @@ export class View extends Feng3dObject
             if (cameras.length === 0)
             {
                 this._camera = serialization.setValue(new GameObject(), { name: 'defaultCamera' }).addComponent(Camera);
-                this.scene.transform.addChild(this._camera.transform);
+                this.scene.gameObject.addChild(this._camera.gameObject);
             }
             else
             {
@@ -352,14 +352,14 @@ export class View extends Feng3dObject
         camera.transform.localPosition.x = 0;
         camera.transform.localPosition.y = 1;
         camera.transform.localPosition.z = -10;
-        scene.transform.addChild(camera.transform);
+        scene.gameObject.addChild(camera.gameObject);
 
         const directionalLight = DirectionalLight.create('DirectionalLight');
         directionalLight.shadowType = ShadowType.Hard_Shadows;
         directionalLight.transform.localEulerAngles.x = 50;
         directionalLight.transform.localEulerAngles.y = -30;
         directionalLight.transform.localPosition.y = 3;
-        scene.transform.addChild(directionalLight.transform);
+        scene.gameObject.addChild(directionalLight.gameObject);
 
         return scene;
     }

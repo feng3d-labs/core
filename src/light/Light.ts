@@ -162,11 +162,11 @@ export class Light extends Behaviour
 
         if (this.debugShadowMap)
         {
-            scene.transform.addChild(model.transform);
+            scene.gameObject.addChild(model.gameObject);
         }
         else
         {
-            model.transform.remove();
+            model.gameObject.remove();
         }
     }
 }

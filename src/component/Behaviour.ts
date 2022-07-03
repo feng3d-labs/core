@@ -34,7 +34,7 @@ export class Behaviour extends Component
      */
     get isVisibleAndEnabled()
     {
-        const v = this.enabled && this.transform?.globalVisible;
+        const v = this.enabled && this.gameObject?.globalVisible;
 
         return v;
     }

@@ -1,16 +1,16 @@
 import { Vector3 } from '@feng3d/math';
-import { Transform } from '../core/Transform';
+import { GameObject } from '../ecs/GameObject';
 import { ControllerBase } from './ControllerBase';
 
 export class LookAtController extends ControllerBase
 {
     protected _lookAtPosition: Vector3;
-    protected _lookAtObject: Transform;
+    protected _lookAtObject: GameObject;
     protected _origin: Vector3 = new Vector3(0.0, 0.0, 0.0);
     protected _upAxis: Vector3 = Vector3.Y_AXIS;
     protected _pos: Vector3 = new Vector3();
 
-    constructor(target?: Transform, lookAtObject?: Transform)
+    constructor(target?: GameObject, lookAtObject?: GameObject)
     {
         super(target);
 
@@ -65,12 +65,12 @@ export class LookAtController extends ControllerBase
         {
             if (this._lookAtPosition)
             {
-                this._target.lookAt(this.lookAtPosition, this._upAxis);
+                this._target.transform.lookAt(this.lookAtPosition, this._upAxis);
             }
             else if (this._lookAtObject)
             {
-                this._pos.copy(this._lookAtObject.localPosition);
-                this._target.lookAt(this._pos, this._upAxis);
+                this._pos.copy(this._lookAtObject.transform.localPosition);
+                this._target.transform.lookAt(this._pos, this._upAxis);
             }
         }
     }

@@ -163,14 +163,14 @@ export class SkeletonComponent extends Component
                 parentNode3D = skeleton.transform;
             }
 
-            let jointTransform = parentNode3D.find(skeletonJoint.name);
+            let jointTransform = parentNode3D.gameObject.find(skeletonJoint.name)?.transform;
             if (!jointTransform)
             {
                 const entity = new GameObject();
                 entity.name = skeletonJoint.name;
                 entity.hideFlags = HideFlags.DontSave;
                 jointTransform = entity.addComponent(Transform);
-                parentNode3D.addChild(jointTransform);
+                parentNode3D.gameObject.addChild(jointTransform.gameObject);
             }
 
             const node3d = jointTransform;

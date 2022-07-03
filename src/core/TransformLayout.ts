@@ -6,10 +6,10 @@ import { serialize } from '@feng3d/serialization';
 import { watcher } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
 import { Component, RegisterComponent } from '../ecs/Component';
+import { GameObject } from '../ecs/GameObject';
 import { AddComponentMenu } from '../Menu';
 import { Scene } from '../scene/Scene';
 import { ticker } from '../utils/Ticker';
-import { Transform } from './Transform';
 
 declare global
 {
@@ -77,14 +77,14 @@ export class TransformLayout extends Component
         this.on('removed', this._onRemoved, this);
     }
 
-    private _onAdded(event: Event<{ parent: Transform; }>)
+    private _onAdded(event: Event<{ parent: GameObject; }>)
     {
         event.data.parent.on('sizeChanged', this._invalidateLayout, this);
         event.data.parent.on('pivotChanged', this._invalidateLayout, this);
         this._invalidateLayout();
     }
 
-    private _onRemoved(event: Event<{ parent: Transform; }>)
+    private _onRemoved(event: Event<{ parent: GameObject; }>)
     {
         event.data.parent.off('sizeChanged', this._invalidateLayout, this);
         event.data.parent.off('pivotChanged', this._invalidateLayout, this);

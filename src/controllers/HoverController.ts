@@ -1,5 +1,5 @@
 import { mathUtil } from '@feng3d/polyfill';
-import { Transform } from '../core/Transform';
+import { GameObject } from '../ecs/GameObject';
 import { LookAtController } from './LookAtController';
 
 export class HoverController extends LookAtController
@@ -150,7 +150,7 @@ export class HoverController extends LookAtController
     }
 
     // eslint-disable-next-line max-params
-    constructor(node3d?: Transform, lookAtObject?: Transform, panAngle = 0, tiltAngle = 90, distance = 1000, minTiltAngle = -90, maxTiltAngle = 90, minPanAngle = NaN, maxPanAngle = NaN, steps = 8, yFactor = 2, wrapPanAngle = false)
+    constructor(node3d?: GameObject, lookAtObject?: GameObject, panAngle = 0, tiltAngle = 90, distance = 1000, minTiltAngle = -90, maxTiltAngle = 90, minPanAngle = NaN, maxPanAngle = NaN, steps = 8, yFactor = 2, wrapPanAngle = false)
     {
         super(node3d, lookAtObject);
         this.distance = distance;
@@ -218,25 +218,25 @@ export class HoverController extends LookAtController
             {
                 if (this._target.parent !== this._lookAtObject.parent)
                 {
-                    this._pos.x = this._lookAtObject.worldPosition.x;
-                    this._pos.y = this._lookAtObject.worldPosition.y;
-                    this._pos.z = this._lookAtObject.worldPosition.z;
-                    this._target.parent.worldToLocalMatrix.transformPoint3(this._pos, this._pos);
+                    this._pos.set(this._lookAtObject.transform.worldPosition.x,
+                        this._lookAtObject.transform.worldPosition.y,
+                        this._lookAtObject.transform.worldPosition.z);
+                    this._target.parent.transform.worldToLocalMatrix.transformPoint3(this._pos, this._pos);
                 }
                 else
                 {
-                    this._pos.copy(this._lookAtObject.localPosition);
+                    this._pos.copy(this._lookAtObject.transform.localPosition);
                 }
             }
             else if (this._lookAtObject.scene)
             {
-                this._pos.x = this._lookAtObject.worldPosition.x;
-                this._pos.y = this._lookAtObject.worldPosition.y;
-                this._pos.z = this._lookAtObject.worldPosition.z;
+                this._pos.x = this._lookAtObject.transform.worldPosition.x;
+                this._pos.y = this._lookAtObject.transform.worldPosition.y;
+                this._pos.z = this._lookAtObject.transform.worldPosition.z;
             }
             else
             {
-                this._pos.copy(this._lookAtObject.localPosition);
+                this._pos.copy(this._lookAtObject.transform.localPosition);
             }
         }
         else
@@ -245,9 +245,9 @@ export class HoverController extends LookAtController
             this._pos.y = this._origin.y;
             this._pos.z = this._origin.z;
         }
-        this._target.localPosition.x = this._pos.x + this._distance * Math.sin(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD);
-        this._target.localPosition.z = this._pos.z + this._distance * Math.cos(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD);
-        this._target.localPosition.y = this._pos.y + this._distance * Math.sin(this._currentTiltAngle * mathUtil.DEG2RAD) * this._yFactor;
+        this._target.transform.localPosition.set(this._pos.x + this._distance * Math.sin(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD),
+            this._pos.y + this._distance * Math.sin(this._currentTiltAngle * mathUtil.DEG2RAD) * this._yFactor,
+            this._pos.z + this._distance * Math.cos(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD));
         super.update();
     }
 }
