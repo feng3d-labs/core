@@ -251,7 +251,7 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
         this.updateGrometry();
         geometry.updateGrometry();
         // 变换被添加的几何体
-        if (matrix !== null)
+        if (matrix)
         {
             geometry = geometry.clone();
             geometry.applyTransformation(matrix);

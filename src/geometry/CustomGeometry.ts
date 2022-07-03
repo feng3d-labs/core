@@ -24,6 +24,10 @@ export class CustomGeometry extends Geometry
 
         return this._indexBuffer.indices;
     }
+    set indices(value: number[])
+    {
+        this._indexBuffer.indices = value;
+    }
 
     /**
      * 属性数据列表
