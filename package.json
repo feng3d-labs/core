@@ -64,6 +64,7 @@
     "@feng3d/serialization": "^0.4.1",
     "@feng3d/shortcut": "^0.4.1",
     "@feng3d/task": "^0.4.1",
+    "@feng3d/filesystem": "^0.4.1",
     "@feng3d/watcher": "^0.4.11"
   }
 }
