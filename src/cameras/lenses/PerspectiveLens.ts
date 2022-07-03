@@ -16,7 +16,7 @@ export class PerspectiveLens extends LensBase
     @watch('invalidate')
     @serialize
     @oav()
-        fov: number;
+    fov: number;
 
     /**
      * 创建一个透视摄像机镜头
