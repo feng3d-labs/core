@@ -34,7 +34,7 @@ export enum FogMode
 
 export class StandardUniforms
 {
-    __class__: 'feng3d.StandardUniforms' | 'feng3d.TerrainUniforms' | 'feng3d.ParticleUniforms';
+    __class__: 'StandardUniforms';
     /**
      * 点绘制时点的尺寸
      */
@@ -157,4 +157,3 @@ export class StandardUniforms
 
 shaderlib.shaderConfig.shaders.standard = { fragment: standardFragment, vertex: standardVertex, cls: StandardUniforms };
 
-Material.setDefault('Default-Material', { shaderName: 'standard' });

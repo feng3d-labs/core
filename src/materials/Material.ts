@@ -9,6 +9,7 @@ import { Feng3dObject } from '../ecs/Feng3dObject';
 import { HideFlags } from '../ecs/HideFlags';
 import { Texture2D } from '../textures/Texture2D';
 import { TextureCube } from '../textures/TextureCube';
+import { StandardUniforms } from './StandardMaterial';
 
 export interface UniformsTypes extends MixinsUniformsTypes { }
 export type ShaderNames = keyof UniformsTypes;
@@ -19,7 +20,7 @@ export type UniformsLike = UniformsTypes[keyof UniformsTypes];
  */
 export class Material extends Feng3dObject
 {
-    __class__: 'feng3d.Material';
+    __class__: 'Material';
 
     static create<K extends keyof UniformsTypes>(shaderName: K, uniforms?: gPartial<UniformsTypes[K]>, renderParams?: gPartial<RenderParams>)
     {
@@ -63,7 +64,7 @@ export class Material extends Feng3dObject
     {
         this._name = v;
     }
-    protected _name = '';
+    protected _name = 'standard';
 
     /**
      * Uniform数据
@@ -71,7 +72,7 @@ export class Material extends Feng3dObject
     @serialize
     @oav({ component: 'OAVObjectView' })
     @watch('_onUniformsChanged')
-    uniforms: UniformsLike;
+    uniforms: UniformsLike = new StandardUniforms();
 
     /**
      * 渲染参数
@@ -85,6 +86,7 @@ export class Material extends Feng3dObject
     {
         super();
         globalEmitter.on('asset.shaderChanged', this._onShaderChanged, this);
+        this.shaderName = 'standard';
     }
 
     beforeRender(renderAtomic: RenderAtomic)
@@ -208,3 +210,5 @@ export class Material extends Feng3dObject
 export interface DefaultMaterial extends MixinsDefaultMaterial
 {
 }
+
+Material.setDefault('Default-Material', { shaderName: 'standard' });
