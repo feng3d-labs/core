@@ -15,34 +15,34 @@
     },
     "references": [
         {
-            "path": "../event/tsconfig.json"
+            "path": "../event"
         },
         {
-            "path": "../math/tsconfig.json"
+            "path": "../math"
         },
         {
-            "path": "../objectview/tsconfig.json"
+            "path": "../objectview"
         },
         {
-            "path": "../polyfill/tsconfig.json"
+            "path": "../polyfill"
         },
         {
-            "path": "../renderer/tsconfig.json"
+            "path": "../renderer"
         },
         {
-            "path": "../serialization/tsconfig.json"
+            "path": "../serialization"
         },
         {
-            "path": "../shortcut/tsconfig.json"
+            "path": "../shortcut"
         },
         {
-            "path": "../task/tsconfig.json"
+            "path": "../task"
         },
         {
-            "path": "../filesystem/tsconfig.json"
+            "path": "../filesystem"
         },
         {
-            "path": "../watcher/tsconfig.json"
+            "path": "../watcher"
         },
     ],
     "files": [
