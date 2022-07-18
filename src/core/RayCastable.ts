@@ -1,82 +1,78 @@
-import { Box3, Ray3 } from '@feng3d/math';
-import { Behaviour } from '../component/Behaviour';
-import { RegisterComponent } from '../ecs/Component';
-import { PickingCollisionVO } from '../pick/Raycaster';
-
-declare global
+namespace feng3d
 {
-    interface MixinsComponentMap { RayCastable: RayCastable; }
-}
 
-/**
- * 可射线捕获
- */
-@RegisterComponent({ name: 'RayCastable' })
-export class RayCastable extends Behaviour
-{
-    protected _selfLocalBounds: Box3;
-    protected _selfWorldBounds: Box3;
+    export interface ComponentMap { RayCastable: RayCastable; }
 
     /**
-     * 自身局部包围盒
+     * 可射线捕获
      */
-    get selfLocalBounds()
+    @RegisterComponent()
+    export class RayCastable extends Behaviour
     {
-        if (!this._selfLocalBounds)
-        { this._updateBounds(); }
+        protected _selfLocalBounds: Box3;
+        protected _selfWorldBounds: Box3;
 
-        return this._selfLocalBounds;
-    }
+        /**
+		 * 自身局部包围盒
+		 */
+        get selfLocalBounds()
+        {
+            if (!this._selfLocalBounds)
+                this._updateBounds();
 
-    /**
-     * 自身世界包围盒
-     */
-    get selfWorldBounds()
-    {
-        if (!this._selfWorldBounds)
-        { this._updateWorldBounds(); }
+            return this._selfLocalBounds;
+        }
 
-        return this._selfWorldBounds;
-    }
+		/**
+		 * 自身世界包围盒
+		 */
+        get selfWorldBounds()
+        {
+            if (!this._selfWorldBounds)
+                this._updateWorldBounds();
 
-    /**
-     * 与世界空间射线相交
-     *
-     * @param _worldRay 世界空间射线
-     *
-     * @returns 相交信息
-     */
-    worldRayIntersection(_worldRay: Ray3): PickingCollisionVO
-    {
-        throw '请在子类中实现！';
-    }
+            return this._selfWorldBounds;
+        }
 
-    protected _onScenetransformChanged()
-    {
-        this._selfWorldBounds = null;
-    }
+        /**
+         * 与世界空间射线相交
+         * 
+         * @param worldRay 世界空间射线
+         * 
+         * @return 相交信息
+         */
+        worldRayIntersection(worldRay: Ray3): PickingCollisionVO
+        {
+            throw "请在子类中实现！";
+        }
 
-    /**
-     * 更新世界边界
-     */
-    protected _updateWorldBounds()
-    {
-        this._selfWorldBounds = this.selfLocalBounds.applyMatrixTo(this.transform.localToWorldMatrix);
-    }
+        protected _onScenetransformChanged()
+        {
+            this._selfWorldBounds = null;
+        }
 
-    /**
-     * 处理包围盒变换事件
-     */
-    protected _onBoundsInvalid()
-    {
-        this._selfLocalBounds = null;
-        this._selfWorldBounds = null;
+		/**
+		 * 更新世界边界
+		 */
+        protected _updateWorldBounds()
+        {
+            this._selfWorldBounds = this.selfLocalBounds.applyMatrixTo(this.transform.localToWorldMatrix);
+        }
 
-        this.emit('selfBoundsChanged', this);
-    }
+        /**
+         * 处理包围盒变换事件
+         */
+        protected _onBoundsInvalid()
+        {
+            this._selfLocalBounds = null;
+            this._selfWorldBounds = null;
 
-    protected _updateBounds()
-    {
-        throw '请在子类中实现！';
+            this.emit("selfBoundsChanged", this);
+        }
+
+        protected _updateBounds()
+        {
+            throw "请在子类中实现！";
+        }
     }
 }

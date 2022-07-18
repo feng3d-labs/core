@@ -1,50 +1,57 @@
-import { MeshRenderer } from '../core/MeshRenderer';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
-import { Geometry } from '../geometry/Geometry';
-import { CylinderGeometry } from './CylinderGeometry';
-
-/**
- * 圆锥体
-
- */
-export class ConeGeometry extends CylinderGeometry
+namespace feng3d
 {
-    __class__: 'feng3d.ConeGeometry' = 'feng3d.ConeGeometry';
-
-    protected _name = 'Cone';
-
     /**
-     * 底部半径 private
+     * 圆锥体
+
      */
-    topRadius = 0;
+    export class ConeGeometry extends CylinderGeometry
+    {
+        __class__: "feng3d.ConeGeometry" = "feng3d.ConeGeometry";
 
-    /**
-     * 顶部是否封口 private
-     */
-    topClosed = false;
+        name = "Cone";
 
-    /**
-     * 侧面是否封口 private
-     */
-    surfaceClosed = true;
-}
+        /**
+         * 底部半径 private
+         */
+        topRadius = 0;
 
-Geometry.setDefault('Cone', new ConeGeometry());
+        /**
+         * 顶部是否封口 private
+         */
+        topClosed = false;
 
-GameObjectFactory.registerPrimitive('Cone', (g) =>
-{
-    g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cone');
-});
+        /**
+         * 侧面是否封口 private
+         */
+        surfaceClosed = true;
+    }
 
-declare global
-{
-    interface MixinsDefaultGeometry
+    export interface DefaultGeometry
     {
         Cone: ConeGeometry;
     }
-    interface MixinsPrimitiveEntity
+    Geometry.setDefault("Cone", new ConeGeometry());
+
+    GameObject.registerPrimitive("Cone", (g) =>
+    {
+        g.addComponent(MeshRenderer).geometry = Geometry.getDefault("Cone");
+    });
+
+    export interface PrimitiveGameObject
     {
         Cone: GameObject;
     }
+
+    // 在 Hierarchy 界面新增右键菜单项
+    createNodeMenu.push(
+        {
+            path: "3D Object/Cone",
+            priority: -10000,
+            click: () =>
+            {
+                return GameObject.createPrimitive("Cone");
+            }
+        }
+    );
+
 }

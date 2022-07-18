@@ -1,133 +1,127 @@
-import { FrameBuffer, GL, RenderBuffer, Texture } from '@feng3d/renderer';
-import { watch } from '@feng3d/watcher';
-import { RenderTargetTexture2D } from '../textures/RenderTargetTexture2D';
-
-/**
- * 帧缓冲对象
- */
-export class FrameBufferObject
+namespace feng3d
 {
-    @watch('invalidateSize')
-    OFFSCREEN_WIDTH = 1024;
-
-    @watch('invalidateSize')
-    OFFSCREEN_HEIGHT = 1024;
-
-    @watch('invalidate')
-    frameBuffer: FrameBuffer;
-
-    @watch('invalidate')
-    texture: RenderTargetTexture2D;
-
-    @watch('invalidate')
-    depthBuffer: RenderBuffer;
-
-    constructor(width = 1024, height = 1024)
+    /**
+     * 帧缓冲对象
+     */
+    export class FrameBufferObject
     {
-        this.frameBuffer = new FrameBuffer();
-        this.texture = new RenderTargetTexture2D();
-        this.depthBuffer = new RenderBuffer();
-        this.OFFSCREEN_WIDTH = width;
-        this.OFFSCREEN_HEIGHT = height;
-    }
+        @watch("invalidateSize")
+        OFFSCREEN_WIDTH = 1024;
 
-    static active(gl: GL, frameBufferObject: FrameBufferObject)
-    {
-        if (frameBufferObject._invalid)
+        @watch("invalidateSize")
+        OFFSCREEN_HEIGHT = 1024;
+
+        @watch("invalidate")
+        frameBuffer: FrameBuffer;
+
+        @watch("invalidate")
+        texture: RenderTargetTexture2D;
+
+        @watch("invalidate")
+        depthBuffer: RenderBuffer;
+
+        constructor(width = 1024, height = 1024)
         {
-            frameBufferObject._invalid = false;
-            this.clear(frameBufferObject);
+            this.frameBuffer = new FrameBuffer();
+            this.texture = new RenderTargetTexture2D();
+            this.depthBuffer = new RenderBuffer();
+            this.OFFSCREEN_WIDTH = width;
+            this.OFFSCREEN_HEIGHT = height;
         }
 
-        gl.cache.frameBufferObjects = gl.cache.frameBufferObjects || new Map();
-        let obj = gl.cache.frameBufferObjects.get(frameBufferObject);
-        if (!obj)
+        static active(gl: GL, frameBufferObject: FrameBufferObject)
         {
-            const framebuffer = FrameBuffer.active(gl, frameBufferObject.frameBuffer);
-            const texture = Texture.active(gl, frameBufferObject.texture);
-            const depthBuffer = RenderBuffer.active(gl, frameBufferObject.depthBuffer);
-
-            // 绑定帧缓冲区对象
-            gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-            // 设置颜色关联对象
-            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-            // 设置深度关联对象
-            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
-
-            // 检查Framebuffer状态
-            const e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-            if (gl.FRAMEBUFFER_COMPLETE !== e)
+            if (frameBufferObject._invalid)
             {
-                console.warn(`Frame buffer object is incomplete: ${e.toString()}`);
-
-                return null;
+                frameBufferObject._invalid = false;
+                this.clear(frameBufferObject);
             }
 
-            gl.bindTexture(gl.TEXTURE_2D, null);
-            gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-
-            obj = { framebuffer, texture, depthBuffer };
-            gl.cache.frameBufferObjects.set(frameBufferObject, obj);
-        }
-        else
-        {
-            gl.bindFramebuffer(gl.FRAMEBUFFER, obj.framebuffer);
-        }
-
-        return obj;
-    }
-
-    deactive(gl: GL)
-    {
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    }
-
-    /**
-     * 是否失效
-     */
-    private _invalid = true;
-
-    /**
-     * 使失效
-     */
-    protected invalidate()
-    {
-        this._invalid = true;
-    }
-
-    private invalidateSize()
-    {
-        if (this.texture)
-        {
-            this.texture.OFFSCREEN_WIDTH = this.OFFSCREEN_WIDTH;
-            this.texture.OFFSCREEN_HEIGHT = this.OFFSCREEN_HEIGHT;
-        }
-        if (this.depthBuffer)
-        {
-            this.depthBuffer.OFFSCREEN_WIDTH = this.OFFSCREEN_WIDTH;
-            this.depthBuffer.OFFSCREEN_HEIGHT = this.OFFSCREEN_HEIGHT;
-        }
-        this._invalid = true;
-    }
-
-    static clear(frameBufferObject: FrameBufferObject)
-    {
-        GL.glList.forEach((gl) =>
-        {
             gl.cache.frameBufferObjects = gl.cache.frameBufferObjects || new Map();
-
-            const buffer = gl.cache.frameBufferObjects.get(frameBufferObject);
-            if (buffer)
+            var obj = gl.cache.frameBufferObjects.get(frameBufferObject);
+            if (!obj)
             {
-                gl.cache.frameBufferObjects.delete(frameBufferObject);
-            }
-        });
-    }
-}
+                var framebuffer = FrameBuffer.active(gl, frameBufferObject.frameBuffer);
+                var texture = Texture.active(gl, frameBufferObject.texture);
+                var depthBuffer = RenderBuffer.active(gl, frameBufferObject.depthBuffer);
 
-declare global
-{
-    interface MixinsGLCache
+                // 绑定帧缓冲区对象
+                gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+                // 设置颜色关联对象
+                gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+                // 设置深度关联对象
+                gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
+
+                // 检查Framebuffer状态
+                var e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+                if (gl.FRAMEBUFFER_COMPLETE !== e)
+                {
+                    alert('Frame buffer object is incomplete: ' + e.toString());
+                    return null;
+                }
+
+                gl.bindTexture(gl.TEXTURE_2D, null);
+                gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+
+                obj = { framebuffer: framebuffer, texture: texture, depthBuffer: depthBuffer };
+                gl.cache.frameBufferObjects.set(frameBufferObject, obj);
+            } else
+            {
+                gl.bindFramebuffer(gl.FRAMEBUFFER, obj.framebuffer);
+            }
+
+            return obj;
+        }
+
+        deactive(gl: GL)
+        {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        }
+
+        /**
+         * 是否失效
+         */
+        private _invalid = true;
+
+        /**
+         * 使失效
+         */
+        protected invalidate()
+        {
+            this._invalid = true;
+        }
+
+        private invalidateSize()
+        {
+            if (this.texture)
+            {
+                this.texture.OFFSCREEN_WIDTH = this.OFFSCREEN_WIDTH;
+                this.texture.OFFSCREEN_HEIGHT = this.OFFSCREEN_HEIGHT;
+            }
+            if (this.depthBuffer)
+            {
+                this.depthBuffer.OFFSCREEN_WIDTH = this.OFFSCREEN_WIDTH;
+                this.depthBuffer.OFFSCREEN_HEIGHT = this.OFFSCREEN_HEIGHT;
+            }
+            this._invalid = true;
+        }
+
+        static clear(frameBufferObject: FrameBufferObject)
+        {
+            WebGLRenderer.glList.forEach(gl =>
+            {
+                gl.cache.frameBufferObjects = gl.cache.frameBufferObjects || new Map();
+
+                var buffer = gl.cache.frameBufferObjects.get(frameBufferObject);
+                if (buffer)
+                {
+                    gl.cache.frameBufferObjects.delete(frameBufferObject);
+                }
+            });
+        }
+    }
+
+    export interface GLCache
     {
         /**
          * 此处用于缓存，需要获取有效数据请调用 Attribute.getBuffer

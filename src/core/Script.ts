@@ -1,59 +1,58 @@
-import { GameObject } from '../ecs/GameObject';
-import { Transform } from './Transform';
-import { ScriptComponent } from './ScriptComponent';
-
-/**
- * 3d对象脚本
- */
-export class Script
+namespace feng3d
 {
     /**
-     * The game object this component is attached to. A component is always attached to a game object.
+     * 3d对象脚本
      */
-    get gameObject(): GameObject
+    export class Script
     {
-        return this.component.gameObject;
-    }
+        /**
+         * The game object this component is attached to. A component is always attached to a game object.
+         */
+        get gameObject()
+        {
+            return this.component.gameObject;
+        }
 
-    /**
-     * The Transform attached to this Entity (null if there is none attached).
-     */
-    get transform(): Transform
-    {
-        return this.component.transform;
-    }
+        /**
+         * The Transform attached to this GameObject (null if there is none attached).
+         */
+        get transform()
+        {
+            return this.gameObject.transform;
+        }
 
-    /**
-     * 宿主组件
-     */
-    component: ScriptComponent;
+        /**
+         * 宿主组件
+         */
+        component: ScriptComponent;
 
-    constructor()
-    {
-    }
+        constructor()
+        {
+        }
 
-    /**
-     * Use this for initialization
-     */
-    init()
-    {
+        /**
+         * Use this for initialization
+         */
+        init()
+        {
 
-    }
+        }
 
-    /**
-     * Update is called once per frame
-     * 每帧执行一次
-     */
-    update()
-    {
+        /**
+         * Update is called once per frame
+         * 每帧执行一次
+         */
+        update()
+        {
 
-    }
+        }
 
-    /**
-     * 销毁
-     */
-    destroy()
-    {
+        /**
+         * 销毁
+         */
+        dispose()
+        {
 
+        }
     }
 }

@@ -1,28 +1,13 @@
-import { decoratorRegisterClass } from '@feng3d/polyfill';
-import { RegisterComponent } from '../ecs/Component';
-import { GameObject } from '../ecs/GameObject';
-import { Renderable } from './Renderable';
-
-declare global
+namespace feng3d
 {
-    interface MixinsComponentMap { MeshRenderer: MeshRenderer }
-}
+    export interface ComponentMap { MeshRenderer: MeshRenderer }
 
-/**
- * 网格渲染器
- */
-@RegisterComponent({ name: 'MeshRenderer' })
-@decoratorRegisterClass()
-export class MeshRenderer extends Renderable
-{
-    __class__: 'feng3d.MeshRenderer';
-
-    static create(name = 'Mesh')
+    /**
+     * 网格渲染器
+     */
+    @RegisterComponent()
+    export class MeshRenderer extends Renderable
     {
-        const gameObject = new GameObject();
-        gameObject.name = name;
-        const meshRenderer = gameObject.addComponent(MeshRenderer);
-
-        return meshRenderer;
+        __class__: "feng3d.MeshRenderer";
     }
 }

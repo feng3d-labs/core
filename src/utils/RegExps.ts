@@ -1,35 +1,38 @@
-/**
- * 常用正则表示式
- */
-export class RegExps
+namespace feng3d
 {
     /**
-     * json文件
+     * 常用正则表示式
      */
-    json = /(\.json)\b/i;
+    export class RegExps
+    {
+        /**
+         * json文件
+         */
+        json = /(\.json)\b/i;
+
+        /**
+         * 图片
+         */
+        image = /(\.jpg|\.png|\.jpeg|\.gif)\b/i;
+
+        /**
+         * 声音
+         */
+        audio = /(\.ogg|\.mp3|\.wav)\b/i;
+
+        /**
+         * 命名空间
+         */
+        namespace = /namespace\s+([\w$_\d\.]+)/;
+
+        /**
+         * 类
+         */
+        classReg = /(export\s+)?(abstract\s+)?class\s+([\w$_\d]+)(\s+extends\s+([\w$_\d\.]+))?/;
+    }
 
     /**
-     * 图片
+     * 常用正则表示式
      */
-    image = /(\.jpg|\.png|\.jpeg|\.gif)\b/i;
-
-    /**
-     * 声音
-     */
-    audio = /(\.ogg|\.mp3|\.wav)\b/i;
-
-    /**
-     * 命名空间
-     */
-    namespace = /namespace\s+([\w$_\d\.]+)/;
-
-    /**
-     * 类
-     */
-    classReg = /(export\s+)?(abstract\s+)?class\s+([\w$_\d]+)(\s+extends\s+([\w$_\d\.]+))?/;
+    export const regExps = new RegExps();
 }
-
-/**
- * 常用正则表示式
- */
-export const regExps = new RegExps();

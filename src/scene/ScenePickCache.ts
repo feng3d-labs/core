@@ -1,107 +1,107 @@
-import { Camera } from '../cameras/Camera';
-import { Renderable } from '../core/Renderable';
-import { Scene } from './Scene';
-
-/**
- * 场景拾取缓存
- */
-export class ScenePickCache
+namespace feng3d
 {
-    private scene: Scene;
-    private camera: Camera;
-
-    //
-    private _activeModels: Renderable[];
-    private _blenditems: Renderable[];
-    private _unblenditems: Renderable[];
-
-    constructor(scene: Scene, camera: Camera)
-    {
-        this.scene = scene;
-        this.camera = camera;
-    }
-
     /**
-     * 获取需要渲染的对象
-     *
-     * #### 渲染需求条件
-     * 1. visible === true
-     * 1. 在摄像机视锥内
-     * 1. model.enabled === true
-     *
-     * @param gameObject
-     * @param camera
+     * 场景拾取缓存
      */
-    get activeModels()
+    export class ScenePickCache
     {
-        if (this._activeModels)
+        private scene: Scene
+        private camera: Camera;
+
+        //
+        private _activeModels: Renderable[];
+        private _blenditems: Renderable[];
+        private _unblenditems: Renderable[];
+
+        constructor(scene: Scene, camera: Camera)
         {
-            return this._activeModels;
+            this.scene = scene;
+            this.camera = camera;
         }
 
-        const models: Renderable[] = this._activeModels = [];
-        const frustum = this.camera.frustum;
-
-        let node3ds = [this.scene.gameObject];
-        while (node3ds.length > 0)
+        /**
+         * 获取需要渲染的对象
+         * 
+         * #### 渲染需求条件
+         * 1. visible == true
+         * 1. 在摄像机视锥内
+         * 1. model.enabled == true
+         * 
+         * @param gameObject 
+         * @param camera 
+         */
+        get activeModels()
         {
-            const node3d = node3ds.pop();
+            if (this._activeModels)
+                return this._activeModels;
 
-            if (!node3d.visible)
-            { continue; }
-            const model = node3d.getComponent(Renderable);
-            if (model && model.enabled)
+            var models: Renderable[] = this._activeModels = [];
+            var frustum = this.camera.frustum;
+
+            var gameObjects = [this.scene.gameObject];
+            while (gameObjects.length > 0)
             {
-                if (model.selfWorldBounds)
+                var gameObject = gameObjects.pop();
+
+                if (!gameObject.activeSelf)
+                    continue;
+                var model = gameObject.getComponent(Renderable);
+                if (model && model.enabled)
                 {
-                    if (frustum.intersectsBox(model.selfWorldBounds))
-                    { models.push(model); }
+                    if (model.selfWorldBounds)
+                    {
+                        if (frustum.intersectsBox(model.selfWorldBounds))
+                            models.push(model);
+                    }
                 }
+                gameObjects = gameObjects.concat(gameObject.children);
             }
-            node3ds = node3ds.concat(node3d.children);
+            return models;
         }
 
-        return models;
-    }
+        /**
+         * 半透明渲染对象
+         */
+        get blenditems()
+        {
+            if (this._blenditems)
+                return this._blenditems;
 
-    /**
-     * 半透明渲染对象
-     */
-    get blenditems()
-    {
-        if (this._blenditems)
-        { return this._blenditems; }
+            var models = this.activeModels;
+            var camerapos = this.camera.transform.worldPosition;
 
-        const models = this.activeModels;
-        const camerapos = this.camera.transform.worldPosition;
+            var blenditems = this._blenditems = models.filter((item) =>
+            {
+                return item.material.renderParams.enableBlend;
+            }).sort((b, a) => a.transform.worldPosition.subTo(camerapos).lengthSquared - b.transform.worldPosition.subTo(camerapos).lengthSquared);
 
-        const blenditems = this._blenditems = models.filter((item) =>
-            item.material.renderParams.enableBlend).sort((b, a) => a.transform.worldPosition.subTo(camerapos).lengthSquared - b.transform.worldPosition.subTo(camerapos).lengthSquared);
+            return blenditems;
+        }
 
-        return blenditems;
-    }
+        /**
+         * 半透明渲染对象
+         */
+        get unblenditems()
+        {
+            if (this._unblenditems)
+                return this._unblenditems;
 
-    /**
-     * 半透明渲染对象
-     */
-    get unblenditems()
-    {
-        if (this._unblenditems)
-        { return this._unblenditems; }
+            var models = this.activeModels;
+            var camerapos = this.camera.transform.worldPosition;
 
-        const models = this.activeModels;
-        const camerapos = this.camera.transform.worldPosition;
+            var unblenditems = this._unblenditems = models.filter((item) =>
+            {
+                return !item.material.renderParams.enableBlend;
+            }).sort((a, b) => a.transform.worldPosition.subTo(camerapos).lengthSquared - b.transform.worldPosition.subTo(camerapos).lengthSquared);
 
-        const unblenditems = this._unblenditems = models.filter((item) =>
-            !item.material.renderParams.enableBlend).sort((a, b) => a.transform.worldPosition.subTo(camerapos).lengthSquared - b.transform.worldPosition.subTo(camerapos).lengthSquared);
+            return unblenditems;
+        }
 
-        return unblenditems;
-    }
-
-    clear()
-    {
-        this._blenditems = null;
-        this._unblenditems = null;
-        this._activeModels = null;
+        clear()
+        {
+            this._blenditems = null;
+            this._unblenditems = null;
+            this._activeModels = null;
+        }
     }
 }

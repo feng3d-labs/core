@@ -1,52 +1,51 @@
-import { CullFace, GL, RenderAtomic, Shader } from '@feng3d/renderer';
-import { Camera } from '../../cameras/Camera';
-import { CartoonComponent } from '../../component/CartoonComponent';
-import { OutLineComponent } from '../../component/OutLineComponent';
-import { Scene } from '../../scene/Scene';
-
-/**
- * 轮廓渲染器
- */
-export class OutlineRenderer
+namespace feng3d
 {
-    renderAtomic: RenderAtomic;
+    /**
+     * 轮廓渲染器
+     */
+    export var outlineRenderer: OutlineRenderer;
 
-    init()
+    /**
+     * 轮廓渲染器
+     */
+    export class OutlineRenderer
     {
-        if (!this.renderAtomic)
+        renderAtomic: RenderAtomic;
+
+        init()
         {
-            this.renderAtomic = new RenderAtomic();
-            const renderParams = this.renderAtomic.renderParams;
-            renderParams.enableBlend = false;
-            renderParams.cullFace = CullFace.FRONT;
-
-            this.renderAtomic.shader = new Shader('outline');
-        }
-    }
-
-    draw(gl: GL, scene: Scene, camera: Camera)
-    {
-        const unblenditems = scene.getPickCache(camera).unblenditems;
-
-        this.init();
-
-        for (let i = 0; i < unblenditems.length; i++)
-        {
-            const renderable = unblenditems[i];
-            if (renderable.getComponent(OutLineComponent) || renderable.getComponent(CartoonComponent))
+            if (!this.renderAtomic)
             {
-                const renderAtomic = renderable.renderAtomic;
-                renderable.beforeRender(renderAtomic, scene, camera);
+                this.renderAtomic = new RenderAtomic();
+                var renderParams = this.renderAtomic.renderParams;
+                renderParams.enableBlend = false;
+                renderParams.cullFace = CullFace.FRONT;
 
-                this.renderAtomic.next = renderAtomic;
+                this.renderAtomic.shader = new Shader({ shaderName: "outline" });
+            }
+        }
 
-                gl.render(this.renderAtomic);
+        draw(gl: WebGLRenderer, scene: Scene, camera: Camera)
+        {
+            var unblenditems = scene.getPickCache(camera).unblenditems;
+
+            this.init();
+
+            for (var i = 0; i < unblenditems.length; i++)
+            {
+                var renderable = unblenditems[i];
+                if (renderable.getComponent(OutLineComponent) || renderable.getComponent(CartoonComponent))
+                {
+                    var renderAtomic = renderable.renderAtomic;
+                    renderable.beforeRender(renderAtomic, scene, camera);
+
+                    this.renderAtomic.next = renderAtomic;
+
+                    gl.render(this.renderAtomic);
+                }
             }
         }
     }
-}
 
-/**
- * 轮廓渲染器
- */
-export const outlineRenderer = new OutlineRenderer();
+    outlineRenderer = new OutlineRenderer();
+}

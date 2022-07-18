@@ -1,35 +1,36 @@
-import { GameObject } from '../ecs/GameObject';
-
-export class ControllerBase
+namespace feng3d
 {
-    /**
-     * 控制对象
-     */
-    protected _target: GameObject | undefined;
-
-    /**
-     * 控制器基类，用于动态调整3D对象的属性
-     */
-    constructor(target?: GameObject)
+    export class ControllerBase
     {
-        this.target = target;
-    }
+        /**
+         * 控制对象
+         */
+        protected _targetObject: GameObject | undefined;
 
-    /**
-     * 手动应用更新到目标3D对象
-     */
-    update(_interpolate = true): void
-    {
-        throw new Error('Abstract method');
-    }
+        /**
+         * 控制器基类，用于动态调整3D对象的属性
+         */
+        constructor(targetObject?: GameObject)
+        {
+            this.targetObject = targetObject;
+        }
 
-    get target()
-    {
-        return this._target;
-    }
+        /**
+         * 手动应用更新到目标3D对象
+         */
+        update(interpolate = true): void
+        {
+            throw new Error("Abstract method");
+        }
 
-    set target(val)
-    {
-        this._target = val;
+        get targetObject()
+        {
+            return this._targetObject;
+        }
+
+        set targetObject(val)
+        {
+            this._targetObject = val;
+        }
     }
 }

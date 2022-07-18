@@ -1,22 +1,19 @@
-import { watch } from '@feng3d/watcher';
-import { Texture2D } from './Texture2D';
-
-/**
- * 2D纹理
- */
-export class ImageTexture2D extends Texture2D
+namespace feng3d
 {
-    // __class__: "feng3d.ImageTexture2D" = "feng3d.ImageTexture2D";
-
-    @watch('_imageChanged')
-    get image(): HTMLImageElement
+    /**
+     * 2D纹理
+     */
+    export class ImageTexture2D extends Texture2D
     {
-        return this._pixels as any;
-    }
+        // __class__: "feng3d.ImageTexture2D" = "feng3d.ImageTexture2D";
 
-    private _imageChanged()
-    {
-        this._pixels = this.image;
-        this.invalidate();
+        @watch("_imageChanged")
+        imageSource: HTMLImageElement;
+
+        private _imageChanged()
+        {
+            this._pixels = this.imageSource;
+            this.invalidate();
+        }
     }
 }

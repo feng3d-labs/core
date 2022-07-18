@@ -1,14 +1,6 @@
-import { Color3, Color4, Matrix3x3, Matrix4x4, Vector2, Vector3, Vector4 } from '@feng3d/math';
-import { DirectionalLight } from '../../light/DirectionalLight';
-import { LightType } from '../../light/LightType';
-import { PointLight } from '../../light/PointLight';
-import { SpotLight } from '../../light/SpotLight';
-import { Texture2D } from '../../textures/Texture2D';
-import { TextureCube } from '../../textures/TextureCube';
-
-declare global
+namespace feng3d
 {
-    interface MixinsUniforms
+    export interface Uniforms
     {
         /**
          * t(单位秒) 是自该初始化开始所经过的时间，4个分量分别是 (t/20, t, t*2, t*3)
@@ -271,9 +263,9 @@ declare global
          * 环境反射纹理
          */
         s_envMap: TextureCube;
-        /**
-         * 反射率
-         */
+		/**
+		 * 反射率
+		 */
         u_reflectivity: number;
         /**
          * 单位深度映射到屏幕像素值
@@ -291,5 +283,3 @@ declare global
         u_shadowCameraFar: number;
     }
 }
-
-export { };

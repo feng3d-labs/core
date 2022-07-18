@@ -1,121 +1,105 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import { globalEmitter } from '@feng3d/event';
-import { oav } from '@feng3d/objectview';
-import { classUtils } from '@feng3d/polyfill';
-import { serialization, serialize } from '@feng3d/serialization';
-import { watch } from '@feng3d/watcher';
-import { Behaviour } from '../component/Behaviour';
-import { RegisterComponent } from '../ecs/Component';
-import { AddComponentMenu } from '../Menu';
-import { RunEnvironment } from './RunEnvironment';
-import { Script } from './Script';
-
-declare global
+namespace feng3d
 {
-    interface MixinsComponentMap
-    {
-        ScriptComponent: ScriptComponent;
-    }
-}
 
-/**
- * 3d对象脚本
- */
-@AddComponentMenu('Script/Script')
-@RegisterComponent({ name: 'ScriptComponent' })
-export class ScriptComponent extends Behaviour
-{
-    runEnvironment = RunEnvironment.feng3d;
-
-    @serialize
-    @watch('_invalidateScriptInstance')
-    @oav({ component: 'OAVPick', componentParam: { accepttype: 'file_script' } })
-    scriptName: string;
+    export interface ComponentMap { ScriptComponent: ScriptComponent; }
 
     /**
-     * 脚本对象
+     * 3d对象脚本
      */
-    @serialize
-    get scriptInstance()
+    @AddComponentMenu("Script/Script")
+    @RegisterComponent()
+    export class ScriptComponent extends Behaviour
     {
-        if (this._invalid) this._updateScriptInstance();
+        runEnvironment = RunEnvironment.feng3d;
 
-        return this._scriptInstance;
-    }
-    private _scriptInstance: Script;
+        @serialize
+        @watch("_invalidateScriptInstance")
+        @oav({ component: "OAVPick", componentParam: { accepttype: "file_script" } })
+        scriptName: string;
 
-    private _invalid = true;
-
-    private scriptInit = false;
-
-    init()
-    {
-        super.init();
-        globalEmitter.on('asset.scriptChanged', this._invalidateScriptInstance, this);
-    }
-
-    private _updateScriptInstance()
-    {
-        const oldInstance = this._scriptInstance;
-        this._scriptInstance = null;
-        if (!this.scriptName) return;
-
-        const Cls = classUtils.getDefinitionByName(this.scriptName, false);
-
-        if (Cls) this._scriptInstance = new Cls();
-        else console.warn(`无法初始化脚本 ${this.scriptName}`);
-
-        this.scriptInit = false;
-
-        // 移除旧实例
-        if (oldInstance)
+        /**
+         * 脚本对象
+         */
+        @serialize
+        get scriptInstance()
         {
-            // 如果两个类定义名称相同，则保留上个对象数据
-            if (classUtils.getQualifiedClassName(oldInstance) === this.scriptName)
-            {
-                // @ts-ignore
-                serialization.setValue(this._scriptInstance, oldInstance);
-            }
-            oldInstance.component = null;
-            oldInstance.destroy();
+            if (this._invalid) this._updateScriptInstance();
+            return this._scriptInstance;
         }
-        this._invalid = false;
-    }
+        private _scriptInstance: Script;
 
-    private _invalidateScriptInstance()
-    {
-        this._invalid = true;
-    }
+        private _invalid = true;
 
-    /**
-     * 每帧执行
-     */
-    update()
-    {
-        if (this.scriptInstance && !this.scriptInit)
+        private scriptInit = false;
+
+        init()
         {
-            this.scriptInstance.component = this;
-            this.scriptInstance.init();
-            this.scriptInit = true;
+            super.init();
+            globalEmitter.on("asset.scriptChanged", this._invalidateScriptInstance, this);
         }
-        this.scriptInstance && this.scriptInstance.update();
-    }
 
-    /**
-     * 销毁
-     */
-    destroy()
-    {
-        this.enabled = false;
-
-        if (this._scriptInstance)
+        private _updateScriptInstance()
         {
-            this._scriptInstance.component = null;
-            this._scriptInstance.destroy();
+            var oldInstance = this._scriptInstance;
             this._scriptInstance = null;
-        }
-        super.destroy();
+            if (!this.scriptName) return;
 
-        globalEmitter.off('asset.scriptChanged', this._invalidateScriptInstance, this);
+            var cls = classUtils.getDefinitionByName(this.scriptName, false);
+
+            if (cls) this._scriptInstance = new cls();
+            else console.warn(`无法初始化脚本 ${this.scriptName}`);
+
+            this.scriptInit = false;
+
+            // 移除旧实例
+            if (oldInstance)
+            {
+                // 如果两个类定义名称相同，则保留上个对象数据
+                if (classUtils.getQualifiedClassName(oldInstance) == this.scriptName)
+                {
+                    serialization.setValue(this._scriptInstance, <any>oldInstance);
+                }
+                oldInstance.component = null;
+                oldInstance.dispose();
+            }
+            this._invalid = false;
+        }
+
+        private _invalidateScriptInstance()
+        {
+            this._invalid = true;
+        }
+
+        /**
+         * 每帧执行
+         */
+        update()
+        {
+            if (this.scriptInstance && !this.scriptInit)
+            {
+                this.scriptInstance.component = this;
+                this.scriptInstance.init();
+                this.scriptInit = true;
+            }
+            this.scriptInstance && this.scriptInstance.update();
+        }
+
+        /**
+         * 销毁
+         */
+        dispose()
+        {
+            this.enabled = false;
+
+            if (this._scriptInstance)
+            {
+                this._scriptInstance.component = null;
+                this._scriptInstance.dispose();
+                this._scriptInstance = null;
+            }
+            super.dispose();
+
+            globalEmitter.off("asset.scriptChanged", this._invalidateScriptInstance, this);
+        }
     }
 }

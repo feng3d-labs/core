@@ -1,44 +1,36 @@
-import { Attributes } from '@feng3d/renderer';
-import { serialize } from '@feng3d/serialization';
-import { Geometry } from './Geometry';
-
-declare global
+namespace feng3d
 {
-    interface MixinsGeometryTypes
-    {
-        CustomGeometry: CustomGeometry
-    }
-}
+    export interface GeometryTypes { CustomGeometry: CustomGeometry }
 
-export class CustomGeometry extends Geometry
-{
-    __class__: 'feng3d.CustomGeometry';
+    export class CustomGeometry extends Geometry
+    {
+        __class__: "feng3d.CustomGeometry";
 
-    /**
-     * 顶点索引缓冲
-     */
-    @serialize
-    get indices()
-    {
-        this.updateGrometry();
+        /**
+         * 顶点索引缓冲
+         */
+        @serialize
+        private get indicesData()
+        {
+            return this.indices;
+        }
 
-        return this._indexBuffer.indices;
-    }
-    set indices(value: number[])
-    {
-        this._indexBuffer.indices = value;
-    }
+        private set indicesData(v)
+        {
+            this.indices = v;
+        }
 
-    /**
-     * 属性数据列表
-     */
-    @serialize
-    get attributes(): Attributes
-    {
-        return this._attributes;
-    }
-    set attributes(v)
-    {
-        this._attributes = v;
+        /**
+         * 属性数据列表
+         */
+        @serialize
+        get attributes()
+        {
+            return this._attributes;
+        }
+        set attributes(v)
+        {
+            this._attributes = v;
+        }
     }
 }

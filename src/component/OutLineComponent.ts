@@ -1,46 +1,34 @@
-import { Color4 } from '@feng3d/math';
-import { oav } from '@feng3d/objectview';
-import { RenderAtomic } from '@feng3d/renderer';
-import { serialize } from '@feng3d/serialization';
-import { Camera } from '../cameras/Camera';
-import { Component, RegisterComponent } from '../ecs/Component';
-import { AddComponentMenu } from '../Menu';
-import { Scene } from '../scene/Scene';
-
-declare global
+namespace feng3d
 {
-    interface MixinsComponentMap { OutLineComponent: OutLineComponent; }
-}
+    export interface ComponentMap { OutLineComponent: OutLineComponent; }
 
-@AddComponentMenu('Rendering/OutLineComponent')
-@RegisterComponent({ name: 'OutLineComponent' })
-export class OutLineComponent extends Component
-{
-    __class__: 'feng3d.OutLineComponent';
-
-    @oav()
-    @serialize
-    size = 1;
-
-    @oav()
-    @serialize
-    color = new Color4(0.2, 0.2, 0.2, 1.0);
-
-    @oav()
-    @serialize
-    outlineMorphFactor = 0.0;
-
-    beforeRender(renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
+    @AddComponentMenu("Rendering/OutLineComponent")
+    @RegisterComponent()
+    export class OutLineComponent extends Component
     {
-        renderAtomic.uniforms.u_outlineSize = this.size;
-        renderAtomic.uniforms.u_outlineColor = this.color;
-        renderAtomic.uniforms.u_outlineMorphFactor = this.outlineMorphFactor;
-    }
-}
+        __class__: "feng3d.OutLineComponent";
 
-declare global
-{
-    interface MixinsUniforms
+        @oav()
+        @serialize
+        size = 1;
+
+        @oav()
+        @serialize
+        color = new Color4(0.2, 0.2, 0.2, 1.0);
+
+        @oav()
+        @serialize
+        outlineMorphFactor = 0.0;
+
+        beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
+        {
+            renderAtomic.uniforms.u_outlineSize = this.size;
+            renderAtomic.uniforms.u_outlineColor = this.color;
+            renderAtomic.uniforms.u_outlineMorphFactor = this.outlineMorphFactor;
+        }
+    }
+
+    export interface Uniforms
     {
         /**
          * 描边宽度

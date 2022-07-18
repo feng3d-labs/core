@@ -1,32 +1,29 @@
-import { oav } from '@feng3d/objectview';
-import { RenderAtomic } from '@feng3d/renderer';
-import { serialize } from '@feng3d/serialization';
-import { Camera } from '../cameras/Camera';
-import { Component, RegisterComponent } from '../ecs/Component';
-import { AddComponentMenu } from '../Menu';
-import { Scene } from '../scene/Scene';
-import { TextureCube } from '../textures/TextureCube';
-
-declare global
+namespace feng3d
 {
-    interface MixinsComponentMap { SkyBox: SkyBox; }
-}
+    export interface ComponentMap { SkyBox: SkyBox; }
 
-/**
- * 天空盒组件
- */
-@AddComponentMenu('SkyBox/SkyBox')
-@RegisterComponent({ name: 'SkyBox' })
-export class SkyBox extends Component
-{
-    __class__: 'feng3d.SkyBox';
-
-    @serialize
-    @oav({ component: 'OAVPick', componentParam: { accepttype: 'texturecube', datatype: 'texturecube' } })
-    s_skyboxTexture: TextureCube = TextureCube.default;
-
-    beforeRender(renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
+    /**
+     * 天空盒组件
+     */
+    @AddComponentMenu("SkyBox/SkyBox")
+    @RegisterComponent()
+    export class SkyBox extends Component
     {
-        renderAtomic.uniforms.s_skyboxTexture = () => this.s_skyboxTexture;
+        __class__: "feng3d.SkyBox";
+
+        // /**
+        //  * The material used by the skybox.
+        //  */
+        // @serialize
+        // material: Material;
+
+        @serialize
+        @oav({ component: "OAVPick", componentParam: { accepttype: "texturecube", datatype: "texturecube" } })
+        s_skyboxTexture = TextureCube.default;
+
+        beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
+        {
+            renderAtomic.uniforms.s_skyboxTexture = () => this.s_skyboxTexture;
+        }
     }
 }

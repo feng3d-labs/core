@@ -1,54 +1,49 @@
-import { oav } from '@feng3d/objectview';
-import { serialize } from '@feng3d/serialization';
-import { RunEnvironment } from '../core/RunEnvironment';
-import { Component, RegisterComponent } from '../ecs/Component';
-
-declare global
+namespace feng3d
 {
-    interface MixinsComponentMap { Behaviour: Behaviour; }
-}
+    export interface ComponentMap { Behaviour: Behaviour; }
 
-/**
- * 行为
- *
- * 可以控制开关的组件
- */
-@RegisterComponent({ name: 'Behaviour' })
-export class Behaviour extends Component
-{
     /**
-     * 是否启用update方法
+     * 行为
+     * 
+     * 可以控制开关的组件
      */
-    @oav()
-    @serialize
+    @RegisterComponent()
+    export class Behaviour extends Component
+    {
+
+        /**
+         * 是否启用update方法
+         */
+        @oav()
+        @serialize
         enabled = true;
 
-    /**
-     * 可运行环境
-     */
-    runEnvironment = RunEnvironment.all;
+        /**
+         * 可运行环境
+         */
+        runEnvironment = RunEnvironment.all;
 
-    /**
-     * Has the Behaviour had enabled called.
-     * 是否所在GameObject显示且该行为已启动。
-     */
-    get isVisibleAndEnabled()
-    {
-        const v = this.enabled && this.gameObject?.globalVisible;
+        /**
+         * Has the Behaviour had enabled called.
+         * 是否所在GameObject显示且该行为已启动。
+         */
+        get isVisibleAndEnabled()
+        {
+            var v = this.enabled && this.gameObject && this.gameObject.activeSelf;
+            return v;
+        }
 
-        return v;
-    }
+        /**
+         * 每帧执行
+         */
+        update(interval?: number)
+        {
+        }
 
-    /**
-     * 每帧执行
-     */
-    update(_interval?: number)
-    {
-    }
-
-    destroy()
-    {
-        this.enabled = false;
-        super.destroy();
+        dispose()
+        {
+            this.enabled = false;
+            super.dispose();
+        }
     }
 }

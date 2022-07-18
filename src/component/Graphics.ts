@@ -1,62 +1,59 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import { dataTransform } from '@feng3d/polyfill';
-import { Component } from '../ecs/Component';
-
-/**
- * Graphics 类包含一组可用来创建矢量形状的方法。
- */
-export class Graphics extends Component
+namespace feng3d
 {
-    __class__: 'feng3d.Graphics';
-
-    private image: HTMLImageElement;
-    private context2D: CanvasRenderingContext2D;
-    private canvas: HTMLCanvasElement;
-    private width: number;
-    private height: number;
-
-    constructor()
+    /**
+     * Graphics 类包含一组可用来创建矢量形状的方法。
+     */
+    export class Graphics extends Component 
     {
-        super();
+        __class__: "feng3d.Graphics";
 
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
-        this.context2D = this.canvas.getContext('2d');
+        private image: HTMLImageElement
+        private context2D: CanvasRenderingContext2D;
+        private canvas: HTMLCanvasElement;
+        private width: number;
+        private height: number;
 
-        //
-        watchContext2D(this.context2D);
+        constructor()
+        {
+            super();
+
+            this.canvas = document.createElement("canvas");
+            this.canvas.width = this.width;
+            this.canvas.height = this.height;
+            this.context2D = this.canvas.getContext('2d');
+
+            //
+            watchContext2D(this.context2D);
+        }
+
+        draw(width: number, height: number, callback: (context2D: CanvasRenderingContext2D) => void)
+        {
+            var canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            var ctxt = canvas.getContext('2d');
+            callback(ctxt);
+            dataTransform.canvasToImage(canvas, "png", 1, (img) =>
+            {
+                this.image = img;
+            });
+            return this;
+        }
     }
 
-    draw(width: number, height: number, callback: (context2D: CanvasRenderingContext2D) => void)
+    export function watchContext2D(context2D: CanvasRenderingContext2D, watchFuncs = ["rect"])
     {
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctxt = canvas.getContext('2d');
-        callback(ctxt);
-        dataTransform.canvasToImage(canvas, 'png', 1, (img) =>
+        watchFuncs.forEach(v =>
         {
-            this.image = img;
+            var oldFunc = context2D[v];
+            context2D[v] = function (...args): void
+            {
+                oldFunc.apply(context2D, args);
+                // 标记更改
+                context2D["__changed"] = true;
+            }
         });
-
-        return this;
     }
-}
-
-export function watchContext2D(context2D: CanvasRenderingContext2D, watchFuncs = ['rect'])
-{
-    watchFuncs.forEach((v) =>
-    {
-        const oldFunc = context2D[v];
-        context2D[v] = function (...args): void
-        {
-            oldFunc.apply(context2D, args);
-            // 标记更改
-            // @ts-ignore
-            context2D.__changed = true;
-        };
-    });
 }
 
 // var ctxts = [];
