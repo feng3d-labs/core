@@ -985,24 +985,6 @@ namespace feng3d
         }
 
         /**
-         * 把事件汇报给父结点。
-         */
-        getBubbleTargets()
-        {
-            const targets = [this.parent];
-
-            return targets;
-        }
-
-        /**
-         * 把事件广播给每个子结点。
-         */
-        getBroadcastTargets()
-        {
-            return this.children;
-        }
-
-        /**
          * 创建指定类型的游戏对象。
          * 
          * @param type 游戏对象类型。
