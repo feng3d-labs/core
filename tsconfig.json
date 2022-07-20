@@ -29,9 +29,6 @@
         {
             "path": "../filesystem"
         },
-        {
-            "path": "../watcher"
-        },
     ],
     "files": [
         //
@@ -39,6 +36,7 @@
         "../polyfill/index.d.ts",
         "../objectview/index.d.ts",
         "../task/index.d.ts",
+        "../watcher/index.d.ts",
         //
         "src/menu/CreateNodeMenu.ts",
         //
