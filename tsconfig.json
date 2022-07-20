@@ -21,9 +21,6 @@
             "path": "../renderer"
         },
         {
-            "path": "../serialization"
-        },
-        {
             "path": "../shortcut"
         },
         {
@@ -37,6 +34,7 @@
         "../objectview/index.d.ts",
         "../task/index.d.ts",
         "../watcher/index.d.ts",
+        "../serialization/index.d.ts",
         //
         "src/menu/CreateNodeMenu.ts",
         //
