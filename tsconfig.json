@@ -21,9 +21,6 @@
             "path": "../objectview"
         },
         {
-            "path": "../polyfill"
-        },
-        {
             "path": "../renderer"
         },
         {
@@ -45,6 +42,7 @@
     "files": [
         //
         "../event/index.d.ts",
+        "../polyfill/index.d.ts",
         //
         "src/menu/CreateNodeMenu.ts",
         //
