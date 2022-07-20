@@ -15,9 +15,6 @@
     },
     "references": [
         {
-            "path": "../event"
-        },
-        {
             "path": "../math"
         },
         {
@@ -46,6 +43,8 @@
         },
     ],
     "files": [
+        //
+        "../event/index.d.ts",
         //
         "src/menu/CreateNodeMenu.ts",
         //
