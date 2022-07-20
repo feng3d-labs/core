@@ -15,9 +15,6 @@
     },
     "references": [
         {
-            "path": "../math"
-        },
-        {
             "path": "../renderer"
         },
         {
@@ -35,6 +32,7 @@
         "../task/index.d.ts",
         "../watcher/index.d.ts",
         "../serialization/index.d.ts",
+        "../math/index.d.ts",
         //
         "src/menu/CreateNodeMenu.ts",
         //
