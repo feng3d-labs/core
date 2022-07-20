@@ -18,9 +18,6 @@
             "path": "../math"
         },
         {
-            "path": "../objectview"
-        },
-        {
             "path": "../renderer"
         },
         {
@@ -43,6 +40,7 @@
         //
         "../event/index.d.ts",
         "../polyfill/index.d.ts",
+        "../objectview/index.d.ts",
         //
         "src/menu/CreateNodeMenu.ts",
         //
