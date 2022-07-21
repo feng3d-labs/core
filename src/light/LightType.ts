@@ -1,7 +1,5 @@
-
 /**
  * 灯光类型
-
  */
 export enum LightType
 {

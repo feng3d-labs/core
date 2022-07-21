@@ -1,3 +1,12 @@
+import { Vector3, Color4 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { watch } from '@feng3d/polyfill';
+import { serialize, serialization } from '@feng3d/serialization';
+import { GameObject } from '../core/GameObject';
+import { MeshRenderer } from '../core/MeshRenderer';
+import { Material } from '../materials/Material';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
+import { Geometry } from './Geometry';
 
 export interface GeometryTypes { SegmentGeometry: SegmentGeometry }
 
@@ -6,28 +15,27 @@ export interface GeometryTypes { SegmentGeometry: SegmentGeometry }
  */
 export class SegmentGeometry extends Geometry
 {
+    __class__: 'feng3d.SegmentGeometry';
 
-    __class__: "feng3d.SegmentGeometry";
-
-    name = "Segment";
+    name = 'Segment';
 
     /**
      * 线段列表
      * 修改数组内数据时需要手动调用 invalidateGeometry();
      */
     @serialize
-    @oav({ component: "OAVArray", tooltip: "在指定时间进行额外发射指定数量的粒子", componentParam: { defaultItem: () => { return new Segment(); } } })
-    @watch("invalidateGeometry")
+    @oav({ component: 'OAVArray', tooltip: '在指定时间进行额外发射指定数量的粒子', componentParam: { defaultItem: () => new Segment() } })
+    @watch('invalidateGeometry')
     segments: Segment[] = [];
 
     /**
      * 添加线段
-     * 
+     *
      * @param segment 线段
      */
     addSegment(segment: Partial<Segment>)
     {
-        var s = new Segment();
+        const s = new Segment();
         serialization.setValue(s, segment);
         this.segments.push(s);
         this.invalidateGeometry();
@@ -43,18 +51,18 @@ export class SegmentGeometry extends Geometry
      */
     protected buildGeometry()
     {
-        var numSegments = this.segments.length;
-        var indices: number[] = [];
-        var positionData: number[] = [];
-        var colorData: number[] = [];
+        const numSegments = this.segments.length;
+        const indices: number[] = [];
+        const positionData: number[] = [];
+        const colorData: number[] = [];
 
-        for (var i = 0; i < numSegments; i++)
+        for (let i = 0; i < numSegments; i++)
         {
-            var element = this.segments[i];
-            var start = element.start || Vector3.ZERO;
-            var end = element.end || Vector3.ZERO;;
-            var startColor = element.startColor || Color4.WHITE;
-            var endColor = element.endColor || Color4.WHITE;
+            const element = this.segments[i];
+            const start = element.start || Vector3.ZERO;
+            const end = element.end || Vector3.ZERO;
+            const startColor = element.startColor || Color4.WHITE;
+            const endColor = element.endColor || Color4.WHITE;
 
             indices.push(i * 2, i * 2 + 1);
             positionData.push(start.x, start.y, start.z, end.x, end.y, end.z);
@@ -77,36 +85,36 @@ export class Segment
      * 起点坐标
      */
     @serialize
-    @oav({ tooltip: "起点坐标" })
+    @oav({ tooltip: '起点坐标' })
     start = new Vector3();
 
     /**
      * 终点坐标
      */
     @serialize
-    @oav({ tooltip: "终点坐标" })
+    @oav({ tooltip: '终点坐标' })
     end = new Vector3();
 
     /**
      * 起点颜色
      */
     @serialize
-    @oav({ tooltip: "起点颜色" })
+    @oav({ tooltip: '起点颜色' })
     startColor = new Color4();
 
     /**
      * 终点颜色
      */
     @serialize
-    @oav({ tooltip: "终点颜色" })
+    @oav({ tooltip: '终点颜色' })
     endColor = new Color4();
 }
 
-GameObject.registerPrimitive("Segment", (g) =>
+GameObject.registerPrimitive('Segment', (g) =>
 {
-    var model = g.addComponent(MeshRenderer);
+    const model = g.addComponent(MeshRenderer);
     model.geometry = new SegmentGeometry();
-    model.material = Material.getDefault("Segment-Material");
+    model.material = Material.getDefault('Segment-Material');
 });
 
 export interface PrimitiveGameObject
@@ -117,12 +125,10 @@ export interface PrimitiveGameObject
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(
     {
-        path: "3D Object/Segment",
+        path: '3D Object/Segment',
         priority: -10000,
         click: () =>
-        {
-            return GameObject.createPrimitive("Segment");
-        }
+        GameObject.createPrimitive('Segment')
     }
 );
 

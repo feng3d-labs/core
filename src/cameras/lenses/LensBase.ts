@@ -1,3 +1,9 @@
+import { Matrix4x4, Vector3, Vector4, Ray3 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { watch } from '@feng3d/polyfill';
+import { serialize } from '@feng3d/serialization';
+import { Feng3dObject } from '../../core/Feng3dObject';
+import { Projection } from '../Projection';
 
 export interface LensEventMap
 {
@@ -6,13 +12,13 @@ export interface LensEventMap
 
 /**
  * 摄像机镜头
- * 
+ *
  * 镜头主要作用是投影以及逆投影。
  * 投影指的是从摄像机空间可视区域内的坐标投影至GPU空间可视区域内的坐标。
- * 
+ *
  * 摄像机可视区域：由近、远，上，下，左，右组成的四棱柱
  * GPU空间可视区域：立方体 [(-1, -1, -1), (1, 1, 1)]
- * 
+ *
  */
 export abstract class LensBase<T extends LensEventMap = LensEventMap> extends Feng3dObject<T>
 {
@@ -30,13 +36,13 @@ export abstract class LensBase<T extends LensEventMap = LensEventMap> extends Fe
 	 */
 	@serialize
 	@oav()
-	@watch("invalidate")
+	@watch('invalidate')
 	near: number;
 
 	/**
 	 * 最远距离
 	 */
-	@watch("invalidate")
+	@watch('invalidate')
 	@serialize
 	@oav()
 	far: number;
@@ -44,7 +50,7 @@ export abstract class LensBase<T extends LensEventMap = LensEventMap> extends Fe
 	/**
 	 * 视窗缩放比例(width/height)，在渲染器中设置
 	 */
-	@watch("invalidate")
+	@watch('invalidate')
 	aspect: number;
 
 	/**
@@ -68,7 +74,8 @@ export abstract class LensBase<T extends LensEventMap = LensEventMap> extends Fe
 			this._updateMatrix();
 			this._matrixInvalid = false;
 		}
-		return this._matrix;
+
+return this._matrix;
 	}
 
 	/**
@@ -81,7 +88,8 @@ export abstract class LensBase<T extends LensEventMap = LensEventMap> extends Fe
 			this._updateInverseMatrix();
 			this._invertMatrixInvalid = false;
 		}
-		return this._inverseMatrix;
+
+return this._inverseMatrix;
 	}
 
 	/**
@@ -92,9 +100,10 @@ export abstract class LensBase<T extends LensEventMap = LensEventMap> extends Fe
 	 */
 	project(point3d: Vector3, v = new Vector3()): Vector3
 	{
-		var v4 = this.matrix.transformVector4(Vector4.fromVector3(point3d, 1));
+		const v4 = this.matrix.transformVector4(Vector4.fromVector3(point3d, 1));
 		v4.toVector3(v);
-		return v;
+
+return v;
 	}
 
 	/**
@@ -105,36 +114,38 @@ export abstract class LensBase<T extends LensEventMap = LensEventMap> extends Fe
 	 */
 	unproject(point3d: Vector3, v = new Vector3())
 	{
-		var v4 = this.inverseMatrix.transformVector4(Vector4.fromVector3(point3d, 1));
+		const v4 = this.inverseMatrix.transformVector4(Vector4.fromVector3(point3d, 1));
 		v4.toVector3(v);
-		return v;
+
+return v;
 	}
 
 	/**
 	 * 逆投影求射线
-	 * 
+	 *
 	 * 通过GPU空间坐标x与y值求出摄像机空间坐标的射线
-	 * 
+	 *
 	 * @param x GPU空间坐标x值
 	 * @param y GPU空间坐标y值
 	 */
 	unprojectRay(x: number, y: number, ray = new Ray3())
 	{
-		var p0 = this.unproject(new Vector3(x, y, 0));
-		var p1 = this.unproject(new Vector3(x, y, 1));
+		const p0 = this.unproject(new Vector3(x, y, 0));
+		const p1 = this.unproject(new Vector3(x, y, 1));
 		// 初始化射线
 		ray.fromPosAndDir(p0, p1.sub(p0));
 		// 获取z==0的点
-		var sp = ray.getPointWithZ(0);
+		const sp = ray.getPointWithZ(0);
 		ray.origin = sp;
-		return ray;
+
+return ray;
 	}
 
 	/**
 	 * 指定深度逆投影
-	 * 
+	 *
 	 * 获取投影在指定GPU坐标且摄像机前方（深度）sZ处的点的3D坐标
-	 * 
+	 *
 	 * @param nX GPU空间坐标X
 	 * @param nY GPU空间坐标Y
 	 * @param sZ 到摄像机的距离
@@ -162,7 +173,7 @@ export abstract class LensBase<T extends LensEventMap = LensEventMap> extends Fe
 
 		this._matrixInvalid = true;
 		this._invertMatrixInvalid = true;
-		this.emit("lensChanged", this);
+		this.emit('lensChanged', this);
 	}
 
 	private _updateInverseMatrix()

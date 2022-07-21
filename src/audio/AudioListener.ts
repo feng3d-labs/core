@@ -1,25 +1,31 @@
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
+import { Behaviour } from '../component/Behaviour';
+import { RegisterComponent } from '../component/Component';
+import { AddComponentMenu } from '../Menu';
 
-export var audioCtx: AudioContext;
-export var globalGain: GainNode;
+export let audioCtx: AudioContext;
+export let globalGain: GainNode;
 
 export interface ComponentMap { AudioListener: AudioListener; }
 /**
  * 声音监听器
  */
-@AddComponentMenu("Audio/AudioListener")
+@AddComponentMenu('Audio/AudioListener')
 @RegisterComponent()
 export class AudioListener extends Behaviour
 {
     gain: GainNode;
 
-    @watch("_enabledChanged")
+    @watch('_enabledChanged')
     enabled = true;
 
     /**
      * 音量
      */
     @serialize
-    @oav({ tooltip: "音量" })
+    @oav({ tooltip: '音量' })
     get volume()
     {
         return this._volume;
@@ -42,18 +48,18 @@ export class AudioListener extends Behaviour
     init()
     {
         super.init();
-        this.on("scenetransformChanged", this._onScenetransformChanged, this);
+        this.on('scenetransformChanged', this._onScenetransformChanged, this);
         this._onScenetransformChanged();
     }
 
     private _onScenetransformChanged()
     {
-        var localToWorldMatrix = this.transform.localToWorldMatrix;
-        var position = localToWorldMatrix.getPosition();
-        var forward = localToWorldMatrix.getAxisZ();
-        var up = localToWorldMatrix.getAxisY();
+        const localToWorldMatrix = this.transform.localToWorldMatrix;
+        const position = localToWorldMatrix.getPosition();
+        const forward = localToWorldMatrix.getAxisZ();
+        const up = localToWorldMatrix.getAxisY();
         //
-        var listener = audioCtx.listener;
+        const listener = audioCtx.listener;
         // feng3d中为左手坐标系，listener中使用的为右手坐标系，参考https://developer.mozilla.org/en-US/docs/Web/API/AudioListener
         if (listener.forwardX)
         {
@@ -66,7 +72,8 @@ export class AudioListener extends Behaviour
             listener.upX.setValueAtTime(up.x, audioCtx.currentTime);
             listener.upY.setValueAtTime(up.y, audioCtx.currentTime);
             listener.upZ.setValueAtTime(-up.z, audioCtx.currentTime);
-        } else
+        }
+        else
         {
             listener.setOrientation(forward.x, forward.y, -forward.z, up.x, up.y, -up.z);
             listener.setPosition(position.x, position.y, -position.z);
@@ -79,7 +86,8 @@ export class AudioListener extends Behaviour
         if (this.enabled)
         {
             globalGain.connect(this.gain);
-        } else
+        }
+        else
         {
             globalGain.disconnect(this.gain);
         }
@@ -87,26 +95,27 @@ export class AudioListener extends Behaviour
 
     dispose()
     {
-        this.off("scenetransformChanged", this._onScenetransformChanged, this);
+        this.off('scenetransformChanged', this._onScenetransformChanged, this);
         super.dispose();
     }
 }
 
 (() =>
 {
-    if (typeof window == "undefined") return;
+    if (typeof window === 'undefined') return;
 
-    window["AudioContext"] = window["AudioContext"] || window["webkitAudioContext"];
+    window['AudioContext'] = window['AudioContext'] || window['webkitAudioContext'];
 
-    var audioCtx = feng3d.audioCtx = new AudioContext();
-    var globalGain = feng3d.globalGain = audioCtx.createGain();
+    audioCtx = new AudioContext();
+    globalGain = audioCtx.createGain();
+
     // 新增无音Gain，避免没有AudioListener组件时暂停声音播放进度
-    var zeroGain = audioCtx.createGain();
+    const zeroGain = audioCtx.createGain();
     zeroGain.connect(audioCtx.destination);
     globalGain.connect(zeroGain);
     zeroGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.01);
     //
-    var listener = audioCtx.listener;
+    const listener = audioCtx.listener;
     audioCtx.createGain();
     if (listener.forwardX)
     {
@@ -116,7 +125,8 @@ export class AudioListener extends Behaviour
         listener.upX.value = 0;
         listener.upY.value = 1;
         listener.upZ.value = 0;
-    } else
+    }
+    else
     {
         listener.setOrientation(0, 0, -1, 0, 1, 0);
     }

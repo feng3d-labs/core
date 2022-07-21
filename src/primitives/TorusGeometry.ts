@@ -1,3 +1,10 @@
+import { oav } from '@feng3d/objectview';
+import { watch } from '@feng3d/polyfill';
+import { serialize } from '@feng3d/serialization';
+import { GameObject } from '../core/GameObject';
+import { MeshRenderer } from '../core/MeshRenderer';
+import { Geometry } from '../geometry/Geometry';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 
 export interface GeometryTypes { TorusGeometry: TorusGeometry }
 
@@ -6,15 +13,14 @@ export interface GeometryTypes { TorusGeometry: TorusGeometry }
  */
 export class TorusGeometry extends Geometry
 {
-
-	__class__: "feng3d.TorusGeometry" = "feng3d.TorusGeometry";
+	__class__: 'feng3d.TorusGeometry' = 'feng3d.TorusGeometry';
 
 	/**
 	 * 半径
 	 */
 	@serialize
 	@oav()
-	@watch("invalidateGeometry")
+	@watch('invalidateGeometry')
 	radius = 0.5;
 
 	/**
@@ -22,7 +28,7 @@ export class TorusGeometry extends Geometry
 	 */
 	@serialize
 	@oav()
-	@watch("invalidateGeometry")
+	@watch('invalidateGeometry')
 	tubeRadius = 0.1;
 
 	/**
@@ -30,7 +36,7 @@ export class TorusGeometry extends Geometry
 	 */
 	@serialize
 	@oav()
-	@watch("invalidateGeometry")
+	@watch('invalidateGeometry')
 	segmentsR = 16;
 
 	/**
@@ -38,7 +44,7 @@ export class TorusGeometry extends Geometry
 	 */
 	@serialize
 	@oav()
-	@watch("invalidateGeometry")
+	@watch('invalidateGeometry')
 	segmentsT = 8;
 
 	/**
@@ -46,10 +52,10 @@ export class TorusGeometry extends Geometry
 	 */
 	@serialize
 	@oav()
-	@watch("invalidateGeometry")
+	@watch('invalidateGeometry')
 	yUp = true;
 
-	name = "Torus";
+	name = 'Torus';
 
 	//
 	protected _vertexPositionData: number[];
@@ -98,9 +104,11 @@ export class TorusGeometry extends Geometry
 	 */
 	protected buildGeometry()
 	{
-		var i: number, j: number;
-		var x: number, y: number, z: number, nx: number, ny: number, nz: number, revolutionAngleR: number, revolutionAngleT: number;
-		var numTriangles: number;
+		let i: number; let
+			j: number;
+		let x: number; let y: number; let z: number; let nx: number; let ny: number; let nz: number; let revolutionAngleR: number; let
+			revolutionAngleT: number;
+		let numTriangles: number;
 		// reset utility variables
 		this._numVertices = 0;
 		this._vertexIndex = 0;
@@ -117,16 +125,19 @@ export class TorusGeometry extends Geometry
 		this.buildUVs();
 
 		// evaluate revolution steps
-		var revolutionAngleDeltaR = 2 * Math.PI / this.segmentsR;
-		var revolutionAngleDeltaT = 2 * Math.PI / this.segmentsT;
+		const revolutionAngleDeltaR = 2 * Math.PI / this.segmentsR;
+		const revolutionAngleDeltaT = 2 * Math.PI / this.segmentsT;
 
-		var comp1: number, comp2: number;
-		var t1: number, t2: number, n1: number, n2: number;
+		let comp1: number; let
+			comp2: number;
+		let t1: number; let t2: number; let n1: number; let
+			n2: number;
 
-		var startPositionIndex: number;
+		let startPositionIndex: number;
 
 		// surface
-		var a: number, b: number, c: number, d: number, length: number;
+		let a: number; let b: number; let c: number; let d: number; let
+			length: number;
 
 		for (j = 0; j <= this.segmentsT; ++j)
 		{
@@ -157,7 +168,6 @@ export class TorusGeometry extends Geometry
 					t2 = (length ? nx / length : x / this.radius);
 					comp1 = -z;
 					comp2 = y;
-
 				}
 				else
 				{
@@ -203,17 +213,18 @@ export class TorusGeometry extends Geometry
 	 */
 	protected buildUVs()
 	{
-		var i: number, j: number;
-		var stride = 2;
-		var data: number[] = [];
+		let i: number; let
+			j: number;
+		const stride = 2;
+		const data: number[] = [];
 
 		// evaluate num uvs
-		var numUvs = this._numVertices * stride;
+		const numUvs = this._numVertices * stride;
 
 		// current uv component index
-		var currentUvCompIndex = 0;
+		const currentUvCompIndex = 0;
 
-		var index = 0;
+		let index = 0;
 		// surface
 		for (j = 0; j <= this.segmentsT; ++j)
 		{
@@ -235,11 +246,11 @@ export interface DefaultGeometry
 {
 	Torus: TorusGeometry;
 }
-Geometry.setDefault("Torus", new TorusGeometry());
+Geometry.setDefault('Torus', new TorusGeometry());
 
-GameObject.registerPrimitive("Torus", (g) =>
+GameObject.registerPrimitive('Torus', (g) =>
 {
-	g.addComponent(MeshRenderer).geometry = Geometry.getDefault("Torus");
+	g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Torus');
 });
 
 export interface PrimitiveGameObject
@@ -250,12 +261,10 @@ export interface PrimitiveGameObject
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(
 	{
-		path: "3D Object/Torus",
+		path: '3D Object/Torus',
 		priority: -10000,
 		click: () =>
-		{
-			return GameObject.createPrimitive("Torus");
-		}
+			GameObject.createPrimitive('Torus')
 	}
 );
 

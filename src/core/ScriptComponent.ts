@@ -1,18 +1,27 @@
+import { globalEmitter } from '@feng3d/event';
+import { oav } from '@feng3d/objectview';
+import { classUtils, watch } from '@feng3d/polyfill';
+import { serialization, serialize } from '@feng3d/serialization';
+import { Behaviour } from '../component/Behaviour';
+import { RegisterComponent } from '../component/Component';
+import { AddComponentMenu } from '../Menu';
+import { RunEnvironment } from './RunEnvironment';
+import { Script } from './Script';
 
 export interface ComponentMap { ScriptComponent: ScriptComponent; }
 
 /**
  * 3d对象脚本
  */
-@AddComponentMenu("Script/Script")
+@AddComponentMenu('Script/Script')
 @RegisterComponent()
 export class ScriptComponent extends Behaviour
 {
     runEnvironment = RunEnvironment.feng3d;
 
     @serialize
-    @watch("_invalidateScriptInstance")
-    @oav({ component: "OAVPick", componentParam: { accepttype: "file_script" } })
+    @watch('_invalidateScriptInstance')
+    @oav({ component: 'OAVPick', componentParam: { accepttype: 'file_script' } })
     scriptName: string;
 
     /**
@@ -22,6 +31,7 @@ export class ScriptComponent extends Behaviour
     get scriptInstance()
     {
         if (this._invalid) this._updateScriptInstance();
+
         return this._scriptInstance;
     }
     private _scriptInstance: Script;
@@ -33,16 +43,16 @@ export class ScriptComponent extends Behaviour
     init()
     {
         super.init();
-        globalEmitter.on("asset.scriptChanged", this._invalidateScriptInstance, this);
+        globalEmitter.on('asset.scriptChanged', this._invalidateScriptInstance, this);
     }
 
     private _updateScriptInstance()
     {
-        var oldInstance = this._scriptInstance;
+        const oldInstance = this._scriptInstance;
         this._scriptInstance = null;
         if (!this.scriptName) return;
 
-        var cls = classUtils.getDefinitionByName(this.scriptName, false);
+        const cls = classUtils.getDefinitionByName(this.scriptName, false);
 
         if (cls) this._scriptInstance = new cls();
         else console.warn(`无法初始化脚本 ${this.scriptName}`);
@@ -97,6 +107,6 @@ export class ScriptComponent extends Behaviour
         }
         super.dispose();
 
-        globalEmitter.off("asset.scriptChanged", this._invalidateScriptInstance, this);
+        globalEmitter.off('asset.scriptChanged', this._invalidateScriptInstance, this);
     }
 }

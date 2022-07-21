@@ -1,3 +1,6 @@
+import { Matrix4x4 } from '@feng3d/math';
+import { serialize } from '@feng3d/serialization';
+
 // /**
 //  * 骨骼数据
 //
@@ -30,7 +33,10 @@ export class SkeletonJoint
     get invertMatrix()
     {
         if (!this._invertMatrix)
+        {
             this._invertMatrix = this.matrix.clone().invert();
+        }
+
         return this._invertMatrix;
     }
     private _invertMatrix: Matrix4x4;

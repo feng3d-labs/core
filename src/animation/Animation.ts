@@ -1,17 +1,24 @@
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
+import { Behaviour } from '../component/Behaviour';
+import { getComponentType, RegisterComponent } from '../component/Component';
+import { AddComponentMenu } from '../Menu';
+import { AnimationClip } from './AnimationClip';
+import { PropertyClip, PropertyClipPathItemType } from './PropertyClip';
 
 export interface ComponentMap { Animation: Animation; }
 
-
-@AddComponentMenu("Animator/Animation")
+@AddComponentMenu('Animator/Animation')
 @RegisterComponent()
 export class Animation extends Behaviour
 {
-    @oav({ component: "OAVDefault", componentParam: { dragparam: { accepttype: "animationclip", datatype: "animationclip" } } })
+    @oav({ component: 'OAVDefault', componentParam: { dragparam: { accepttype: 'animationclip', datatype: 'animationclip' } } })
     @serialize
-    @watch("_onAnimationChanged")
+    @watch('_onAnimationChanged')
     animation: AnimationClip;
 
-    @oav({ component: "OAVArray", componentParam: { dragparam: { accepttype: "animationclip", datatype: "animationclip" }, defaultItem: () => new AnimationClip() } })
+    @oav({ component: 'OAVArray', componentParam: { dragparam: { accepttype: 'animationclip', datatype: 'animationclip' }, defaultItem: () => new AnimationClip() } })
     @serialize
     animations: AnimationClip[] = [];
 
@@ -19,7 +26,7 @@ export class Animation extends Behaviour
      * 动画事件，单位为ms
      */
     @oav()
-    @watch("_onTimeChanged")
+    @watch('_onTimeChanged')
     time = 0;
 
     @oav()
@@ -44,9 +51,10 @@ export class Animation extends Behaviour
     get frame()
     {
         if (!this.animation) return -1;
-        var cycle = this.animation.length;
-        var cliptime = (this.time % cycle + cycle) % cycle;
-        var _frame = Math.round(this._fps * cliptime / 1000);
+        const cycle = this.animation.length;
+        const cliptime = (this.time % cycle + cycle) % cycle;
+        const _frame = Math.round(this._fps * cliptime / 1000);
+
         return _frame;
     }
 
@@ -71,18 +79,18 @@ export class Animation extends Behaviour
         if (!this.animation) return;
         if ((this.num++) % 2 !== 0) return;
 
-        var cycle = this.animation.length;
-        var cliptime = (this.time % cycle + cycle) % cycle;
+        const cycle = this.animation.length;
+        const cliptime = (this.time % cycle + cycle) % cycle;
 
-        var propertyClips = this.animation.propertyClips;
+        const propertyClips = this.animation.propertyClips;
 
-        for (var i = 0; i < propertyClips.length; i++)
+        for (let i = 0; i < propertyClips.length; i++)
         {
-            var propertyClip = propertyClips[i];
+            const propertyClip = propertyClips[i];
 
-            var propertyValues = propertyClip.propertyValues;
-            if (propertyValues.length == 0) continue;
-            var propertyHost = this.getPropertyHost(propertyClip);
+            const propertyValues = propertyClip.propertyValues;
+            if (propertyValues.length === 0) continue;
+            const propertyHost = this.getPropertyHost(propertyClip);
             if (!propertyHost) continue;
             propertyHost[propertyClip.propertyName] = propertyClip.getValue(cliptime, this._fps);
         }
@@ -91,17 +99,17 @@ export class Animation extends Behaviour
     private getPropertyHost(propertyClip: PropertyClip)
     {
         if (propertyClip.cacheIndex && this._objectCache[propertyClip.cacheIndex])
-            return this._objectCache[propertyClip.cacheIndex];
+        { return this._objectCache[propertyClip.cacheIndex]; }
 
         if (!propertyClip.cacheIndex)
-            propertyClip.cacheIndex = autoobjectCacheID++;
+        { propertyClip.cacheIndex = autoobjectCacheID++; }
 
-        var propertyHost = this.gameObject;
-        var path = propertyClip.path;
+        let propertyHost = this.gameObject;
+        const path = propertyClip.path;
 
-        for (var i = 0; i < path.length; i++)
+        for (let i = 0; i < path.length; i++)
         {
-            var element = path[i];
+            const element = path[i];
             switch (element[0])
             {
                 case PropertyClipPathItemType.GameObject:
@@ -114,10 +122,13 @@ export class Animation extends Behaviour
                 default:
                     console.error(`无法获取 PropertyHost ${element}`);
             }
-            if (propertyHost == null)
+            if (!propertyHost)
+            {
                 return null;
+            }
         }
         this._objectCache[propertyClip.cacheIndex] = propertyHost;
+
         return propertyHost;
     }
 
@@ -131,4 +142,4 @@ export class Animation extends Behaviour
         this._updateAni();
     }
 }
-var autoobjectCacheID = 1;
+let autoobjectCacheID = 1;

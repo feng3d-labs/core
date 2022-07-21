@@ -1,3 +1,6 @@
+import { Box3, Vector3 } from '@feng3d/math';
+import { Component } from '../component/Component';
+import { GameObject } from './GameObject';
 
 export interface GameObjectEventMap
 {
@@ -14,7 +17,7 @@ export interface GameObjectEventMap
 
 /**
  * 轴对称包围盒
- * 
+ *
  * 用于优化计算射线碰撞检测以及视锥剔除等。
  */
 export class BoundingBox
@@ -32,8 +35,8 @@ export class BoundingBox
     constructor(gameObject: GameObject)
     {
         this._gameObject = gameObject;
-        gameObject.on("selfBoundsChanged", this._invalidateSelfLocalBounds, this);
-        gameObject.on("scenetransformChanged", this._invalidateSelfWorldBounds, this);
+        gameObject.on('selfBoundsChanged', this._invalidateSelfLocalBounds, this);
+        gameObject.on('scenetransformChanged', this._invalidateSelfWorldBounds, this);
     }
 
     /**
@@ -46,6 +49,7 @@ export class BoundingBox
             this._updateSelfBounds();
             this._selfBoundsInvalid = false;
         }
+
         return this._selfLocalBounds;
     }
 
@@ -73,23 +77,24 @@ export class BoundingBox
             this._updateWorldBounds();
             this._worldBoundsInvalid = false;
         }
+
         return this._worldBounds;
     }
 
     /**
      * 更新自身包围盒
-     * 
+     *
      * 自身包围盒通常有Renderable组件提供
      */
     protected _updateSelfBounds()
     {
-        var bounds = this._selfLocalBounds.empty();
+        const bounds = this._selfLocalBounds.empty();
 
         // 获取对象上的包围盒
-        var data: { bounds: Box3[]; } = { bounds: [] };
-        this._gameObject.emit("getSelfBounds", data);
+        const data: { bounds: Box3[]; } = { bounds: [] };
+        this._gameObject.emit('getSelfBounds', data);
 
-        data.bounds.forEach(b =>
+        data.bounds.forEach((b) =>
         {
             bounds.union(b);
         });
@@ -115,7 +120,7 @@ export class BoundingBox
         this._worldBounds.copy(this.selfWorldBounds);
 
         // 获取子对象的世界包围盒与自身世界包围盒进行合并
-        this._gameObject.children.forEach(element =>
+        this._gameObject.children.forEach((element) =>
         {
             this._worldBounds.union(element.boundingBox.worldBounds);
         });
@@ -153,7 +158,7 @@ export class BoundingBox
         this._worldBoundsInvalid = true;
 
         // 世界包围盒失效会影响父对象世界包围盒失效
-        var parent = this._gameObject.parent;
+        const parent = this._gameObject.parent;
         if (!parent) return;
         parent.boundingBox._invalidateWorldBounds();
     }

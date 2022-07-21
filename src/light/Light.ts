@@ -1,3 +1,18 @@
+import { Color3 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { BlendFactor } from '@feng3d/renderer';
+import { serialize, serialization } from '@feng3d/serialization';
+import { Camera } from '../cameras/Camera';
+import { Behaviour } from '../component/Behaviour';
+import { BillboardComponent } from '../component/BillboardComponent';
+import { GameObject } from '../core/GameObject';
+import { Renderable } from '../core/Renderable';
+import { Material } from '../materials/Material';
+import { FrameBufferObject } from '../render/FrameBufferObject';
+import { Scene } from '../scene/Scene';
+import { LightType } from './LightType';
+import { ShadowType } from './shadow/ShadowType';
+
 /**
  * 灯光
  */
@@ -26,7 +41,7 @@ export class Light extends Behaviour
     /**
      * 阴影类型
      */
-    @oav({ component: "OAVEnum", componentParam: { enumClass: ShadowType } })
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: ShadowType } })
     @serialize
     shadowType = ShadowType.No_Shadows;
 
@@ -95,7 +110,7 @@ export class Light extends Behaviour
      */
     frameBufferObject = new FrameBufferObject();
 
-    @oav({ tooltip: "是否调试阴影图" })
+    @oav({ tooltip: '是否调试阴影图' })
     debugShadowMap = false;
 
     private debugShadowMapObject: GameObject;
@@ -103,23 +118,23 @@ export class Light extends Behaviour
     constructor()
     {
         super();
-        this.shadowCamera = serialization.setValue(new GameObject(), { name: "LightShadowCamera" }).addComponent(Camera);
+        this.shadowCamera = serialization.setValue(new GameObject(), { name: 'LightShadowCamera' }).addComponent(Camera);
     }
 
     updateDebugShadowMap(scene: Scene, viewCamera: Camera)
     {
-        var gameObject = this.debugShadowMapObject;
+        let gameObject = this.debugShadowMapObject;
         if (!gameObject)
         {
-            gameObject = this.debugShadowMapObject = GameObject.createPrimitive("Plane", { name: "debugShadowMapObject" });
+            gameObject = this.debugShadowMapObject = GameObject.createPrimitive('Plane', { name: 'debugShadowMapObject' });
             gameObject.hideFlags = feng3d.HideFlags.Hide | feng3d.HideFlags.DontSave;
             gameObject.mouseEnabled = false;
             gameObject.addComponent(BillboardComponent);
 
-            //材质
-            var model = gameObject.getComponent(Renderable);
+            // 材质
+            const model = gameObject.getComponent(Renderable);
             model.geometry = serialization.setValue(new feng3d.PlaneGeometry(), { width: this.lightType == LightType.Point ? 1 : 0.5, height: 0.5, segmentsW: 1, segmentsH: 1, yUp: false });
-            var textureMaterial = model.material = serialization.setValue(new Material(), { shaderName: "texture", uniforms: { s_texture: <any>this.frameBufferObject.texture } });
+            const textureMaterial = model.material = serialization.setValue(new Material(), { shaderName: 'texture', uniforms: { s_texture: <any> this.frameBufferObject.texture } });
             //
             // textureMaterial.uniforms.s_texture.url = 'Assets/pz.jpg';
             // textureMaterial.uniforms.u_color.setTo(1.0, 0.0, 0.0, 1.0);
@@ -128,15 +143,16 @@ export class Light extends Behaviour
             textureMaterial.renderParams.dfactor = BlendFactor.ZERO;
         }
 
-        var depth = viewCamera.lens.near * 2;
+        const depth = viewCamera.lens.near * 2;
         gameObject.transform.position = viewCamera.transform.worldPosition.addTo(viewCamera.transform.localToWorldMatrix.getAxisZ().scaleNumberTo(depth));
-        var billboardComponent = gameObject.getComponent(BillboardComponent);
+        const billboardComponent = gameObject.getComponent(BillboardComponent);
         billboardComponent.camera = viewCamera;
 
         if (this.debugShadowMap)
         {
             scene.gameObject.addChild(gameObject);
-        } else
+        }
+ else
         {
             gameObject.remove();
         }

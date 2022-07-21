@@ -1,3 +1,10 @@
+import { IEvent } from '@feng3d/event';
+import { Constructor, IDisposable } from '@feng3d/polyfill';
+import { RenderAtomic } from '@feng3d/renderer';
+import { Camera } from '../cameras/Camera';
+import { Feng3dObject } from '../core/Feng3dObject';
+import { GameObjectEventMap, GameObject } from '../core/GameObject';
+import { Scene } from '../scene/Scene';
 
 interface ComponentInfo
 {
@@ -86,16 +93,16 @@ export type Components = ComponentMap[ComponentNames];
 
 /**
  * 组件
- * 
+ *
  * 所有附加到GameObjects的基类。
- * 
+ *
  * 注意，您的代码永远不会直接创建组件。相反，你可以编写脚本代码，并将脚本附加到GameObject(游戏物体)上。
  */
 export class Component extends Feng3dObject<GameObjectEventMap> implements IDisposable
 {
-    //------------------------------------------
+    // ------------------------------------------
     // Variables
-    //------------------------------------------
+    // ------------------------------------------
     /**
      * 此组件附加到的游戏对象。组件总是附加到游戏对象上。
      */
@@ -128,9 +135,9 @@ export class Component extends Feng3dObject<GameObjectEventMap> implements IDisp
         return false;
     }
 
-    //------------------------------------------
+    // ------------------------------------------
     // Functions
-    //------------------------------------------
+    // ------------------------------------------
     /**
      * 创建一个组件
      */
@@ -142,7 +149,7 @@ export class Component extends Feng3dObject<GameObjectEventMap> implements IDisp
 
     /**
      * 初始化组件
-     * 
+     *
      * 在添加到GameObject时立即被调用。
      */
     init()
@@ -323,13 +330,13 @@ export class Component extends Feng3dObject<GameObjectEventMap> implements IDisp
     private _onAnyListener(e: IEvent<any>)
     {
         if (this._gameObject)
-            this._gameObject.emitEvent(e);
+            { this._gameObject.emitEvent(e); }
     }
 
     /**
      * 该方法仅在GameObject中使用
      * @private
-     * 
+     *
      * @param gameObject 游戏对象
      */
     setGameObject(gameObject: GameObject)

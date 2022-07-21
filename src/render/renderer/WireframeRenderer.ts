@@ -1,8 +1,23 @@
+import { Color4 } from '@feng3d/math';
+import { lazy } from '@feng3d/polyfill';
+import { Index, RenderAtomic, RenderMode, Shader, WebGLRenderer } from '@feng3d/renderer';
+import { Camera } from '../../cameras/Camera';
+import { WireframeComponent } from '../../component/WireframeComponent';
+import { Renderable } from '../../core/Renderable';
+import { Scene } from '../../scene/Scene';
 
-/**
- * 线框渲染器
- */
-export var wireframeRenderer: WireframeRenderer;
+declare global
+{
+    export interface MixinsRenderAtomic
+    {
+        /**
+         * 顶点索引缓冲
+         */
+        wireframeindexBuffer: Index;
+
+        wireframeShader: Shader;
+    }
+}
 
 export class WireframeRenderer
 {
@@ -13,7 +28,7 @@ export class WireframeRenderer
         if (!this.renderAtomic)
         {
             this.renderAtomic = new RenderAtomic();
-            var renderParams = this.renderAtomic.renderParams;
+            const renderParams = this.renderAtomic.renderParams;
             renderParams.renderMode = RenderMode.LINES;
             // renderParams.depthMask = false;
         }
@@ -24,16 +39,23 @@ export class WireframeRenderer
      */
     draw(renderer: WebGLRenderer, scene: Scene, camera: Camera)
     {
-        var unblenditems = scene.getPickCache(camera).unblenditems;
+        const unblenditems = scene.getPickCache(camera).unblenditems;
 
-        var wireframes = unblenditems.reduce((pv: { wireframe: WireframeComponent, renderable: Renderable }[], cv) => { var wireframe = cv.getComponent(WireframeComponent); if (wireframe) pv.push({ wireframe: wireframe, renderable: cv }); return pv; }, [])
-
-        if (wireframes.length == 0)
-            return;
-
-        wireframes.forEach(element =>
+        const wireframes = unblenditems.reduce((pv: { wireframe: WireframeComponent, renderable: Renderable }[], cv) =>
         {
-            this.drawGameObject(renderer, element.renderable, scene, camera, element.wireframe.color);            //
+            const wireframe = cv.getComponent(WireframeComponent); if (wireframe) pv.push({ wireframe, renderable: cv });
+
+            return pv;
+        }, []);
+
+        if (wireframes.length === 0)
+        {
+            return;
+        }
+
+        wireframes.forEach((element) =>
+        {
+            this.drawGameObject(renderer, element.renderable, scene, camera, element.wireframe.color); //
         });
     }
 
@@ -42,20 +64,20 @@ export class WireframeRenderer
      */
     drawGameObject(renderer: WebGLRenderer, renderable: Renderable, scene: Scene, camera: Camera, wireframeColor = new Color4())
     {
-        var renderAtomic = renderable.renderAtomic;
+        const renderAtomic = renderable.renderAtomic;
         renderable.beforeRender(renderAtomic, scene, camera);
 
-        var renderMode = lazy.getvalue(renderAtomic.renderParams.renderMode);
-        if (renderMode == RenderMode.POINTS
-            || renderMode == RenderMode.LINES
-            || renderMode == RenderMode.LINE_LOOP
-            || renderMode == RenderMode.LINE_STRIP
+        const renderMode = lazy.getvalue(renderAtomic.renderParams.renderMode);
+        if (renderMode === RenderMode.POINTS
+            || renderMode === RenderMode.LINES
+            || renderMode === RenderMode.LINE_LOOP
+            || renderMode === RenderMode.LINE_STRIP
         )
-            return;
+        { return; }
 
         this.init();
 
-        var uniforms = this.renderAtomic.uniforms;
+        const uniforms = this.renderAtomic.uniforms;
         //
         uniforms.u_projectionMatrix = camera.lens.matrix;
         uniforms.u_viewProjection = camera.viewProjection;
@@ -69,13 +91,13 @@ export class WireframeRenderer
         this.renderAtomic.next = renderAtomic;
 
         //
-        var oldIndexBuffer = renderAtomic.index;
+        const oldIndexBuffer = renderAtomic.index;
         if (oldIndexBuffer.count < 3) return;
         if (!renderAtomic.wireframeindexBuffer || renderAtomic.wireframeindexBuffer.count != 2 * oldIndexBuffer.count)
         {
-            var wireframeindices: number[] = [];
-            var indices = lazy.getvalue(oldIndexBuffer.indices);
-            for (var i = 0; i < indices.length; i += 3)
+            const wireframeindices: number[] = [];
+            const indices = lazy.getvalue(oldIndexBuffer.indices);
+            for (let i = 0; i < indices.length; i += 3)
             {
                 wireframeindices.push(
                     indices[i], indices[i + 1],
@@ -86,7 +108,7 @@ export class WireframeRenderer
             renderAtomic.wireframeindexBuffer = new Index();
             renderAtomic.wireframeindexBuffer.indices = wireframeindices;
         }
-        renderAtomic.wireframeShader = renderAtomic.wireframeShader || new Shader({ shaderName: "wireframe" });
+        renderAtomic.wireframeShader = renderAtomic.wireframeShader || new Shader({ shaderName: 'wireframe' });
         this.renderAtomic.index = renderAtomic.wireframeindexBuffer;
 
         this.renderAtomic.uniforms.u_wireframeColor = wireframeColor;
@@ -99,14 +121,7 @@ export class WireframeRenderer
     }
 }
 
-wireframeRenderer = new WireframeRenderer();
-
-export interface RenderAtomic
-{
-    /**
-     * 顶点索引缓冲
-     */
-    wireframeindexBuffer: Index;
-
-    wireframeShader: Shader;
-}
+/**
+ * 线框渲染器
+ */
+export const wireframeRenderer = new WireframeRenderer();

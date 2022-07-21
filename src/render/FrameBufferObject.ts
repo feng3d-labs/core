@@ -1,21 +1,25 @@
+import { watch } from '@feng3d/polyfill';
+import { FrameBuffer, RenderBuffer, GL, Texture, WebGLRenderer } from '@feng3d/renderer';
+import { RenderTargetTexture2D } from '../textures/RenderTargetTexture2D';
+
 /**
  * 帧缓冲对象
  */
 export class FrameBufferObject
 {
-    @watch("invalidateSize")
+    @watch('invalidateSize')
     OFFSCREEN_WIDTH = 1024;
 
-    @watch("invalidateSize")
+    @watch('invalidateSize')
     OFFSCREEN_HEIGHT = 1024;
 
-    @watch("invalidate")
+    @watch('invalidate')
     frameBuffer: FrameBuffer;
 
-    @watch("invalidate")
+    @watch('invalidate')
     texture: RenderTargetTexture2D;
 
-    @watch("invalidate")
+    @watch('invalidate')
     depthBuffer: RenderBuffer;
 
     constructor(width = 1024, height = 1024)
@@ -36,12 +40,12 @@ export class FrameBufferObject
         }
 
         gl.cache.frameBufferObjects = gl.cache.frameBufferObjects || new Map();
-        var obj = gl.cache.frameBufferObjects.get(frameBufferObject);
+        let obj = gl.cache.frameBufferObjects.get(frameBufferObject);
         if (!obj)
         {
-            var framebuffer = FrameBuffer.active(gl, frameBufferObject.frameBuffer);
-            var texture = Texture.active(gl, frameBufferObject.texture);
-            var depthBuffer = RenderBuffer.active(gl, frameBufferObject.depthBuffer);
+            const framebuffer = FrameBuffer.active(gl, frameBufferObject.frameBuffer);
+            const texture = Texture.active(gl, frameBufferObject.texture);
+            const depthBuffer = RenderBuffer.active(gl, frameBufferObject.depthBuffer);
 
             // 绑定帧缓冲区对象
             gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
@@ -51,19 +55,21 @@ export class FrameBufferObject
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
 
             // 检查Framebuffer状态
-            var e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+            const e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
             if (gl.FRAMEBUFFER_COMPLETE !== e)
             {
-                alert('Frame buffer object is incomplete: ' + e.toString());
-                return null;
+                alert(`Frame buffer object is incomplete: ${e.toString()}`);
+
+return null;
             }
 
             gl.bindTexture(gl.TEXTURE_2D, null);
             gl.bindRenderbuffer(gl.RENDERBUFFER, null);
 
-            obj = { framebuffer: framebuffer, texture: texture, depthBuffer: depthBuffer };
+            obj = { framebuffer, texture, depthBuffer };
             gl.cache.frameBufferObjects.set(frameBufferObject, obj);
-        } else
+        }
+ else
         {
             gl.bindFramebuffer(gl.FRAMEBUFFER, obj.framebuffer);
         }
@@ -106,11 +112,11 @@ export class FrameBufferObject
 
     static clear(frameBufferObject: FrameBufferObject)
     {
-        WebGLRenderer.glList.forEach(gl =>
+        WebGLRenderer.glList.forEach((gl) =>
         {
             gl.cache.frameBufferObjects = gl.cache.frameBufferObjects || new Map();
 
-            var buffer = gl.cache.frameBufferObjects.get(frameBufferObject);
+            const buffer = gl.cache.frameBufferObjects.get(frameBufferObject);
             if (buffer)
             {
                 gl.cache.frameBufferObjects.delete(frameBufferObject);

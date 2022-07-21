@@ -1,10 +1,18 @@
+import { IEvent } from '@feng3d/event';
+import { Vector3, Vector2 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { windowEventProxy } from '../../../shortcut/dist';
+import { Behaviour } from '../component/Behaviour';
+import { RegisterComponent } from '../component/Component';
+import { RunEnvironment } from '../core/RunEnvironment';
+import { AddComponentMenu } from '../Menu';
 
 export interface ComponentMap { FPSController: FPSController; }
 
 /**
  * FPS模式控制器
  */
-@AddComponentMenu("Controller/FPSController")
+@AddComponentMenu('Controller/FPSController')
 @RegisterComponent()
 export class FPSController extends Behaviour
 {
@@ -46,18 +54,18 @@ export class FPSController extends Behaviour
     set auto(value)
     {
         if (this._auto == value)
-            return;
+            { return; }
         if (this._auto)
         {
-            windowEventProxy.off("mousedown", this.onMousedown, this);
-            windowEventProxy.off("mouseup", this.onMouseup, this);
+            windowEventProxy.off('mousedown', this.onMousedown, this);
+            windowEventProxy.off('mouseup', this.onMouseup, this);
             this.onMouseup();
         }
         this._auto = value;
         if (this._auto)
         {
-            windowEventProxy.on("mousedown", this.onMousedown, this);
-            windowEventProxy.on("mouseup", this.onMouseup, this);
+            windowEventProxy.on('mousedown', this.onMousedown, this);
+            windowEventProxy.on('mouseup', this.onMouseup, this);
         }
     }
 
@@ -66,12 +74,12 @@ export class FPSController extends Behaviour
         super.init();
 
         this.keyDirectionDic = {};
-        this.keyDirectionDic["a"] = new Vector3(-1, 0, 0);//左
-        this.keyDirectionDic["d"] = new Vector3(1, 0, 0);//右
-        this.keyDirectionDic["w"] = new Vector3(0, 0, 1);//前
-        this.keyDirectionDic["s"] = new Vector3(0, 0, -1);//后
-        this.keyDirectionDic["e"] = new Vector3(0, 1, 0);//上
-        this.keyDirectionDic["q"] = new Vector3(0, -1, 0);//下
+        this.keyDirectionDic['a'] = new Vector3(-1, 0, 0);// 左
+        this.keyDirectionDic['d'] = new Vector3(1, 0, 0);// 右
+        this.keyDirectionDic['w'] = new Vector3(0, 0, 1);// 前
+        this.keyDirectionDic['s'] = new Vector3(0, 0, -1);// 后
+        this.keyDirectionDic['e'] = new Vector3(0, 1, 0);// 上
+        this.keyDirectionDic['q'] = new Vector3(0, -1, 0);// 下
 
         this.keyDownDic = {};
 
@@ -87,9 +95,9 @@ export class FPSController extends Behaviour
         this.velocity = new Vector3();
         this.keyDownDic = {};
 
-        windowEventProxy.on("keydown", this.onKeydown, this);
-        windowEventProxy.on("keyup", this.onKeyup, this);
-        windowEventProxy.on("mousemove", this.onMouseMove, this);
+        windowEventProxy.on('keydown', this.onKeydown, this);
+        windowEventProxy.on('keyup', this.onKeyup, this);
+        windowEventProxy.on('mousemove', this.onMouseMove, this);
     }
 
     onMouseup()
@@ -98,9 +106,9 @@ export class FPSController extends Behaviour
         this.preMousePoint = null;
         this.mousePoint = null;
 
-        windowEventProxy.off("keydown", this.onKeydown, this);
-        windowEventProxy.off("keyup", this.onKeyup, this);
-        windowEventProxy.off("mousemove", this.onMouseMove, this);
+        windowEventProxy.off('keydown', this.onKeydown, this);
+        windowEventProxy.off('keyup', this.onKeyup, this);
+        windowEventProxy.off('mousemove', this.onMouseMove, this);
     }
 
     /**
@@ -117,18 +125,18 @@ export class FPSController extends Behaviour
     update(): void
     {
         if (!this.ischange)
-            return;
+            { return; }
 
         if (this.mousePoint && this.preMousePoint)
         {
-            //计算旋转
-            var offsetPoint = this.mousePoint.subTo(this.preMousePoint)
+            // 计算旋转
+            const offsetPoint = this.mousePoint.subTo(this.preMousePoint);
             offsetPoint.x *= 0.15;
             offsetPoint.y *= 0.15;
             // this.targetObject.transform.rotate(Vector3.X_AXIS, offsetPoint.y, this.targetObject.transform.position);
             // this.targetObject.transform.rotate(Vector3.Y_AXIS, offsetPoint.x, this.targetObject.transform.position);
 
-            var matrix = this.transform.localToWorldMatrix;
+            const matrix = this.transform.localToWorldMatrix;
             matrix.appendRotation(matrix.getAxisX(), offsetPoint.y, matrix.getPosition());
             var up = Vector3.Y_AXIS.clone();
             if (matrix.getAxisY().dot(up) < 0)
@@ -142,27 +150,27 @@ export class FPSController extends Behaviour
             this.mousePoint = null;
         }
 
-        //计算加速度
-        var accelerationVec = new Vector3();
-        for (var key in this.keyDirectionDic)
+        // 计算加速度
+        const accelerationVec = new Vector3();
+        for (const key in this.keyDirectionDic)
         {
             if (this.keyDownDic[key] == true)
             {
-                var element = this.keyDirectionDic[key];
+                const element = this.keyDirectionDic[key];
                 accelerationVec.add(element);
             }
         }
         accelerationVec.scaleNumber(this.acceleration);
-        //计算速度
+        // 计算速度
         this.velocity.add(accelerationVec);
-        var right = this.transform.matrix.getAxisX();
+        const right = this.transform.matrix.getAxisX();
         var up = this.transform.matrix.getAxisY();
-        var forward = this.transform.matrix.getAxisZ();
+        const forward = this.transform.matrix.getAxisZ();
         right.scaleNumber(this.velocity.x);
         up.scaleNumber(this.velocity.y);
         forward.scaleNumber(this.velocity.z);
-        //计算位移
-        var displacement = right.clone();
+        // 计算位移
+        const displacement = right.clone();
         displacement.add(up);
         displacement.add(forward);
         this.transform.x += displacement.x;
@@ -189,12 +197,12 @@ export class FPSController extends Behaviour
      */
     private onKeydown(event: IEvent<KeyboardEvent>): void
     {
-        var boardKey = String.fromCharCode(event.data.keyCode).toLocaleLowerCase();
+        const boardKey = String.fromCharCode(event.data.keyCode).toLocaleLowerCase();
         if (this.keyDirectionDic[boardKey] == null)
-            return;
+            { return; }
 
         if (!this.keyDownDic[boardKey])
-            this.stopDirectionVelocity(this.keyDirectionDic[boardKey]);
+            { this.stopDirectionVelocity(this.keyDirectionDic[boardKey]); }
         this.keyDownDic[boardKey] = true;
     }
 
@@ -203,9 +211,9 @@ export class FPSController extends Behaviour
      */
     private onKeyup(event: IEvent<KeyboardEvent>): void
     {
-        var boardKey = String.fromCharCode(event.data.keyCode).toLocaleLowerCase();
+        const boardKey = String.fromCharCode(event.data.keyCode).toLocaleLowerCase();
         if (this.keyDirectionDic[boardKey] == null)
-            return;
+            { return; }
 
         this.keyDownDic[boardKey] = false;
         this.stopDirectionVelocity(this.keyDirectionDic[boardKey]);
@@ -218,7 +226,7 @@ export class FPSController extends Behaviour
     private stopDirectionVelocity(direction: Vector3)
     {
         if (direction == null)
-            return;
+            { return; }
         if (direction.x != 0)
         {
             this.velocity.x = 0;

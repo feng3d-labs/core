@@ -1,3 +1,20 @@
+import { anyEmitter } from '@feng3d/event';
+import { pathUtils } from '@feng3d/filesystem';
+import { serialize } from '@feng3d/serialization';
+import { ticker } from '../utils/Ticker';
+import { AssetMeta } from './AssetMeta';
+import { AssetType } from './AssetType';
+import { FolderAsset } from './FolderAsset';
+import { rs } from './rs/ReadRS';
+import { ReadWriteRS } from './rs/ReadWriteRS';
+
+declare global
+{
+    interface MixinsAssetTypeClassMap
+    {
+
+    }
+}
 
 export function getAssetTypeClass<K extends keyof AssetTypeClassMap>(type: K)
 {
@@ -9,9 +26,10 @@ export function setAssetTypeClass<K extends keyof AssetTypeClassMap>(type: K, cl
     assetTypeClassMap[type] = cls;
 }
 
-export interface AssetTypeClassMap
+export interface AssetTypeClassMap extends MixinsAssetTypeClassMap
 {
 }
+
 export const assetTypeClassMap: AssetTypeClassMap = <any>{};
 
 /**
@@ -33,14 +51,14 @@ export abstract class FileAsset
 
     /**
      * 资源元标签，该对象也用来判断资源是否被加载，值为null表示未加载，否则已加载。
-     * 
+     *
      * 并且该对象还会用于存储主文件无法存储的数据，比如 TextureAsset 中存储了 Texture2D 信息
      */
     meta: AssetMeta;
 
     /**
      * 资源系统
-     * 
+     *
      * 加载或者创建该资源的资源系统
      */
     rs: ReadWriteRS;
@@ -58,7 +76,7 @@ export abstract class FileAsset
     /**
      * 是否正在加载中
      */
-    isLoading = false
+    isLoading = false;
 
     /**
      * 文件后缀
@@ -66,7 +84,8 @@ export abstract class FileAsset
     get extenson()
     {
         console.assert(!!this.assetPath);
-        var ext = pathUtils.extname(this.assetPath);
+        const ext = pathUtils.extname(this.assetPath);
+
         return ext;
     }
 
@@ -75,20 +94,22 @@ export abstract class FileAsset
      */
     get parentAsset()
     {
-        var dir = pathUtils.dirname(this.assetPath);
-        var parent = this.rs.getAssetByPath(dir) as FolderAsset;
+        const dir = pathUtils.dirname(this.assetPath);
+        const parent = this.rs.getAssetByPath(dir) as FolderAsset;
+
         return parent;
     }
 
     /**
      * 文件名称
-     * 
+     *
      * 不包含后缀
      */
     get fileName()
     {
         console.assert(!!this.assetPath);
-        var fn = pathUtils.getName(this.assetPath);
+        const fn = pathUtils.getName(this.assetPath);
+
         return fn;
     }
 
@@ -106,7 +127,7 @@ export abstract class FileAsset
 
     /**
      * 获取资源数据
-     * 
+     *
      * @param callback 完成回调，当资源已加载时会立即调用回调，否则在资源加载完成后调用。
      */
     getAssetData(callback?: (result: any) => void)
@@ -115,16 +136,18 @@ export abstract class FileAsset
         {
             if (callback)
             {
-                this.read(err =>
+                this.read((err) =>
                 {
                     console.assert(!err);
                     this.getAssetData(callback);
                 });
             }
+
             return null;
         }
-        var assetData = this._getAssetData();
+        const assetData = this._getAssetData();
         callback && callback(assetData);
+
         return assetData;
     }
 
@@ -138,7 +161,7 @@ export abstract class FileAsset
 
     /**
      * 读取资源
-     * 
+     *
      * @param callback 完成回调
      */
     read(callback: (err?: Error) => void)
@@ -146,9 +169,10 @@ export abstract class FileAsset
         if (this.isLoaded)
         {
             callback();
+
             return;
         }
-        var eventtype = "loaded";
+        const eventtype = 'loaded';
         anyEmitter.once(this, eventtype, () =>
         {
             this.isLoaded = true;
@@ -162,9 +186,10 @@ export abstract class FileAsset
             if (err)
             {
                 anyEmitter.emit(this, eventtype);
+
                 return;
             }
-            this.readFile((err) =>
+            this.readFile((_err) =>
             {
                 anyEmitter.emit(this, eventtype);
             });
@@ -173,7 +198,7 @@ export abstract class FileAsset
 
     /**
      * 写入资源
-     * 
+     *
      * @param callback 完成回调
      */
     write(callback?: (err: Error) => void)
@@ -184,9 +209,10 @@ export abstract class FileAsset
             if (err)
             {
                 callback && callback(err);
+
                 return;
             }
-            this.saveFile(err =>
+            this.saveFile((err) =>
             {
                 callback && callback(err);
             });
@@ -195,7 +221,7 @@ export abstract class FileAsset
 
     /**
      * 删除资源
-     * 
+     *
      * @param callback 完成回调
      */
     delete(callback?: (err?: Error) => void)
@@ -206,9 +232,10 @@ export abstract class FileAsset
             if (err)
             {
                 callback && callback(err);
+
                 return;
             }
-            this.deleteFile((err) =>
+            this.deleteFile((_err) =>
             {
                 // 删除映射
                 rs.deleteAssetById(this.assetId);
@@ -219,7 +246,7 @@ export abstract class FileAsset
 
     /**
      * 读取资源预览图标
-     * 
+     *
      * @param callback 完成回调
      */
     readPreview(callback: (err: Error, image: HTMLImageElement) => void)
@@ -227,6 +254,7 @@ export abstract class FileAsset
         if (this._preview)
         {
             callback(null, this._preview);
+
             return;
         }
         this.rs.fs.readImage(this.previewPath, (err, image) =>
@@ -238,15 +266,16 @@ export abstract class FileAsset
 
     /**
      * 读取资源预览图标
-     * 
+     *
      * @param image 预览图
      * @param callback 完成回调
      */
     writePreview(image: HTMLImageElement, callback?: (err: Error) => void)
     {
-        if (this._preview == image)
+        if (this._preview === image)
         {
             callback && callback(null);
+
             return;
         }
         this._preview = image;
@@ -255,7 +284,7 @@ export abstract class FileAsset
 
     /**
      * 删除资源预览图标
-     * 
+     *
      * @param callback 完成回调
      */
     deletePreview(callback?: (err: Error) => void)
@@ -265,21 +294,21 @@ export abstract class FileAsset
 
     /**
      * 读取文件
-     * 
+     *
      * @param callback 完成回调
      */
     abstract readFile(callback?: (err: Error) => void): void;
 
     /**
      * 保存文件
-     * 
+     *
      * @param callback 完成回调
      */
     abstract saveFile(callback?: (err: Error) => void): void;
 
     /**
      * 删除文件
-     * 
+     *
      * @param callback 完成回调
      */
     protected deleteFile(callback?: (err: Error) => void)
@@ -289,7 +318,7 @@ export abstract class FileAsset
         // 延迟一帧判断该资源是否被删除，排除移动文件时出现的临时删除情况
         ticker.once(1000, () =>
         {
-            if (this.rs.getAssetById(this.assetId) == null)
+            if (!this.rs.getAssetById(this.assetId))
             {
                 this.deletePreview();
             }
@@ -301,13 +330,13 @@ export abstract class FileAsset
      */
     protected get metaPath()
     {
-        return this.assetPath + ".meta";
+        return `${this.assetPath}.meta`;
     }
 
     /**
      * 读取元标签
-     * 
-     * @param callback 完成回调 
+     *
+     * @param callback 完成回调
      */
     protected readMeta(callback?: (err?: Error) => void)
     {
@@ -320,7 +349,7 @@ export abstract class FileAsset
 
     /**
      * 写元标签
-     * 
+     *
      * @param callback 完成回调
      */
     protected writeMeta(callback?: (err: Error) => void)
@@ -330,7 +359,7 @@ export abstract class FileAsset
 
     /**
      * 删除元标签
-     * 
+     *
      * @param callback 完成回调
      */
     protected deleteMeta(callback?: (err: Error) => void)
@@ -348,7 +377,7 @@ export abstract class FileAsset
      */
     private get previewPath()
     {
-        return "previews/" + this.assetId + ".png";
+        return `previews/${this.assetId}.png`;
     }
 }
 

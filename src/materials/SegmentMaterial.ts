@@ -1,3 +1,9 @@
+import { Color4 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { RenderMode, shaderConfig } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
+import { Material } from './Material';
+
 export interface UniformsTypes { segment: SegmentUniforms }
 
 /**
@@ -6,9 +12,9 @@ export interface UniformsTypes { segment: SegmentUniforms }
  */
 export class SegmentUniforms
 {
-    __class__: "feng3d.SegmentUniforms";
+    __class__: 'feng3d.SegmentUniforms';
 
-    /** 
+    /**
      * 颜色
      */
     @serialize
@@ -16,12 +22,12 @@ export class SegmentUniforms
     u_segmentColor = new Color4();
 }
 
-shaderConfig.shaders["segment"].cls = SegmentUniforms;
-shaderConfig.shaders["segment"].renderParams = { renderMode: feng3d.RenderMode.LINES, enableBlend: true };
+shaderConfig.shaders['segment'].cls = SegmentUniforms;
+shaderConfig.shaders['segment'].renderParams = { renderMode: RenderMode.LINES, enableBlend: true };
 
 export interface DefaultMaterial
 {
-    "Segment-Material": Material;
+    'Segment-Material': Material;
 }
 
-Material.setDefault("Segment-Material", { shaderName: "segment" });
+Material.setDefault('Segment-Material', { shaderName: 'segment' });

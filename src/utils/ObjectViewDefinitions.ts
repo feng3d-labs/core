@@ -1,21 +1,24 @@
-export interface OAVComponentParamMap
+declare global
 {
-    OAVDefault: OAVDefaultParam;
-    OAVArray: OAVArrayParam;
-    OAVPick: OAVPickParam;
-    OAVEnum: OAVEnumParam;
+    export interface MixinsOAVComponentParamMap
+    {
+        OAVDefault: OAVDefaultParam;
+        OAVArray: OAVArrayParam;
+        OAVPick: OAVPickParam;
+        OAVEnum: OAVEnumParam;
 
-    OAVCubeMap: { component: 'OAVCubeMap', componentParam: Object };
-    OAVImage: { component: 'OAVImage', componentParam: Object };
-    OAVObjectView: { component: 'OAVObjectView', componentParam: Object };
-    OAVParticleComponentList: { component: 'OAVParticleComponentList', componentParam: Object };
-    OAVComponentList: { component: 'OAVComponentList', componentParam: Object };
-    OAVGameObjectName: { component: 'OAVGameObjectName', componentParam: Object };
-    OAVMaterialName: { component: 'OAVMaterialName', componentParam: Object };
-    OAVMultiText: { component: 'OAVMultiText', componentParam: Object };
-    OAVFeng3dPreView: { component: 'OAVFeng3dPreView', componentParam: Object };
-    OAVAccordionObjectView: { component: 'OAVAccordionObjectView', componentParam: Object };
-    OAVVector3: OAVVector3Param;
+        OAVCubeMap: { component: 'OAVCubeMap', componentParam: Object };
+        OAVImage: { component: 'OAVImage', componentParam: Object };
+        OAVObjectView: { component: 'OAVObjectView', componentParam: Object };
+        OAVParticleComponentList: { component: 'OAVParticleComponentList', componentParam: Object };
+        OAVComponentList: { component: 'OAVComponentList', componentParam: Object };
+        OAVGameObjectName: { component: 'OAVGameObjectName', componentParam: Object };
+        OAVMaterialName: { component: 'OAVMaterialName', componentParam: Object };
+        OAVMultiText: { component: 'OAVMultiText', componentParam: Object };
+        OAVFeng3dPreView: { component: 'OAVFeng3dPreView', componentParam: Object };
+        OAVAccordionObjectView: { component: 'OAVAccordionObjectView', componentParam: Object };
+        OAVVector3: OAVVector3Param;
+    }
 }
 
 /**

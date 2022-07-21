@@ -1,3 +1,5 @@
+import { ScriptComponent } from './ScriptComponent';
+
 /**
  * 3d对象脚本
  */

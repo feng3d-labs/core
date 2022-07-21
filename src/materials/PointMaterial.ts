@@ -1,9 +1,13 @@
+import { Color4 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { shaderConfig } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
 
 export interface UniformsTypes { point: PointUniforms }
 export class PointUniforms
 {
-    __class__: "feng3d.PointUniforms";
-    /** 
+    __class__: 'feng3d.PointUniforms';
+    /**
      * 颜色
      */
     @serialize
@@ -18,4 +22,4 @@ export class PointUniforms
     u_PointSize = 1;
 }
 
-shaderConfig.shaders["point"].cls = PointUniforms;
+shaderConfig.shaders['point'].cls = PointUniforms;

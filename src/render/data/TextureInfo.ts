@@ -1,3 +1,10 @@
+import { Vector2 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { dataTransform, mathUtil, watch } from '@feng3d/polyfill';
+import { Texture, TextureDataType, TextureFormat, TextureMagFilter, TextureMinFilter, TextureType, TextureWrap } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
+import { Feng3dObject, Feng3dObjectEventMap } from '../../core/Feng3dObject';
+import { imageDatas } from '../../textures/Texture2D';
 
 /**
  * 纹理信息
@@ -13,16 +20,16 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
      * 格式
      */
     @serialize
-    @oav({ component: "OAVEnum", componentParam: { enumClass: TextureFormat } })
-    @watch("invalidate")
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureFormat } })
+    @watch('invalidate')
     format = TextureFormat.RGBA;
 
     /**
      * 数据类型
      */
     @serialize
-    @oav({ component: "OAVEnum", componentParam: { enumClass: TextureDataType } })
-    @watch("invalidate")
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureDataType } })
+    @watch('invalidate')
     type = TextureDataType.UNSIGNED_BYTE;
 
     /**
@@ -30,7 +37,7 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
      */
     @serialize
     @oav()
-    @watch("invalidate")
+    @watch('invalidate')
     generateMipmap = false;
 
     /**
@@ -38,7 +45,7 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
      */
     @serialize
     @oav()
-    @watch("invalidate")
+    @watch('invalidate')
     flipY = false;
 
     /**
@@ -46,25 +53,26 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
      */
     @serialize
     @oav()
-    @watch("invalidate")
+    @watch('invalidate')
     premulAlpha = false;
 
     @serialize
-    @oav({ component: "OAVEnum", componentParam: { enumClass: TextureMinFilter } })
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureMinFilter } })
     minFilter = TextureMinFilter.LINEAR;
 
     @serialize
-    @oav({ component: "OAVEnum", componentParam: { enumClass: TextureMagFilter } })
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureMagFilter } })
     magFilter = TextureMagFilter.LINEAR;
     /**
      * 表示x轴的纹理的回环方式，就是当纹理的宽度小于需要贴图的平面的宽度的时候，平面剩下的部分应该p以何种方式贴图的问题。
      */
     @serialize
-    @oav({ component: "OAVEnum", componentParam: { enumClass: TextureWrap } })
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureWrap } })
     get wrapS()
     {
         if (!this.isPowerOfTwo)
-            return TextureWrap.CLAMP_TO_EDGE;
+        { return TextureWrap.CLAMP_TO_EDGE; }
+
         return this._wrapS;
     }
     set wrapS(v)
@@ -77,11 +85,12 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
      * 表示y轴的纹理回环方式。 magFilter和minFilter表示过滤的方式，这是OpenGL的基本概念，我将在下面讲一下，目前你不用担心它的使用。当您不设置的时候，它会取默认值，所以，我们这里暂时不理睬他。
      */
     @serialize
-    @oav({ component: "OAVEnum", componentParam: { enumClass: TextureWrap } })
+    @oav({ component: 'OAVEnum', componentParam: { enumClass: TextureWrap } })
     get wrapT()
     {
         if (!this.isPowerOfTwo)
-            return TextureWrap.CLAMP_TO_EDGE;
+        { return TextureWrap.CLAMP_TO_EDGE; }
+
         return this._wrapT;
     }
     set wrapT(v)
@@ -119,10 +128,10 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
      */
     isRenderTarget = false;
 
-    @watch("invalidate")
+    @watch('invalidate')
     OFFSCREEN_WIDTH = 1024;
 
-    @watch("invalidate")
+    @watch('invalidate')
     OFFSCREEN_HEIGHT = 1024;
 
     /**
@@ -133,23 +142,25 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
         if (this.isRenderTarget)
         {
             if (this.OFFSCREEN_WIDTH == 0 || !mathUtil.isPowerOfTwo(this.OFFSCREEN_WIDTH))
-                return false;
+            { return false; }
             if (this.OFFSCREEN_HEIGHT == 0 || !mathUtil.isPowerOfTwo(this.OFFSCREEN_HEIGHT))
-                return false;
+            { return false; }
+
             return true;
         }
-        var pixels = this.activePixels;
+        let pixels = this.activePixels;
         if (!pixels) return false;
         if (!Array.isArray(pixels))
-            pixels = [pixels];
+        { pixels = [pixels]; }
         for (let i = 0; i < pixels.length; i++)
         {
             const element = pixels[i];
             if (element.width == 0 || !mathUtil.isPowerOfTwo(element.width))
-                return false;
+            { return false; }
             if (element.height == 0 || !mathUtil.isPowerOfTwo(element.height))
-                return false;
+            { return false; }
         }
+
         return true;
     }
 
@@ -162,13 +173,14 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
         {
             return new Vector2(this.OFFSCREEN_WIDTH, this.OFFSCREEN_HEIGHT);
         }
-        var pixels = this.activePixels;
+        let pixels = this.activePixels;
         if (!pixels) new Vector2(1, 1);
         if (!Array.isArray(pixels))
-            pixels = [pixels];
+        { pixels = [pixels]; }
         if (pixels.length == 0)
-            return new Vector2(1, 1);
-        var pixel = pixels[0];
+        { return new Vector2(1, 1); }
+        let pixel = pixels[0];
+
         return new Vector2(pixel.width, pixel.height);
     }
 
@@ -179,7 +191,7 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
     {
         if (!pixels) return false;
         if (!Array.isArray(pixels))
-            pixels = [pixels];
+        { pixels = [pixels]; }
 
         if (pixels.length == 0) return false;
         for (let i = 0; i < pixels.length; i++)
@@ -187,10 +199,11 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
             const element = pixels[i];
             if (!element) return false;
             if (element.width == 0)
-                return false;
+            { return false; }
             if (element.height == 0)
-                return false;
+            { return false; }
         }
+
         return true;
     }
 
@@ -205,11 +218,12 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
     get activePixels()
     {
         this.updateActivePixels();
+
         return this._activePixels;
     }
 
     /**
-     * 
+     *
      */
     get dataURL()
     {
@@ -217,24 +231,25 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
         if (!this._dataURL)
         {
             if (this._activePixels instanceof ImageData)
-                this._dataURL = dataTransform.imageDataToDataURL(this._activePixels)
+            { this._dataURL = dataTransform.imageDataToDataURL(this._activePixels) };
             else if (this._activePixels instanceof HTMLImageElement)
-                this._dataURL = dataTransform.imageToDataURL(this._activePixels);
+            { this._dataURL = dataTransform.imageToDataURL(this._activePixels); }
             else if (this._activePixels instanceof HTMLCanvasElement)
-                this._dataURL = dataTransform.canvasToDataURL(this._activePixels);
+            { this._dataURL = dataTransform.canvasToDataURL(this._activePixels); }
         }
+
         return this._dataURL;
     }
     private _dataURL: string;
 
     private updateActivePixels()
     {
-        var old = this._activePixels;
+        let old = this._activePixels;
         if (this.checkRenderData(this._pixels))
         {
             this._activePixels = this._pixels;
-        } else
-        {
+        }
+        else
             if (Array.isArray(this.noPixels))
             {
                 this._activePixels = this.noPixels.map(v => imageDatas[v]);
@@ -242,7 +257,6 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
             {
                 this._activePixels = imageDatas[this.noPixels];
             }
-        }
         if (old != this._activePixels) this._dataURL = null;
     }
 }

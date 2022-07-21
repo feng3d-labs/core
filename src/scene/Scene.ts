@@ -1,3 +1,22 @@
+import { Color4, Ray3 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { RenderMode } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
+import { Animation } from '../animation/Animation';
+import { Camera } from '../cameras/Camera';
+import { Behaviour } from '../component/Behaviour';
+import { Component, RegisterComponent } from '../component/Component';
+import { GameObject } from '../core/GameObject';
+import { HideFlags } from '../core/HideFlags';
+import { Renderable } from '../core/Renderable';
+import { RunEnvironment } from '../core/RunEnvironment';
+import { DirectionalLight } from '../light/DirectionalLight';
+import { PointLight } from '../light/PointLight';
+import { SpotLight } from '../light/SpotLight';
+import { SkyBox } from '../skybox/SkyBox';
+import { ticker } from '../utils/Ticker';
+import { ScenePickCache } from './ScenePickCache';
+
 /**
  * 组件事件
  */
@@ -16,8 +35,7 @@ export interface ComponentMap { Scene: Scene; }
 @RegisterComponent()
 export class Scene extends Component
 {
-
-    __class__: "feng3d.Scene";
+    __class__: 'feng3d.Scene';
 
     /**
      * 背景颜色
@@ -35,9 +53,9 @@ export class Scene extends Component
 
     /**
      * 指定所运行环境
-     * 
+     *
      * 控制运行符合指定环境场景中所有 Behaviour.update 方法
-     * 
+     *
      * 用于处理某些脚本只在在feng3d引擎或者编辑器中运行的问题。例如 FPSController 默认只在feng3d中运行，在编辑器模式下不会运行。
      */
     runEnvironment = RunEnvironment.feng3d;
@@ -59,13 +77,13 @@ export class Scene extends Component
         this.gameObject.hideFlags = this.gameObject.hideFlags | HideFlags.DontTransform;
 
         //
-        this._gameObject["_scene"] = this;
-        this._gameObject["updateChildrenScene"]();
+        this._gameObject['_scene'] = this;
+        this._gameObject['updateChildrenScene']();
     }
 
     update(interval?: number)
     {
-        interval = interval || (1000 / feng3d.ticker.frameRate);
+        interval = interval || (1000 / ticker.frameRate);
 
         this._mouseCheckObjects = null;
         this._models = null;
@@ -84,12 +102,12 @@ export class Scene extends Component
         this._activeBehaviours = null;
 
         // 每帧清理拾取缓存
-        this._pickMap.forEach(item => item.clear());
+        this._pickMap.forEach((item) => item.clear());
 
-        this.behaviours.forEach(element =>
+        this.behaviours.forEach((element) =>
         {
             if (element.isVisibleAndEnabled && Boolean(this.runEnvironment & element.runEnvironment))
-                element.update(interval);
+            { element.update(interval); }
         });
     }
 
@@ -99,7 +117,8 @@ export class Scene extends Component
     get models()
     {
         this._models = this._models || this.getComponentsInChildren(Renderable);
-        return this._models
+
+        return this._models;
     }
 
     /**
@@ -107,7 +126,9 @@ export class Scene extends Component
      */
     get visibleAndEnabledModels()
     {
-        return this._visibleAndEnabledModels = this._visibleAndEnabledModels || this.models.filter(i => i.isVisibleAndEnabled)
+        this._visibleAndEnabledModels = this._visibleAndEnabledModels || this.models.filter((i) => i.isVisibleAndEnabled);
+
+        return this._visibleAndEnabledModels;
     }
 
     /**
@@ -116,77 +137,99 @@ export class Scene extends Component
     get skyBoxs()
     {
         this._skyBoxs = this._skyBoxs || this.getComponentsInChildren(SkyBox);
+
         return this._skyBoxs;
     }
 
     get activeSkyBoxs()
     {
-        return this._activeSkyBoxs = this._activeSkyBoxs || this.skyBoxs.filter(i => i.gameObject.activeInHierarchy);
+        this._activeSkyBoxs = this._activeSkyBoxs || this.skyBoxs.filter((i) => i.gameObject.activeInHierarchy);
+
+        return this._activeSkyBoxs;
     }
 
     get directionalLights()
     {
-        return this._directionalLights = this._directionalLights || this.getComponentsInChildren(DirectionalLight);
+        this._directionalLights = this._directionalLights || this.getComponentsInChildren(DirectionalLight);
+
+        return this._directionalLights;
     }
 
     get activeDirectionalLights()
     {
-        return this._activeDirectionalLights = this._activeDirectionalLights || this.directionalLights.filter(i => i.isVisibleAndEnabled);
+        this._activeDirectionalLights = this._activeDirectionalLights || this.directionalLights.filter((i) => i.isVisibleAndEnabled);
+
+        return this._activeDirectionalLights;
     }
 
     get pointLights()
     {
-        return this._pointLights = this._pointLights || this.getComponentsInChildren(PointLight);
+        this._pointLights = this._pointLights || this.getComponentsInChildren(PointLight);
+
+        return this._pointLights;
     }
 
     get activePointLights()
     {
-        return this._activePointLights = this._activePointLights || this.pointLights.filter(i => i.isVisibleAndEnabled);
+        this._activePointLights = this._activePointLights || this.pointLights.filter((i) => i.isVisibleAndEnabled);
+
+        return this._activePointLights;
     }
 
     get spotLights()
     {
-        return this._spotLights = this._spotLights || this.getComponentsInChildren(SpotLight);
+        this._spotLights = this._spotLights || this.getComponentsInChildren(SpotLight);
+
+        return this._spotLights;
     }
 
     get activeSpotLights()
     {
-        return this._activeSpotLights = this._activeSpotLights || this.spotLights.filter(i => i.isVisibleAndEnabled);
+        this._activeSpotLights = this._activeSpotLights || this.spotLights.filter((i) => i.isVisibleAndEnabled);
+
+        return this._activeSpotLights;
     }
 
     get animations()
     {
-        return this._animations = this._animations || this.getComponentsInChildren(Animation);
+        this._animations = this._animations || this.getComponentsInChildren(Animation);
+
+        return this._animations;
     }
 
     get activeAnimations()
     {
-        return this._activeAnimations = this._activeAnimations || this.animations.filter(i => i.isVisibleAndEnabled);
+        this._activeAnimations = this._activeAnimations || this.animations.filter((i) => i.isVisibleAndEnabled);
+
+        return this._activeAnimations;
     }
 
     get behaviours()
     {
         this._behaviours = this._behaviours || this.getComponentsInChildren(Behaviour);
+
         return this._behaviours;
     }
 
     get activeBehaviours()
     {
-        return this._activeBehaviours = this._activeBehaviours || this.behaviours.filter(i => i.isVisibleAndEnabled);
+        this._activeBehaviours = this._activeBehaviours || this.behaviours.filter((i) => i.isVisibleAndEnabled);
+
+        return this._activeBehaviours;
     }
 
     get mouseCheckObjects()
     {
         if (this._mouseCheckObjects)
-            return this._mouseCheckObjects;
+        { return this._mouseCheckObjects; }
 
-        var checkList = this.gameObject.getChildren();
+        let checkList = this.gameObject.getChildren();
         this._mouseCheckObjects = [];
-        var i = 0;
-        //获取所有需要拾取的对象并分层存储
+        let i = 0;
+        // 获取所有需要拾取的对象并分层存储
         while (i < checkList.length)
         {
-            var checkObject = checkList[i++];
+            const checkObject = checkList[i++];
             if (checkObject.mouseEnabled)
             {
                 if (checkObject.getComponents(Renderable))
@@ -196,68 +239,73 @@ export class Scene extends Component
                 checkList = checkList.concat(checkObject.getChildren());
             }
         }
+
         return this._mouseCheckObjects;
     }
 
     /**
      * 获取拾取缓存
-     * @param camera 
+     * @param camera
      */
     getPickCache(camera: Camera)
     {
         if (this._pickMap.get(camera))
-            return this._pickMap.get(camera);
-        var pick = new ScenePickCache(this, camera);
+        { return this._pickMap.get(camera); }
+        const pick = new ScenePickCache(this, camera);
         this._pickMap.set(camera, pick);
+
         return pick;
     }
 
     /**
      * 获取接收光照渲染对象列表
-     * @param light 
+     * @param _light
      */
-    getPickByDirectionalLight(light: DirectionalLight)
+    getPickByDirectionalLight(_light: DirectionalLight)
     {
-        var openlist = [this.gameObject];
-        var targets: Renderable[] = [];
+        const openlist = [this.gameObject];
+        const targets: Renderable[] = [];
         while (openlist.length > 0)
         {
-            var item = openlist.shift();
+            const item = openlist.shift();
             if (!item.activeSelf) continue;
-            var model = item.getComponent(Renderable);
+            const model = item.getComponent(Renderable);
             if (model && (model.castShadows || model.receiveShadows)
                 && !model.material.renderParams.enableBlend
-                && model.material.renderParams.renderMode == RenderMode.TRIANGLES
+                && model.material.renderParams.renderMode === RenderMode.TRIANGLES
             )
             {
                 targets.push(model);
             }
-            item.children.forEach(element =>
+            item.children.forEach((element) =>
             {
                 openlist.push(element);
             });
         }
+
         return targets;
     }
 
     /**
      * 获取 可被摄像机看见的 Model 列表
-     * @param camera 
+     * @param camera
      */
     getModelsByCamera(camera: Camera)
     {
-        var frustum = camera.frustum;
+        const frustum = camera.frustum;
 
-        var results = this.visibleAndEnabledModels.filter(i =>
+        const results = this.visibleAndEnabledModels.filter((i) =>
         {
-            var model = i.getComponent(Renderable);
+            const model = i.getComponent(Renderable);
             if (model.selfWorldBounds)
             {
                 if (frustum.intersectsBox(model.selfWorldBounds))
-                    return true;
+                { return true; }
             }
+
             return false;
         });
+
         return results;
     }
 

@@ -1,6 +1,9 @@
+import { watch } from '@feng3d/polyfill';
+import { Texture2D } from './Texture2D';
+
 export class VideoTexture2D extends Texture2D
 {
-    @watch("_videoChanged")
+    @watch('_videoChanged')
     video: HTMLVideoElement;
 
     private _videoChanged()

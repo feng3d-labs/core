@@ -1,3 +1,8 @@
+import { oav } from '@feng3d/objectview';
+import { watch } from '@feng3d/polyfill';
+import { serialize } from '@feng3d/serialization';
+import { Projection } from '../Projection';
+import { LensBase } from './LensBase';
 
 /**
  * 正射投影镜头
@@ -9,7 +14,7 @@ export class OrthographicLens extends LensBase
      */
     @serialize
     @oav()
-    @watch("invalidate")
+    @watch('invalidate')
     size: number;
 
     /**

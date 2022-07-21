@@ -1,6 +1,27 @@
+import { oav } from '@feng3d/objectview';
+import { Constructor, gPartial, IDisposable } from '@feng3d/polyfill';
+import { serialization, serialize } from '@feng3d/serialization';
+import { AssetType } from '../assets/AssetType';
+import { Component, Components } from '../component/Component';
+import { Geometry } from '../geometry/Geometry';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
+import { Scene } from '../scene/Scene';
+import { BoundingBox } from './BoundingBox';
+import { Feng3dObject, Feng3dObjectEventMap } from './Feng3dObject';
+import { MouseEventMap } from './Mouse3DManager';
+import { Renderable } from './Renderable';
+import { ScriptComponent } from './ScriptComponent';
+import { Transform } from './Transform';
 
+declare global
+{
+    interface MixinsGameObjectEventMap
+    {
 
-export interface GameObjectEventMap extends MouseEventMap, Feng3dObjectEventMap
+    }
+}
+
+export interface GameObjectEventMap extends MixinsGameObjectEventMap, MouseEventMap, Feng3dObjectEventMap
 {
     /**
      * 添加子组件事件
@@ -57,7 +78,7 @@ export interface GameObjectEventMap extends MouseEventMap, Feng3dObjectEventMap
  */
 export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDisposable
 {
-    __class__: "feng3d.GameObject";
+    __class__: 'feng3d.GameObject';
 
     assetType = AssetType.gameobject;
 
@@ -65,12 +86,12 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      * 名称
      */
     @serialize
-    @oav({ component: "OAVGameObjectName" })
+    @oav({ component: 'OAVGameObjectName' })
     name: string;
 
     /**
      * The local active state of this GameObject.
-     * 
+     *
      * This returns the local active state of this GameObject. Note that a GameObject may be inactive because a parent is not active, even if this returns true. This state will then be used once all parents are active. Use GameObject.activeInHierarchy if you want to check if the GameObject is actually treated as active in the Scene.
      */
     @serialize
@@ -88,7 +109,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
 
     /**
      * Defines whether the GameObject is active in the Scene.
-     * 
+     *
      * This lets you know whether a GameObject is active in the game. That is the case if its GameObject.activeSelf property is enabled, as well as that of all its parents.
      */
     get activeInHierarchy()
@@ -98,6 +119,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
             this._updateActiveInHierarchy();
             this._activeInHierarchyInvalid = false;
         }
+
         return this._activeInHierarchy;
     }
 
@@ -117,7 +139,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      * 组件列表
      */
     @serialize
-    @oav({ component: "OAVComponentList" })
+    @oav({ component: 'OAVComponentList' })
     get components()
     {
         return this._components.concat();
@@ -126,9 +148,9 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     set components(value)
     {
         if (!value) return;
-        for (var i = 0, n = value.length; i < n; i++)
+        for (let i = 0, n = value.length; i < n; i++)
         {
-            var component = value[i];
+            const component = value[i];
             if (!component) continue;
             if (component.single) this.removeComponentsByType(<any>component.constructor);
             this.addComponentAt(value[i], this.numComponents);
@@ -156,9 +178,9 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     @serialize
     assetId: string;
 
-    //------------------------------------------
+    // ------------------------------------------
     // Variables
-    //------------------------------------------
+    // ------------------------------------------
 
     /**
      * The Transform attached to this GameObject.
@@ -166,6 +188,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     get transform()
     {
         const transform = this.getComponent(Transform);
+
         return transform;
     }
 
@@ -178,6 +201,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
         {
             this._boundingBox = new BoundingBox(this);
         }
+
         return this._boundingBox;
     }
     private _boundingBox: BoundingBox;
@@ -209,7 +233,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
         if (!value) return;
         for (var i = this._children.length - 1; i >= 0; i--)
         {
-            this.removeChildAt(i)
+            this.removeChildAt(i);
         }
         for (var i = 0; i < value.length; i++)
         {
@@ -222,24 +246,24 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
         return this._children.length;
     }
 
-    //------------------------------------------
+    // ------------------------------------------
     // Functions
-    //------------------------------------------
+    // ------------------------------------------
     /**
      * 构建3D对象
      */
     constructor()
     {
         super();
-        this.name = "GameObject";
+        this.name = 'GameObject';
         this.addComponent(Transform);
     }
 
     /**
      * Activates/Deactivates the GameObject, depending on the given true or false value.
-     * 
+     *
      * A GameObject may be inactive because a parent is not active. In that case, calling SetActive will not activate it, but only set the local state of the GameObject, which you can check using GameObject.activeSelf. Unity can then use this state when all parents become active.
-     * 
+     *
      * @param value Activate or deactivate the object, where true activates the GameObject and false deactivates the GameObject.
      */
     setActive(value: boolean)
@@ -487,7 +511,8 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     getComponentAt(index: number): Component
     {
-        console.assert(index < this.numComponents, "给出索引超出范围");
+        console.assert(index < this.numComponents, '给出索引超出范围');
+
         return this._components[index];
     }
 
@@ -498,10 +523,10 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     setComponentIndex(component: Components, index: number): void
     {
-        console.assert(index >= 0 && index < this.numComponents, "给出索引超出范围");
+        console.assert(index >= 0 && index < this.numComponents, '给出索引超出范围');
 
-        var oldIndex = this._components.indexOf(component);
-        console.assert(oldIndex >= 0 && oldIndex < this.numComponents, "子组件不在容器内");
+        const oldIndex = this._components.indexOf(component);
+        console.assert(oldIndex >= 0 && oldIndex < this.numComponents, '子组件不在容器内');
 
         this._components.splice(oldIndex, 1);
         this._components.splice(index, 0, component);
@@ -527,9 +552,9 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     removeComponent(component: Components): void
     {
-        console.assert(this.hasComponent(component), "只能移除在容器中的组件");
+        console.assert(this.hasComponent(component), '只能移除在容器中的组件');
 
-        var index = this.getComponentIndex(component);
+        const index = this.getComponentIndex(component);
         this.removeComponentAt(index);
     }
 
@@ -540,9 +565,10 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     getComponentIndex(component: Components): number
     {
-        console.assert(this._components.indexOf(component) != -1, "组件不在容器中");
+        console.assert(this._components.indexOf(component) != -1, '组件不在容器中');
 
-        var index = this._components.indexOf(component);
+        const index = this._components.indexOf(component);
+
         return index;
     }
 
@@ -552,12 +578,13 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     removeComponentAt(index: number): Component
     {
-        console.assert(index >= 0 && index < this.numComponents, "给出索引超出范围");
+        console.assert(index >= 0 && index < this.numComponents, '给出索引超出范围');
 
-        var component: Component = this._components.splice(index, 1)[0];
-        //派发移除组件事件
-        this.emit("removeComponent", { component: component, gameobject: this as any }, true);
+        const component: Component = this._components.splice(index, 1)[0];
+        // 派发移除组件事件
+        this.emit('removeComponent', { component, gameobject: this as any }, true);
         component.dispose();
+
         return component;
     }
 
@@ -568,10 +595,10 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     swapComponentsAt(index1: number, index2: number): void
     {
-        console.assert(index1 >= 0 && index1 < this.numComponents, "第一个子组件的索引位置超出范围");
-        console.assert(index2 >= 0 && index2 < this.numComponents, "第二个子组件的索引位置超出范围");
+        console.assert(index1 >= 0 && index1 < this.numComponents, '第一个子组件的索引位置超出范围');
+        console.assert(index2 >= 0 && index2 < this.numComponents, '第二个子组件的索引位置超出范围');
 
-        var temp: Components = this._components[index1];
+        const temp: Components = this._components[index1];
         this._components[index1] = this._components[index2];
         this._components[index2] = temp;
     }
@@ -583,8 +610,8 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     swapComponents(a: Components, b: Components): void
     {
-        console.assert(this.hasComponent(a), "第一个子组件不在容器中");
-        console.assert(this.hasComponent(b), "第二个子组件不在容器中");
+        console.assert(this.hasComponent(a), '第一个子组件不在容器中');
+        console.assert(this.hasComponent(b), '第二个子组件不在容器中');
 
         this.swapComponentsAt(this.getComponentIndex(a), this.getComponentIndex(b));
     }
@@ -595,12 +622,13 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     removeComponentsByType<T extends Components>(type: Constructor<T>)
     {
-        var removeComponents: T[] = [];
-        for (var i = this._components.length - 1; i >= 0; i--)
+        const removeComponents: T[] = [];
+        for (let i = this._components.length - 1; i >= 0; i--)
         {
             if (this._components[i].constructor == type)
-                removeComponents.push(<T>this.removeComponentAt(i));
+            { removeComponents.push(<T>this.removeComponentAt(i)); }
         }
+
         return removeComponents;
     }
 
@@ -622,41 +650,43 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     protected addComponentAt(component: Components, index: number): void
     {
         if (component == null)
-            return;
-        console.assert(index >= 0 && index <= this.numComponents, "给出索引超出范围");
+        { return; }
+        console.assert(index >= 0 && index <= this.numComponents, '给出索引超出范围');
 
         if (this.hasComponent(component))
         {
             index = Math.min(index, this._components.length - 1);
-            this.setComponentIndex(component, index)
+            this.setComponentIndex(component, index);
+
             return;
         }
-        //组件唯一时移除同类型的组件
+        // 组件唯一时移除同类型的组件
         if (component.single)
-            this.removeComponentsByType(<Constructor<Components>>component.constructor);
+        { this.removeComponentsByType(<Constructor<Components>>component.constructor); }
 
         this._components.splice(index, 0, component);
         component.setGameObject(this as any);
         component.init();
-        //派发添加组件事件
-        this.emit("addComponent", { component: component, gameobject: this as any }, true);
+        // 派发添加组件事件
+        this.emit('addComponent', { component, gameobject: this as any }, true);
     }
 
     /**
      * 根据名称查找对象
-     * 
+     *
      * @param name 对象名称
      */
     find(name: string): GameObject
     {
         if (this.name == name)
-            return this;
-        for (var i = 0; i < this._children.length; i++)
+        { return this; }
+        for (let i = 0; i < this._children.length; i++)
         {
-            var target = this._children[i].find(name);
+            const target = this._children[i].find(name);
             if (target)
-                return target;
+            { return target; }
         }
+
         return null;
     }
 
@@ -666,70 +696,75 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     addScript(scriptName: string)
     {
-        var scriptComponent = new ScriptComponent();
+        const scriptComponent = new ScriptComponent();
         scriptComponent.scriptName = scriptName;
         this.addComponentAt(scriptComponent, this._components.length);
+
         return scriptComponent;
     }
 
     /**
      * 是否包含指定对象
-     * 
+     *
      * @param child 可能的子孙对象
      */
     contains(child: GameObject)
     {
-        var checkitem = child;
+        let checkitem = child;
         do
         {
             if (checkitem == this)
-                return true;
+            { return true; }
             checkitem = checkitem.parent;
         } while (checkitem);
+
         return false;
     }
 
     /**
      * 添加子对象
-     * 
+     *
      * @param child 子对象
      */
     addChild(child: GameObject)
     {
         if (child == null)
-            return;
+        { return; }
         if (child.parent == this)
         {
             // 把子对象移动到最后
-            var childIndex = this._children.indexOf(child);
+            const childIndex = this._children.indexOf(child);
             if (childIndex != -1) this._children.splice(childIndex, 1);
             this._children.push(child);
-        } else
+        }
+        else
         {
             if (child.contains(this))
             {
-                console.error("无法添加到自身中!");
+                console.error('无法添加到自身中!');
+
                 return;
             }
             if (child._parent) child._parent.removeChild(child);
             child._setParent(this);
             this._children.push(child);
-            child.emit("added", { parent: this });
-            this.emit("addChild", { child: child, parent: this }, true);
+            child.emit('added', { parent: this });
+            this.emit('addChild', { child, parent: this }, true);
         }
+
         return child;
     }
 
     /**
      * 添加子对象
-     * 
+     *
      * @param childarray 子对象
      */
     addChildren(...childarray: GameObject[])
     {
-        for (var child_key_a in childarray)
+        for (const child_key_a in childarray)
         {
-            var child: GameObject = childarray[child_key_a];
+            const child: GameObject = childarray[child_key_a];
             this.addChild(child);
         }
     }
@@ -755,35 +790,37 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
 
     /**
      * 移除子对象
-     * 
+     *
      * @param child 子对象
      */
     removeChild(child: GameObject)
     {
         if (child == null) return;
-        var childIndex = this._children.indexOf(child);
+        const childIndex = this._children.indexOf(child);
         if (childIndex != -1) this.removeChildInternal(childIndex, child);
     }
 
     /**
      * 删除指定位置的子对象
-     * 
+     *
      * @param index 需要删除子对象的所有
      */
     removeChildAt(index: number)
     {
-        var child = this._children[index];
+        const child = this._children[index];
+
         return this.removeChildInternal(index, child);
     }
 
     /**
      * 获取指定位置的子对象
-     * 
-     * @param index 
+     *
+     * @param index
      */
     getChildAt(index: number)
     {
         index = index;
+
         return this._children[index];
     }
 
@@ -801,8 +838,8 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
         this._children.splice(childIndex, 1);
         child._setParent(null);
 
-        child.emit("removed", { parent: this as any });
-        this.emit("removeChild", { child: child, parent: this as any }, true);
+        child.emit('removed', { parent: this as any });
+        this.emit('removeChild', { child, parent: this as any }, true);
     }
 
     /**
@@ -811,7 +848,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     dispose()
     {
         if (this.parent)
-            this.parent.removeChild(this);
+        { this.parent.removeChild(this); }
         for (var i = this._children.length - 1; i >= 0; i--)
         {
             this.removeChildAt(i);
@@ -827,7 +864,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     {
         this.dispose();
         while (this.numChildren > 0)
-            this.getChildAt(0).dispose();
+        { this.getChildAt(0).dispose(); }
     }
 
     /**
@@ -835,8 +872,9 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     get isSelfLoaded()
     {
-        var model = this.getComponent(Renderable);
-        if (model) return model.isLoaded
+        const model = this.getComponent(Renderable);
+        if (model) return model.isLoaded;
+
         return true;
     }
 
@@ -849,9 +887,10 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
         if (this.isSelfLoaded)
         {
             callback();
+
             return;
         }
-        var model = this.getComponent(Renderable);
+        const model = this.getComponent(Renderable);
         if (model)
         {
             model.onLoadCompleted(callback);
@@ -870,6 +909,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
             const element = this.children[i];
             if (!element.isLoaded) return false;
         }
+
         return true;
     }
 
@@ -879,8 +919,8 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     onLoadCompleted(callback: () => void)
     {
-        var loadingNum = 0;
-        if (!this.isSelfLoaded) 
+        let loadingNum = 0;
+        if (!this.isSelfLoaded)
         {
             loadingNum++;
             this.onSelfLoadCompleted(() =>
@@ -892,7 +932,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
         for (let i = 0; i < this.children.length; i++)
         {
             const element = this.children[i];
-            if (!element.isLoaded) 
+            if (!element.isLoaded)
             {
                 loadingNum++;
                 element.onLoadCompleted(() =>
@@ -907,13 +947,14 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
 
     /**
      * 查找指定名称的游戏对象
-     * 
-     * @param name 
+     *
+     * @param name
      */
     static find(name: string)
     {
-        var gameobjects = Feng3dObject.getObjects(GameObject)
-        var result = gameobjects.filter(v => !v.disposed && (v.name == name));
+        const gameobjects = Feng3dObject.getObjects(GameObject);
+        const result = gameobjects.filter((v) => !v.disposed && (v.name == name));
+
         return result[0];
     }
 
@@ -923,7 +964,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
 
     protected _updateActiveInHierarchy()
     {
-        var activeSelf = this.activeSelf;
+        let activeSelf = this.activeSelf;
         if (this.parent)
         {
             activeSelf = activeSelf && this.parent.activeInHierarchy;
@@ -937,7 +978,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
 
         this._activeInHierarchyInvalid = true;
 
-        this._children.forEach(c =>
+        this._children.forEach((c) =>
         {
             c._invalidateActiveInHierarchy();
         });
@@ -947,22 +988,22 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     {
         this._parent = value;
         this.updateScene();
-        this.transform["_invalidateSceneTransform"]();
+        this.transform['_invalidateSceneTransform']();
     }
 
     private updateScene()
     {
-        var newScene = this._parent ? this._parent._scene : null;
+        const newScene = this._parent ? this._parent._scene : null;
         if (this._scene == newScene)
-            return;
+        { return; }
         if (this._scene)
         {
-            this.emit("removedFromScene", this);
+            this.emit('removedFromScene', this);
         }
         this._scene = newScene;
         if (this._scene)
         {
-            this.emit("addedToScene", this);
+            this.emit('addedToScene', this);
         }
         this.updateChildrenScene();
     }
@@ -985,32 +1026,33 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
 
     /**
      * 创建指定类型的游戏对象。
-     * 
+     *
      * @param type 游戏对象类型。
      * @param param 游戏对象参数。
      */
     static createPrimitive<K extends keyof PrimitiveGameObject>(type: K, param?: gPartial<GameObject>)
     {
-        var g = new GameObject();
+        const g = new GameObject();
         g.name = type;
 
-        var createHandler = this._registerPrimitives[type];
+        const createHandler = this._registerPrimitives[type];
         if (createHandler != null) createHandler(g);
 
         serialization.setValue(g, param);
+
         return g;
     }
 
     /**
      * 注册原始游戏对象，被注册后可以使用 GameObject.createPrimitive 进行创建。
-     * 
+     *
      * @param type 原始游戏对象类型。
      * @param handler 构建原始游戏对象的函数。
      */
     static registerPrimitive<K extends keyof PrimitiveGameObject>(type: K, handler: (gameObject: GameObject) => void)
     {
         if (this._registerPrimitives[type])
-            console.warn(`重复注册原始游戏对象 ${type} ！`);
+        { console.warn(`重复注册原始游戏对象 ${type} ！`); }
         this._registerPrimitives[type] = handler;
     }
     static _registerPrimitives: { [type: string]: (gameObject: GameObject) => void } = {};
@@ -1026,10 +1068,8 @@ export interface PrimitiveGameObject
 // 在 Hierarchy 界面右键创建游戏
 createNodeMenu.push(
     {
-        path: "Create Empty",
+        path: 'Create Empty',
         click: () =>
-        {
-            return new feng3d.GameObject();
-        }
+            new feng3d.GameObject()
     },
 );

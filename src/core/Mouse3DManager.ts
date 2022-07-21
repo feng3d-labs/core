@@ -1,10 +1,19 @@
+import { IEvent } from '@feng3d/event';
+import { Rectangle } from '@feng3d/math';
+import { watch, Lazy, lazy } from '@feng3d/polyfill';
+import { windowEventProxy } from '../../../shortcut/dist';
+import { Camera } from '../cameras/Camera';
+import { raycaster } from '../pick/Raycaster';
+import { Scene } from '../scene/Scene';
+import { GameObject } from './GameObject';
+import { View } from './View';
 
 /**
  * 鼠标事件管理
  */
 export class Mouse3DManager
 {
-    @watch("_mouseInputChanged")
+    @watch('_mouseInputChanged')
     mouseInput: MouseInput;
 
     get selectedGameObject()
@@ -29,11 +38,12 @@ export class Mouse3DManager
     pick(view: View, scene: Scene, camera: Camera)
     {
         if (this._mouseEventTypes.length == 0) return;
-        //计算得到鼠标射线相交的物体
-        var pickingCollisionVO = raycaster.pick(view.mouseRay3D, scene.mouseCheckObjects);
+        // 计算得到鼠标射线相交的物体
+        const pickingCollisionVO = raycaster.pick(view.mouseRay3D, scene.mouseCheckObjects);
 
-        var gameobject = pickingCollisionVO && pickingCollisionVO.gameObject;
-        return gameobject;
+        const gameobject = pickingCollisionVO && pickingCollisionVO.gameObject;
+
+return gameobject;
     }
 
     constructor(mouseInput: MouseInput, viewport?: Lazy<Rectangle>)
@@ -59,14 +69,14 @@ export class Mouse3DManager
     {
         if (oldValue)
         {
-            mouseEventTypes.forEach(element =>
+            mouseEventTypes.forEach((element) =>
             {
                 oldValue.off(element, this.onMouseEvent, this);
             });
         }
         if (newValue)
         {
-            mouseEventTypes.forEach(element =>
+            mouseEventTypes.forEach((element) =>
             {
                 newValue.on(element, this.onMouseEvent, this);
             });
@@ -77,13 +87,13 @@ export class Mouse3DManager
     {
         if (this.viewport)
         {
-            var bound = lazy.getvalue(this.viewport);
+            const bound = lazy.getvalue(this.viewport);
             if (!bound.contains(windowEventProxy.clientX, windowEventProxy.clientY))
-                return;
+                { return; }
         }
 
         if (this._mouseEventTypes.indexOf(type) == -1)
-            this._mouseEventTypes.push(type);
+            { this._mouseEventTypes.push(type); }
     }
 
     /**
@@ -102,16 +112,16 @@ export class Mouse3DManager
         if (this._selectedGameObject != value)
         {
             if (this._selectedGameObject)
-                this._selectedGameObject.emit("mouseout", null, true);
+                { this._selectedGameObject.emit('mouseout', null, true); }
             if (value)
-                value.emit("mouseover", null, true);
+                { value.emit('mouseover', null, true); }
         }
         this._selectedGameObject = value;
-        this._mouseEventTypes.forEach(element =>
+        this._mouseEventTypes.forEach((element) =>
         {
             switch (element)
             {
-                case "mousedown":
+                case 'mousedown':
                     if (this.preMouseDownGameObject != this._selectedGameObject)
                     {
                         this.gameObjectClickNum = 0;
@@ -119,25 +129,26 @@ export class Mouse3DManager
                     }
                     this._selectedGameObject && this._selectedGameObject.emit(element, null, true);
                     break;
-                case "mouseup":
+                case 'mouseup':
                     if (this._selectedGameObject == this.preMouseDownGameObject)
                     {
                         this.gameObjectClickNum++;
-                    } else
+                    }
+ else
                     {
                         this.gameObjectClickNum = 0;
                         this.preMouseDownGameObject = null;
                     }
                     this._selectedGameObject && this._selectedGameObject.emit(element, null, true);
                     break;
-                case "mousemove":
+                case 'mousemove':
                     this._selectedGameObject && this._selectedGameObject.emit(element, null, true);
                     break;
-                case "click":
+                case 'click':
                     if (this.gameObjectClickNum > 0)
-                        this._selectedGameObject && this._selectedGameObject.emit(element, null, true);
+                        { this._selectedGameObject && this._selectedGameObject.emit(element, null, true); }
                     break;
-                case "dblclick":
+                case 'dblclick':
                     if (this.gameObjectClickNum > 1)
                     {
                         this._selectedGameObject && this._selectedGameObject.emit(element, null, true);
@@ -174,10 +185,11 @@ export class MouseInput<T = MouseEventMap> extends feng3d.EventEmitter<T>
     emit<K extends keyof T & string>(type: K, data?: T[K], bubbles = false)
     {
         if (!this.enable)
-            return null;
-        if (!this.catchMouseMove && type == "mousemove")
-            return null;
-        return super.emit(type, data, bubbles);
+            { return null; }
+        if (!this.catchMouseMove && type == 'mousemove')
+            { return null; }
+
+return super.emit(type, data, bubbles);
     }
 
     /**
@@ -187,31 +199,32 @@ export class MouseInput<T = MouseEventMap> extends feng3d.EventEmitter<T>
     emitEvent<K extends keyof T & string>(event: feng3d.IEvent<T[K]>)
     {
         if (!this.enable)
-            return event;
-        if (!this.catchMouseMove && event.type == "mousemove")
-            return event;
-        return super.emitEvent(event);
+            { return event; }
+        if (!this.catchMouseMove && event.type == 'mousemove')
+            { return event; }
+
+return super.emitEvent(event);
     }
 }
 
 /**
  * 鼠标事件列表
  */
-var mouseEventTypes: (keyof MouseEventMap)[] =
-    [
-        "mouseout",
-        "mouseover",
-        "mousemove",
-        "mousedown",
-        "mouseup",
-        "click",
-        "middlemousedown",
-        "middlemouseup",
-        "middleclick",
-        "rightmousedown",
-        "rightmouseup",
-        "rightclick",
-        "dblclick",
+var mouseEventTypes: (keyof MouseEventMap)[]
+    = [
+        'mouseout',
+        'mouseover',
+        'mousemove',
+        'mousedown',
+        'mouseup',
+        'click',
+        'middlemousedown',
+        'middlemouseup',
+        'middleclick',
+        'rightmousedown',
+        'rightmouseup',
+        'rightclick',
+        'dblclick',
     ];
 
 /**
@@ -222,11 +235,11 @@ export class WindowMouseInput extends MouseInput
     constructor()
     {
         super();
-        windowEventProxy.on("click", this.onMouseEvent, this);
-        windowEventProxy.on("dblclick", this.onMouseEvent, this);
-        windowEventProxy.on("mousedown", this.onMouseEvent, this);
-        windowEventProxy.on("mouseup", this.onMouseEvent, this);
-        windowEventProxy.on("mousemove", this.onMouseEvent, this);
+        windowEventProxy.on('click', this.onMouseEvent, this);
+        windowEventProxy.on('dblclick', this.onMouseEvent, this);
+        windowEventProxy.on('mousedown', this.onMouseEvent, this);
+        windowEventProxy.on('mouseup', this.onMouseEvent, this);
+        windowEventProxy.on('mousemove', this.onMouseEvent, this);
     }
 
     /**
@@ -235,13 +248,13 @@ export class WindowMouseInput extends MouseInput
     private onMouseEvent(event: IEvent<MouseEvent>)
     {
         const mouseEvent = event.data;
-        var type = mouseEvent.type;
+        let type = mouseEvent.type;
         // 处理鼠标中键与右键
         if (mouseEvent instanceof MouseEvent)
         {
-            if (["click", "mousedown", "mouseup"].indexOf(mouseEvent.type) != -1)
+            if (['click', 'mousedown', 'mouseup'].indexOf(mouseEvent.type) != -1)
             {
-                type = ["", "middle", "right"][mouseEvent.button] + mouseEvent.type;
+                type = ['', 'middle', 'right'][mouseEvent.button] + mouseEvent.type;
             }
         }
 

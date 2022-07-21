@@ -116,6 +116,7 @@ export class Water extends Renderable
         projectionMatrix.elements[10] = clipPlane.z + 1.0 - clipBias;
         projectionMatrix.elements[14] = clipPlane.w;
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const eye = camera.transform.worldPosition;
 
         // 不支持直接操作gl，下面代码暂时注释掉！

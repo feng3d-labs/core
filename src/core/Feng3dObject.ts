@@ -1,3 +1,7 @@
+import { EventEmitter } from '@feng3d/event';
+import { Constructor, IDisposable, mathUtil } from '@feng3d/polyfill';
+import { serialization, serialize } from '@feng3d/serialization';
+import { HideFlags } from './HideFlags';
 
 export interface Feng3dObjectEventMap
 {
@@ -10,7 +14,7 @@ export interface Feng3dObjectEventMap
 /**
  * 所有feng3d对象的基类
  */
-export class Feng3dObject<T extends Feng3dObjectEventMap = Feng3dObjectEventMap> extends feng3d.EventEmitter<T> implements IDisposable
+export class Feng3dObject<T extends Feng3dObjectEventMap = Feng3dObjectEventMap> extends EventEmitter<T> implements IDisposable
 {
     /**
      * 名称
@@ -36,14 +40,14 @@ export class Feng3dObject<T extends Feng3dObjectEventMap = Feng3dObjectEventMap>
 
     /**
      * 构建
-     * 
+     *
      * 新增不可修改属性 guid
      */
     constructor()
     {
         super();
-        Object.defineProperty(this, "uuid", { value: mathUtil.uuid() });
-        Object.defineProperty(this, "disposed", { value: false, configurable: true });
+        Object.defineProperty(this, 'uuid', { value: mathUtil.uuid() });
+        Object.defineProperty(this, 'disposed', { value: false, configurable: true });
         console.assert(!Feng3dObject.objectLib[this.uuid], `唯一标识符存在重复！？`);
         Feng3dObject.objectLib[this.uuid] = this;
     }
@@ -53,12 +57,12 @@ export class Feng3dObject<T extends Feng3dObjectEventMap = Feng3dObjectEventMap>
      */
     dispose()
     {
-        Object.defineProperty(this, "disposed", { value: true, configurable: false });
+        Object.defineProperty(this, 'disposed', { value: true, configurable: false });
     }
 
     /**
      * 获取对象
-     * 
+     *
      * @param uuid 通用唯一标识符
      */
     static getObject(uuid: string)
@@ -68,19 +72,20 @@ export class Feng3dObject<T extends Feng3dObjectEventMap = Feng3dObjectEventMap>
 
     /**
      * 获取对象
-     * 
-     * @param type 
+     *
+     * @param type
      */
     static getObjects<T extends Feng3dObject>(type?: Constructor<T>): T[]
     {
-        var objects = Object.keys(this.objectLib).map(v => this.objectLib[v]);
+        const objects = Object.keys(this.objectLib).map((v) => this.objectLib[v]);
         //
-        var filterResult = objects;
+        let filterResult = objects;
         if (type)
         {
-            filterResult = objects.filter(v => v instanceof type);
+            filterResult = objects.filter((v) => v instanceof type);
         }
-        return <T[]>filterResult;
+
+return <T[]>filterResult;
     }
 
     /**
@@ -88,22 +93,22 @@ export class Feng3dObject<T extends Feng3dObjectEventMap = Feng3dObjectEventMap>
      */
     private static objectLib: { [guid: string]: Feng3dObject };
 }
-Object.defineProperty(Feng3dObject, "objectLib", { value: {} });
+Object.defineProperty(Feng3dObject, 'objectLib', { value: {} });
 
 serialization.serializeHandlers.push(
     // 处理 Feng3dObject
     {
         priority: 0,
-        handler: function (target, source, property)
+        handler (target, source, property)
         {
-            var spv = source[property];
+            const spv = source[property];
             if (spv instanceof Feng3dObject && (spv.hideFlags & HideFlags.DontSave))
             {
                 return true;
             }
-            return false;
+
+return false;
         }
     },
 );
-
 

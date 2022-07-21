@@ -1,3 +1,5 @@
+import { RegisterComponent } from '../component/Component';
+import { Renderable } from './Renderable';
 
 export interface ComponentMap { MeshRenderer: MeshRenderer }
 
@@ -7,5 +9,5 @@ export interface ComponentMap { MeshRenderer: MeshRenderer }
 @RegisterComponent()
 export class MeshRenderer extends Renderable
 {
-    __class__: "feng3d.MeshRenderer";
+    __class__: 'feng3d.MeshRenderer';
 }

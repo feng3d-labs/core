@@ -1,3 +1,8 @@
+import { Vector4 } from '@feng3d/math';
+import { LazyObject, lazy, mathUtil } from '@feng3d/polyfill';
+import { WebGLRenderer, Uniforms } from '@feng3d/renderer';
+import { Camera } from '../../cameras/Camera';
+import { Scene } from '../../scene/Scene';
 
 /**
  * 前向渲染器
@@ -16,12 +21,10 @@ export class ForwardRenderer
      */
     draw(gl: WebGLRenderer, scene: Scene, camera: Camera)
     {
+        const blenditems = scene.getPickCache(camera).blenditems;
+        const unblenditems = scene.getPickCache(camera).unblenditems;
 
-
-        var blenditems = scene.getPickCache(camera).blenditems;
-        var unblenditems = scene.getPickCache(camera).unblenditems;
-
-        var uniforms: LazyObject<Uniforms> = <any>{};
+        const uniforms: LazyObject<Uniforms> = <any>{};
         //
         uniforms.u_projectionMatrix = camera.lens.matrix;
         uniforms.u_viewProjection = camera.viewProjection;
@@ -32,13 +35,13 @@ export class ForwardRenderer
         uniforms.u_scaleByDepth = camera.getScaleByDepth(1);
         uniforms.u_sceneAmbientColor = scene.ambientColor;
 
-        var ctime = (Date.now() / 1000) % 3600;
+        const ctime = (Date.now() / 1000) % 3600;
         uniforms._Time = new Vector4(ctime / 20, ctime, ctime * 2, ctime * 3);
 
-        unblenditems.concat(blenditems).forEach(renderable =>
+        unblenditems.concat(blenditems).forEach((renderable) =>
         {
-            //绘制
-            var renderAtomic = renderable.renderAtomic;
+            // 绘制
+            const renderAtomic = renderable.renderAtomic;
 
             for (const key in uniforms)
             {
@@ -46,13 +49,9 @@ export class ForwardRenderer
             }
             //
             renderAtomic.uniforms.u_mvMatrix = () =>
-            {
-                return lazy.getvalue(renderAtomic.uniforms.u_modelMatrix).clone().append(lazy.getvalue(renderAtomic.uniforms.u_viewMatrix))
-            };
+            lazy.getvalue(renderAtomic.uniforms.u_modelMatrix).clone().append(lazy.getvalue(renderAtomic.uniforms.u_viewMatrix));
             renderAtomic.uniforms.u_ITMVMatrix = () =>
-            {
-                return lazy.getvalue(renderAtomic.uniforms.u_mvMatrix).clone().invert().transpose()
-            };
+            lazy.getvalue(renderAtomic.uniforms.u_mvMatrix).clone().invert().transpose();
 
             renderAtomic.shaderMacro.RotationOrder = mathUtil.DefaultRotationOrder;
 

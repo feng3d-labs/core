@@ -1,11 +1,19 @@
+import { Color4 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { RenderAtomic } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
+import { Camera } from '../cameras/Camera';
+import { AddComponentMenu } from '../Menu';
+import { Scene } from '../scene/Scene';
+import { RegisterComponent, Component } from './Component';
 
 export interface ComponentMap { OutLineComponent: OutLineComponent; }
 
-@AddComponentMenu("Rendering/OutLineComponent")
+@AddComponentMenu('Rendering/OutLineComponent')
 @RegisterComponent()
 export class OutLineComponent extends Component
 {
-    __class__: "feng3d.OutLineComponent";
+    __class__: 'feng3d.OutLineComponent';
 
     @oav()
     @serialize

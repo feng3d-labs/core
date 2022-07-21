@@ -1,3 +1,11 @@
+import { ReadWriteFS } from '@feng3d/filesystem';
+import { gPartial } from '@feng3d/polyfill';
+import { serialization } from '@feng3d/serialization';
+import { AssetData } from '../../core/AssetData';
+import { ticker } from '../../utils/Ticker';
+import { FileAsset } from '../FileAsset';
+import { FolderAsset } from '../FolderAsset';
+import { ReadRS } from './ReadRS';
 
 export interface ReadWriteRS
 {
@@ -12,7 +20,7 @@ export class ReadWriteRS extends ReadRS
     /**
      * 延迟保存执行函数
      */
-    private laterSaveFunc = (interval: number) => { this.save(); };
+    private laterSaveFunc = (_interval: number) => { this.save(); };
     /**
      * 延迟保存，避免多次操作时频繁调用保存
      */
@@ -20,7 +28,7 @@ export class ReadWriteRS extends ReadRS
 
     /**
      * 构建可读写资源系统
-     * 
+     *
      * @param fs 可读写文件系统
      */
     constructor(fs?: ReadWriteFS)
@@ -30,19 +38,19 @@ export class ReadWriteRS extends ReadRS
 
     /**
      * 在更改资源结构（新增，移动，删除）时会自动保存
-     * 
+     *
      * @param callback 完成回调
      */
     private save(callback?: (err: Error) => void)
     {
-        var allAssets = this.getAllAssets();
-        var object = serialization.serialize(allAssets);
-        this.fs.writeObject(this.resources, object, callback)
+        const allAssets = this.getAllAssets();
+        const object = serialization.serialize(allAssets);
+        this.fs.writeObject(this.resources, object, callback);
     }
 
     /**
      * 新建资源
-     * 
+     *
      * @param cls 资源类定义
      * @param fileName 文件名称
      * @param value 初始数据
@@ -64,7 +72,8 @@ export class ReadWriteRS extends ReadRS
                     // 保存资源库
                     this.laterSave();
                 });
-            } else
+            }
+            else
             {
                 callback && callback(err, null);
             }
@@ -73,7 +82,7 @@ export class ReadWriteRS extends ReadRS
 
     /**
      * 写（保存）资源
-     * 
+     *
      * @param asset 资源对象
      * @param callback 完成回调
      */
@@ -84,38 +93,40 @@ export class ReadWriteRS extends ReadRS
 
     /**
      * 移动资源到指定文件夹
-     * 
+     *
      * @param asset 被移动资源
      * @param folder 目标文件夹
      * @param callback 完成回调
      */
     moveAsset(asset: FileAsset, folder: FolderAsset, callback?: (err: Error) => void)
     {
-        var filename = asset.fileName + asset.extenson
+        const filename = asset.fileName + asset.extenson;
 
-        var cnames = folder.childrenAssets.map(v => v.fileName + v.extenson);
-        if (cnames.indexOf(filename) != -1)
+        const cnames = folder.childrenAssets.map((v) => v.fileName + v.extenson);
+        if (cnames.indexOf(filename) !== -1)
         {
             callback && callback(new Error(`目标文件夹中存在同名文件（夹），无法移动`));
+
             return;
         }
-        var fp = folder;
+        let fp = folder;
         while (fp)
         {
-            if (fp == <any>asset)
+            if (fp === <any>asset)
             {
                 callback && callback(new Error(`无法移动达到子文件夹中`));
+
                 return;
             }
             fp = fp.parentAsset;
         }
 
         // 获取需要移动的资源列表
-        var assets = [asset];
-        var index = 0;
+        let assets = [asset];
+        let index = 0;
         while (index < assets.length)
         {
-            var ca = assets[index];
+            const ca = assets[index];
             if (ca instanceof FolderAsset)
             {
                 assets = assets.concat(ca.childrenAssets);
@@ -124,25 +135,27 @@ export class ReadWriteRS extends ReadRS
         }
 
         // 最后根据 parentAsset 修复 childrenAssets
-        var copyassets = assets.concat();
+        // const copyassets = assets.concat();
 
         // 移动最后一个资源
-        var moveLastAsset = () =>
+        const moveLastAsset = () =>
         {
-            if (assets.length == 0)
+            if (assets.length === 0)
             {
                 callback && callback(null);
                 // 保存资源库
                 this.laterSave();
+
                 return;
             }
-            var la = assets.pop();
+            const la = assets.pop();
             // 读取资源
-            this.readAsset(la.assetId, (err, a) =>
+            this.readAsset(la.assetId, (err, _a) =>
             {
                 if (err)
                 {
                     callback && callback(err);
+
                     return;
                 }
                 // 从原路径上删除资源
@@ -151,14 +164,15 @@ export class ReadWriteRS extends ReadRS
                     if (err)
                     {
                         callback && callback(err);
+
                         return;
                     }
                     // 计算资源新路径
-                    var np = la.fileName + la.extenson;
-                    var p = la.parentAsset;
+                    let np = la.fileName + la.extenson;
+                    let p = la.parentAsset;
                     while (p)
                     {
-                        np = p.fileName + "/" + np;
+                        np = `${p.fileName}/${np}`;
                         p = p.parentAsset;
                     }
                     la.assetPath = np;
@@ -170,30 +184,31 @@ export class ReadWriteRS extends ReadRS
                         if (err)
                         {
                             callback && callback(err);
+
                             return;
                         }
                         moveLastAsset();
                     });
                 });
             });
-        }
+        };
         moveLastAsset();
     }
 
     /**
      * 删除资源
-     * 
+     *
      * @param asset 资源
      * @param callback 完成回调
      */
     deleteAsset(asset: FileAsset, callback?: (err: Error) => void)
     {
         // 获取需要移动的资源列表
-        var assets = [asset];
-        var index = 0;
+        let assets = [asset];
+        let index = 0;
         while (index < assets.length)
         {
-            var ca = assets[index];
+            const ca = assets[index];
             if (ca instanceof FolderAsset)
             {
                 assets = assets.concat(ca.childrenAssets);
@@ -202,16 +217,17 @@ export class ReadWriteRS extends ReadRS
         }
 
         // 删除最后一个资源
-        var deleteLastAsset = () =>
+        const deleteLastAsset = () =>
         {
-            if (assets.length == 0)
+            if (assets.length === 0)
             {
                 callback && callback(null);
                 // 保存资源库
                 this.laterSave();
+
                 return;
             }
-            var la = assets.pop();
+            const la = assets.pop();
 
             la.delete(() =>
             {

@@ -1,3 +1,6 @@
+import { Color4 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { RegisterComponent, Component } from './Component';
 
 export interface ComponentMap { WireframeComponent: WireframeComponent; }
 
@@ -7,8 +10,7 @@ export interface ComponentMap { WireframeComponent: WireframeComponent; }
 @RegisterComponent()
 export class WireframeComponent extends Component
 {
-
-    __class__: "feng3d.WireframeComponent";
+    __class__: 'feng3d.WireframeComponent';
 
     @oav()
     color = new Color4(125 / 255, 176 / 255, 250 / 255);

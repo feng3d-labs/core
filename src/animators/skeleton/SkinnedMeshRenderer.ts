@@ -1,10 +1,22 @@
+import { Matrix4x4 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { RenderAtomic } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
+import { Camera } from '../../cameras/Camera';
+import { RegisterComponent } from '../../component/Component';
+import { GameObject } from '../../core/GameObject';
+import { HideFlags } from '../../core/HideFlags';
+import { Renderable } from '../../core/Renderable';
+import { Scene } from '../../scene/Scene';
+import { SkeletonComponent } from './SkeletonComponent';
+import { Animation } from '../../animation/Animation';
 
 export interface ComponentMap { SkinnedMeshRenderer: SkinnedMeshRenderer }
 
 @RegisterComponent()
 export class SkinnedMeshRenderer extends Renderable
 {
-    __class__: "feng3d.SkinnedMeshRenderer";
+    __class__: 'feng3d.SkinnedMeshRenderer';
 
     get single() { return true; }
 
@@ -28,18 +40,19 @@ export class SkinnedMeshRenderer extends Renderable
     {
         super.beforeRender(renderAtomic, scene, camera);
 
-        var frameId: string = null;
-        var animation = this.getComponentsInParent(Animation)[0];
+        let frameId: string = null;
+        const animation = this.getComponentsInParent(Animation)[0];
         if (animation)
         {
-            frameId = animation.clipName + "&" + animation.frame;
+            frameId = `${animation.clipName}&${animation.frame}`;
         }
 
         renderAtomic.uniforms.u_modelMatrix = () => this.u_modelMatrix;
         renderAtomic.uniforms.u_ITModelMatrix = () => this.u_ITModelMatrix;
         //
-        var skeletonGlobalMatriices = this.cacheU_skeletonGlobalMatriices[frameId];
+        let skeletonGlobalMatriices = this.cacheU_skeletonGlobalMatriices[frameId];
         // if (!skeletonGlobalMatriices)
+        // eslint-disable-next-line no-lone-blocks
         {
             skeletonGlobalMatriices = this.u_skeletonGlobalMatriices;
             if (frameId) this.cacheU_skeletonGlobalMatriices[frameId] = skeletonGlobalMatriices;
@@ -69,36 +82,38 @@ export class SkinnedMeshRenderer extends Renderable
     private get u_modelMatrix()
     {
         if (this.cacheSkeletonComponent)
-            return this.cacheSkeletonComponent.transform.localToWorldMatrix;
-        return this.transform.localToWorldMatrix
+        { return this.cacheSkeletonComponent.transform.localToWorldMatrix; }
+
+        return this.transform.localToWorldMatrix;
     }
 
     private get u_ITModelMatrix()
     {
         if (this.cacheSkeletonComponent)
-            return this.cacheSkeletonComponent.transform.ITlocalToWorldMatrix;
-        return this.transform.ITlocalToWorldMatrix
+        { return this.cacheSkeletonComponent.transform.ITlocalToWorldMatrix; }
+
+        return this.transform.ITlocalToWorldMatrix;
     }
 
-    private get u_skeletonGlobalMatriices() 
+    private get u_skeletonGlobalMatriices()
     {
         if (!this.cacheSkeletonComponent)
         {
-            var gameObject: GameObject = this.gameObject;
-            var skeletonComponent: SkeletonComponent = null;
+            let gameObject: GameObject = this.gameObject;
+            let skeletonComponent: SkeletonComponent = null;
             while (gameObject && !skeletonComponent)
             {
-                skeletonComponent = gameObject.getComponent(SkeletonComponent)
+                skeletonComponent = gameObject.getComponent(SkeletonComponent);
                 gameObject = gameObject.parent;
             }
             this.cacheSkeletonComponent = skeletonComponent;
         }
-        var skeletonGlobalMatriices: Matrix4x4[] = [];
+        let skeletonGlobalMatriices: Matrix4x4[] = [];
         if (this.skinSkeleton && this.cacheSkeletonComponent)
         {
-            var joints = this.skinSkeleton.joints;
-            var globalMatrices = this.cacheSkeletonComponent.globalMatrices;
-            for (var i = joints.length - 1; i >= 0; i--)
+            const joints = this.skinSkeleton.joints;
+            const globalMatrices = this.cacheSkeletonComponent.globalMatrices;
+            for (let i = joints.length - 1; i >= 0; i--)
             {
                 skeletonGlobalMatriices[i] = globalMatrices[joints[i][0]].clone();
                 if (this.initMatrix)
@@ -106,15 +121,22 @@ export class SkinnedMeshRenderer extends Renderable
                     skeletonGlobalMatriices[i].prepend(this.initMatrix);
                 }
             }
-        } else
+        }
+        else
         {
             skeletonGlobalMatriices = defaultSkeletonGlobalMatriices;
         }
+
         return skeletonGlobalMatriices;
     }
 }
 
-var defaultSkeletonGlobalMatriices: Matrix4x4[] = (() => { var v = [new Matrix4x4()]; var i = 150; while (i-- > 1) v.push(v[0]); return v; })();
+const defaultSkeletonGlobalMatriices: Matrix4x4[] = (() =>
+{
+    const v = [new Matrix4x4()]; let i = 150; while (i-- > 1) v.push(v[0]);
+
+    return v;
+})();
 
 export class SkinSkeleton
 {
@@ -139,20 +161,20 @@ export class SkinSkeletonTemp extends SkinSkeleton
 
     resetJointIndices(jointIndices: number[], skeleton: SkeletonComponent)
     {
-        var len = jointIndices.length;
-        for (var i = 0; i < len; i++)
+        const len = jointIndices.length;
+        for (let i = 0; i < len; i++)
         {
             if (this.cache_map[jointIndices[i]] === undefined)
-                this.cache_map[jointIndices[i]] = this.numJoint++;
+            { this.cache_map[jointIndices[i]] = this.numJoint++; }
             jointIndices[i] = this.cache_map[jointIndices[i]];
         }
 
         this.joints.length = 0;
-        for (var key in this.cache_map)
+        for (const key in this.cache_map)
         {
             if (this.cache_map.hasOwnProperty(key))
             {
-                this.joints[this.cache_map[key]] = [parseInt(key), skeleton.joints[key].name];
+                this.joints[this.cache_map[key]] = [parseInt(key, 10), skeleton.joints[key].name];
             }
         }
     }

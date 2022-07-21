@@ -1,3 +1,10 @@
+import { oav } from '@feng3d/objectview';
+import { watch } from '@feng3d/polyfill';
+import { serialize } from '@feng3d/serialization';
+import { GameObject } from '../core/GameObject';
+import { MeshRenderer } from '../core/MeshRenderer';
+import { Geometry } from '../geometry/Geometry';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 
 export interface GeometryTypes { CapsuleGeometry: CapsuleGeometry }
 
@@ -6,15 +13,14 @@ export interface GeometryTypes { CapsuleGeometry: CapsuleGeometry }
  */
 export class CapsuleGeometry extends Geometry
 {
-
-    __class__: "feng3d.CapsuleGeometry";
+    __class__: 'feng3d.CapsuleGeometry';
 
     /**
      * 胶囊体半径
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
+    @watch('invalidateGeometry')
     radius = 0.5;
 
     /**
@@ -22,23 +28,23 @@ export class CapsuleGeometry extends Geometry
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    height = 1
+    @watch('invalidateGeometry')
+    height = 1;
 
     /**
      * 横向分割数
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
-    segmentsW = 16
+    @watch('invalidateGeometry')
+    segmentsW = 16;
 
     /**
      * 纵向分割数
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
+    @watch('invalidateGeometry')
     segmentsH = 15;
 
     /**
@@ -46,10 +52,10 @@ export class CapsuleGeometry extends Geometry
      */
     @serialize
     @oav()
-    @watch("invalidateGeometry")
+    @watch('invalidateGeometry')
     yUp = true;
 
-    name = "Capsule";
+    name = 'Capsule';
 
     /**
      * 构建几何体数据
@@ -61,40 +67,41 @@ export class CapsuleGeometry extends Geometry
      */
     protected buildGeometry()
     {
-        var vertexPositionData: number[] = [];
-        var vertexNormalData: number[] = [];
-        var vertexTangentData: number[] = [];
+        const vertexPositionData: number[] = [];
+        const vertexNormalData: number[] = [];
+        const vertexTangentData: number[] = [];
 
-        var startIndex: number;
-        var index = 0;
-        var comp1: number, comp2: number, t1: number, t2: number;
-        for (var yi = 0; yi <= this.segmentsH; ++yi)
+        let startIndex: number;
+        let index = 0;
+        let comp1: number; let comp2: number; let t1: number; let
+            t2: number;
+        for (let yi = 0; yi <= this.segmentsH; ++yi)
         {
             startIndex = index;
 
-            var horangle = Math.PI * yi / this.segmentsH;
-            var z = -this.radius * Math.cos(horangle);
-            var ringradius = this.radius * Math.sin(horangle);
+            const horangle = Math.PI * yi / this.segmentsH;
+            const z = -this.radius * Math.cos(horangle);
+            const ringradius = this.radius * Math.sin(horangle);
 
-            for (var xi = 0; xi <= this.segmentsW; ++xi)
+            for (let xi = 0; xi <= this.segmentsW; ++xi)
             {
-                var verangle = 2 * Math.PI * xi / this.segmentsW;
-                var x = ringradius * Math.cos(verangle);
-                var y = ringradius * Math.sin(verangle);
-                var normLen = 1 / Math.sqrt(x * x + y * y + z * z);
-                var tanLen = Math.sqrt(y * y + x * x);
-                var offset = yi > this.segmentsH / 2 ? this.height / 2 : -this.height / 2;
+                const verangle = 2 * Math.PI * xi / this.segmentsW;
+                const x = ringradius * Math.cos(verangle);
+                const y = ringradius * Math.sin(verangle);
+                const normLen = 1 / Math.sqrt(x * x + y * y + z * z);
+                const tanLen = Math.sqrt(y * y + x * x);
+                const offset = yi > this.segmentsH / 2 ? this.height / 2 : -this.height / 2;
 
                 if (this.yUp)
                 {
                     t1 = 0;
-                    t2 = tanLen > .007 ? x / tanLen : 0;
+                    t2 = tanLen > 0.007 ? x / tanLen : 0;
                     comp1 = -z;
                     comp2 = y;
                 }
                 else
                 {
-                    t1 = tanLen > .007 ? x / tanLen : 0;
+                    t1 = tanLen > 0.007 ? x / tanLen : 0;
                     t2 = 0;
                     comp1 = y;
                     comp2 = z;
@@ -110,7 +117,7 @@ export class CapsuleGeometry extends Geometry
                     vertexNormalData[index + 1] = (vertexNormalData[startIndex + 1] + comp1 * normLen) * 0.5;
                     vertexNormalData[index + 2] = (vertexNormalData[startIndex + 2] + comp2 * normLen) * 0.5;
 
-                    vertexTangentData[index] = (vertexTangentData[startIndex] + tanLen > .007 ? -y / tanLen : 1) * 0.5;
+                    vertexTangentData[index] = (vertexTangentData[startIndex] + tanLen > 0.007 ? -y / tanLen : 1) * 0.5;
                     vertexTangentData[index + 1] = (vertexTangentData[startIndex + 1] + t1) * 0.5;
                     vertexTangentData[index + 2] = (vertexTangentData[startIndex + 2] + t2) * 0.5;
                 }
@@ -124,14 +131,13 @@ export class CapsuleGeometry extends Geometry
                     vertexNormalData[index + 1] = comp1 * normLen;
                     vertexNormalData[index + 2] = comp2 * normLen;
 
-                    vertexTangentData[index] = tanLen > .007 ? -y / tanLen : 1;
+                    vertexTangentData[index] = tanLen > 0.007 ? -y / tanLen : 1;
                     vertexTangentData[index + 1] = t1;
                     vertexTangentData[index + 2] = t2;
                 }
 
                 if (xi > 0 && yi > 0)
                 {
-
                     if (yi == this.segmentsH)
                     {
                         vertexPositionData[index] = vertexPositionData[startIndex];
@@ -147,7 +153,7 @@ export class CapsuleGeometry extends Geometry
         this.normals = vertexNormalData;
         this.tangents = vertexTangentData;
 
-        var uvData = this.buildUVs();
+        const uvData = this.buildUVs();
         this.uvs = uvData;
 
         this.buildIndices();
@@ -161,19 +167,19 @@ export class CapsuleGeometry extends Geometry
      */
     private buildIndices()
     {
-        var indices: number[] = [];
+        const indices: number[] = [];
 
-        var numIndices = 0;
-        for (var yi = 0; yi <= this.segmentsH; ++yi)
+        let numIndices = 0;
+        for (let yi = 0; yi <= this.segmentsH; ++yi)
         {
-            for (var xi = 0; xi <= this.segmentsW; ++xi)
+            for (let xi = 0; xi <= this.segmentsW; ++xi)
             {
                 if (xi > 0 && yi > 0)
                 {
-                    var a = (this.segmentsW + 1) * yi + xi;
-                    var b = (this.segmentsW + 1) * yi + xi - 1;
-                    var c = (this.segmentsW + 1) * (yi - 1) + xi - 1;
-                    var d = (this.segmentsW + 1) * (yi - 1) + xi;
+                    const a = (this.segmentsW + 1) * yi + xi;
+                    const b = (this.segmentsW + 1) * yi + xi - 1;
+                    const c = (this.segmentsW + 1) * (yi - 1) + xi - 1;
+                    const d = (this.segmentsW + 1) * (yi - 1) + xi;
 
                     if (yi == this.segmentsH)
                     {
@@ -209,12 +215,12 @@ export class CapsuleGeometry extends Geometry
      */
     private buildUVs()
     {
-        var data: number[] = [];
-        var index = 0;
+        const data: number[] = [];
+        let index = 0;
 
-        for (var yi = 0; yi <= this.segmentsH; ++yi)
+        for (let yi = 0; yi <= this.segmentsH; ++yi)
         {
-            for (var xi = 0; xi <= this.segmentsW; ++xi)
+            for (let xi = 0; xi <= this.segmentsW; ++xi)
             {
                 data[index++] = xi / this.segmentsW;
                 data[index++] = yi / this.segmentsH;
@@ -223,18 +229,17 @@ export class CapsuleGeometry extends Geometry
 
         return data;
     }
-
 }
 
 export interface DefaultGeometry
 {
     Capsule: CapsuleGeometry;
 }
-Geometry.setDefault("Capsule", new CapsuleGeometry());
+Geometry.setDefault('Capsule', new CapsuleGeometry());
 
-GameObject.registerPrimitive("Capsule", (g) =>
+GameObject.registerPrimitive('Capsule', (g) =>
 {
-    g.addComponent(MeshRenderer).geometry = Geometry.getDefault("Capsule");
+    g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Capsule');
 });
 
 export interface PrimitiveGameObject
@@ -245,12 +250,10 @@ export interface PrimitiveGameObject
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(
     {
-        path: "3D Object/Capsule",
+        path: '3D Object/Capsule',
         priority: -3,
         click: () =>
-        {
-            return GameObject.createPrimitive("Capsule");
-        }
+            GameObject.createPrimitive('Capsule')
     }
 );
 

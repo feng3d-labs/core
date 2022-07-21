@@ -1,3 +1,6 @@
+import { Vector3 } from '@feng3d/math';
+import { GameObject } from '../core/GameObject';
+import { ControllerBase } from './ControllerBase';
 
 export class LookAtController extends ControllerBase
 {
@@ -12,9 +15,9 @@ export class LookAtController extends ControllerBase
         super(target);
 
         if (lookAtObject)
-            this.lookAtObject = lookAtObject;
+        { this.lookAtObject = lookAtObject; }
         else
-            this.lookAtPosition = new Vector3();
+        { this.lookAtPosition = new Vector3(); }
     }
 
     get upAxis(): Vector3
@@ -45,7 +48,7 @@ export class LookAtController extends ControllerBase
     set lookAtObject(value)
     {
         if (this._lookAtObject == value)
-            return;
+        { return; }
 
         this._lookAtObject = value;
     }

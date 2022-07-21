@@ -1,3 +1,4 @@
+import { AssetType } from './AssetType';
 
 /**
  * 资源元标签

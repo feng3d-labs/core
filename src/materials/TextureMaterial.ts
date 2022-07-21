@@ -1,9 +1,14 @@
+import { Color4 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { shaderConfig } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
+import { Texture2D } from '../textures/Texture2D';
 
 export interface UniformsTypes { texture: TextureUniforms }
 export class TextureUniforms
 {
-    __class__: "feng3d.TextureUniforms";
-    /** 
+    __class__: 'feng3d.TextureUniforms';
+    /**
      * 颜色
      */
     @serialize
@@ -18,4 +23,4 @@ export class TextureUniforms
     s_texture = Texture2D.default;
 }
 
-shaderConfig.shaders["texture"].cls = TextureUniforms;
+shaderConfig.shaders['texture'].cls = TextureUniforms;

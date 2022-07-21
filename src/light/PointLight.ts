@@ -1,14 +1,24 @@
+import { Vector2 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { PerspectiveLens } from '../cameras/lenses/PerspectiveLens';
+import { RegisterComponent } from '../component/Component';
+import { GameObject } from '../core/GameObject';
+import { AddComponentMenu } from '../Menu';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
+import { Light } from './Light';
+import { LightType } from './LightType';
 
 export interface ComponentMap { PointLight: PointLight; }
 
 /**
  * 点光源
  */
-@AddComponentMenu("Rendering/PointLight")
+@AddComponentMenu('Rendering/PointLight')
 @RegisterComponent()
 export class PointLight extends Light
 {
-    __class__: "feng3d.PointLight";
+    __class__: 'feng3d.PointLight';
 
     lightType = LightType.Point;
 
@@ -46,29 +56,27 @@ export class PointLight extends Light
     private invalidRange()
     {
         if (this.shadowCamera)
-            this.shadowCamera.lens.far = this.range;
+            { this.shadowCamera.lens.far = this.range; }
     }
 }
 
-GameObject.registerPrimitive("Point Light", (g) =>
+GameObject.registerPrimitive('Point Light', (g) =>
 {
     g.addComponent(PointLight);
 });
 
 export interface PrimitiveGameObject
 {
-    "Point Light": GameObject;
+    'Point Light': GameObject;
 }
 
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(
     {
-        path: "Light/Point Light",
+        path: 'Light/Point Light',
         priority: -1,
         click: () =>
-        {
-            return GameObject.createPrimitive("Point Light");
-        }
+        GameObject.createPrimitive('Point Light')
     }
 );
 

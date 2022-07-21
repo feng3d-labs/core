@@ -1,15 +1,22 @@
+import { Color4, Vector4 } from '@feng3d/math';
+import { oav } from '@feng3d/objectview';
+import { RenderAtomic } from '@feng3d/renderer';
+import { serialize } from '@feng3d/serialization';
+import { Camera } from '../cameras/Camera';
+import { AddComponentMenu } from '../Menu';
+import { Scene } from '../scene/Scene';
+import { RegisterComponent, Component } from './Component';
 
 export interface ComponentMap { CartoonComponent: CartoonComponent; }
 
 /**
  * 参考
  */
-@AddComponentMenu("Rendering/CartoonComponent")
+@AddComponentMenu('Rendering/CartoonComponent')
 @RegisterComponent()
 export class CartoonComponent extends Component
 {
-
-    __class__: "feng3d.CartoonComponent";
+    __class__: 'feng3d.CartoonComponent';
 
     @oav()
     @serialize
@@ -62,7 +69,6 @@ export class CartoonComponent extends Component
         renderAtomic.uniforms.u_outlineColor = this.outlineColor;
         renderAtomic.uniforms.u_outlineMorphFactor = this.outlineMorphFactor;
     }
-
 }
 
 export interface Uniforms

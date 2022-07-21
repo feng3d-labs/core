@@ -1,3 +1,11 @@
+import { FS } from '@feng3d/filesystem';
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
+import { Behaviour } from '../component/Behaviour';
+import { RegisterComponent } from '../component/Component';
+import { AddComponentMenu } from '../Menu';
+import { audioCtx, globalGain } from './AudioListener';
 
 /**
  * 音量与距离算法
@@ -10,15 +18,15 @@ export enum DistanceModelType
     /**
      * 1 - rolloffFactor * (distance - refDistance) / (maxDistance - refDistance)
      */
-    linear = "linear",
+    linear = 'linear',
     /**
      * refDistance / (refDistance + rolloffFactor * (distance - refDistance))
      */
-    inverse = "inverse",
+    inverse = 'inverse',
     /**
      * pow(distance / refDistance, -rolloffFactor)
      */
-    exponential = "exponential",
+    exponential = 'exponential',
 }
 
 export interface ComponentMap { AudioSource: AudioSource; }
@@ -26,7 +34,7 @@ export interface ComponentMap { AudioSource: AudioSource; }
  * 声源
  * @see https://developer.mozilla.org/en-US/docs/Web/API/AudioContext
  */
-@AddComponentMenu("Audio/AudioSource")
+@AddComponentMenu('Audio/AudioSource')
 @RegisterComponent()
 export class AudioSource extends Behaviour
 {
@@ -35,22 +43,22 @@ export class AudioSource extends Behaviour
     private buffer: AudioBuffer;
     private gain: GainNode;
 
-    @watch("_enabledChanged")
+    @watch('_enabledChanged')
     enabled = true;
 
     /**
      * 声音文件路径
      */
     @serialize
-    @oav({ component: "OAVPick", tooltip: "声音文件路径", componentParam: { accepttype: "audio" } })
-    @watch("_onUrlChanged")
-    url = "";
+    @oav({ component: 'OAVPick', tooltip: '声音文件路径', componentParam: { accepttype: 'audio' } })
+    @watch('_onUrlChanged')
+    url = '';
 
     /**
      * 是否循环播放
      */
     @serialize
-    @oav({ tooltip: "是否循环播放" })
+    @oav({ tooltip: '是否循环播放' })
     get loop()
     {
         return this._loop;
@@ -66,7 +74,7 @@ export class AudioSource extends Behaviour
      * 音量
      */
     @serialize
-    @oav({ tooltip: "音量" })
+    @oav({ tooltip: '音量' })
     get volume()
     {
         return this._volume;
@@ -82,7 +90,7 @@ export class AudioSource extends Behaviour
      * 是否启用位置影响声音
      */
     @serialize
-    @oav({ tooltip: "是否启用位置影响声音" })
+    @oav({ tooltip: '是否启用位置影响声音' })
     get enablePosition()
     {
         return this._enablePosition;
@@ -93,7 +101,7 @@ export class AudioSource extends Behaviour
         this._enablePosition = v;
         this._connect();
     }
-    private _enablePosition = true;;
+    private _enablePosition = true;
 
     // @serialize
     // @oav()
@@ -136,7 +144,7 @@ export class AudioSource extends Behaviour
 
     /**
      * 该接口的distanceModel属性PannerNode是一个枚举值，用于确定在音频源离开收听者时用于减少音频源音量的算法。
-     * 
+     *
      * 可能的值是：
      * * linear：根据以下公式计算由距离引起的增益的线性距离模型：
      *      1 - rolloffFactor * (distance - refDistance) / (maxDistance - refDistance)
@@ -144,11 +152,11 @@ export class AudioSource extends Behaviour
      *      refDistance / (refDistance + rolloffFactor * (distance - refDistance))
      * * exponential：按照下式计算由距离引起的增益的指数距离模型
      *      pow(distance / refDistance, -rolloffFactor)。
-     * 
+     *
      * inverse是的默认值distanceModel。
      */
     @serialize
-    @oav({ component: "OAVEnum", tooltip: "距离模式，距离影响声音的方式", componentParam: { enumClass: DistanceModelType } })
+    @oav({ component: 'OAVEnum', tooltip: '距离模式，距离影响声音的方式', componentParam: { enumClass: DistanceModelType } })
     get distanceModel()
     {
         return this._distanceModel;
@@ -164,7 +172,7 @@ export class AudioSource extends Behaviour
      * 表示音频源和收听者之间的最大距离，之后音量不会再降低。该值仅由linear距离模型使用。默认值是10000。
      */
     @serialize
-    @oav({ tooltip: "表示音频源和收听者之间的最大距离，之后音量不会再降低。该值仅由linear距离模型使用。默认值是10000。" })
+    @oav({ tooltip: '表示音频源和收听者之间的最大距离，之后音量不会再降低。该值仅由linear距离模型使用。默认值是10000。' })
     get maxDistance()
     {
         return this._maxDistance;
@@ -193,7 +201,7 @@ export class AudioSource extends Behaviour
      * 表示随着音频源远离收听者而减小音量的参考距离。此值由所有距离模型使用。默认值是1。
      */
     @serialize
-    @oav({ tooltip: "表示随着音频源远离收听者而减小音量的参考距离。此值由所有距离模型使用。默认值是1。" })
+    @oav({ tooltip: '表示随着音频源远离收听者而减小音量的参考距离。此值由所有距离模型使用。默认值是1。' })
     get refDistance()
     {
         return this._refDistance;
@@ -209,7 +217,7 @@ export class AudioSource extends Behaviour
      * 描述了音源离开收听者音量降低的速度。此值由所有距离模型使用。默认值是1。
      */
     @serialize
-    @oav({ tooltip: "描述了音源离开收听者音量降低的速度。此值由所有距离模型使用。默认值是1。" })
+    @oav({ tooltip: '描述了音源离开收听者音量降低的速度。此值由所有距离模型使用。默认值是1。' })
     get rolloffFactor()
     {
         return this._rolloffFactor;
@@ -237,14 +245,14 @@ export class AudioSource extends Behaviour
         this.gain = audioCtx.createGain();
         this.volume = 1;
         //
-        this._enabledChanged()
+        this._enabledChanged();
         this._connect();
     }
 
     init()
     {
         super.init();
-        this.on("scenetransformChanged", this._onScenetransformChanged, this);
+        this.on('scenetransformChanged', this._onScenetransformChanged, this);
     }
 
     @oav()
@@ -274,11 +282,11 @@ export class AudioSource extends Behaviour
 
     private _onScenetransformChanged()
     {
-        var localToWorldMatrix = this.transform.localToWorldMatrix;
-        var scenePosition = localToWorldMatrix.getPosition();
+        const localToWorldMatrix = this.transform.localToWorldMatrix;
+        const scenePosition = localToWorldMatrix.getPosition();
 
         //
-        var panner = this.panner;
+        const panner = this.panner;
         // feng3d使用左手坐标系，panner使用右手坐标系，参考https://developer.mozilla.org/en-US/docs/Web/API/PannerNode
         if (panner.orientationX)
         {
@@ -288,7 +296,8 @@ export class AudioSource extends Behaviour
             panner.orientationX.value = 1;
             panner.orientationY.value = 0;
             panner.orientationZ.value = 0;
-        } else
+        }
+        else
         {
             panner.setPosition(scenePosition.x, scenePosition.y, -scenePosition.z);
             panner.setOrientation(1, 0, 0);
@@ -300,27 +309,28 @@ export class AudioSource extends Behaviour
         this.stop();
         if (this.url)
         {
-            var url = this.url;
+            const url = this.url;
             FS.fs.readArrayBuffer(this.url, (err, data) =>
             {
                 if (err)
                 {
                     console.warn(err);
+
                     return;
                 }
-                if (url != this.url)
-                    return;
+                if (url !== this.url)
+                { return; }
                 audioCtx.decodeAudioData(data, (buffer) =>
                 {
                     this.buffer = buffer;
-                })
-            })
+                });
+            });
         }
     }
 
     private _connect()
     {
-        var arr = this._getAudioNodes();
+        const arr = this._getAudioNodes();
         for (let i = 0; i < arr.length - 1; i++)
         {
             arr[i + 1].connect(arr[i]);
@@ -329,7 +339,7 @@ export class AudioSource extends Behaviour
 
     private _disconnect()
     {
-        var arr = this._getAudioNodes();
+        const arr = this._getAudioNodes();
         for (let i = 0; i < arr.length - 1; i++)
         {
             arr[i + 1].disconnect(arr[i]);
@@ -338,46 +348,48 @@ export class AudioSource extends Behaviour
 
     private _getAudioNodes()
     {
-        var arr: AudioNode[] = [];
+        const arr: AudioNode[] = [];
         arr.push(this.gain);
         if (this._enablePosition)
-            arr.push(this.panner);
+        { arr.push(this.panner); }
         if (this.source)
-            arr.push(this.source);
+        { arr.push(this.source); }
+
         return arr;
     }
 
     private _enabledChanged()
     {
         if (!this.gain)
-            return;
+        { return; }
         if (this.enabled)
-            this.gain.connect(globalGain);
+        { this.gain.connect(globalGain); }
         else
-            this.gain.disconnect(globalGain);
+        { this.gain.disconnect(globalGain); }
     }
 
     dispose()
     {
-        this.off("scenetransformChanged", this._onScenetransformChanged, this);
+        this.off('scenetransformChanged', this._onScenetransformChanged, this);
         this._disconnect();
         super.dispose();
     }
 }
 
-
 function createPanner()
 {
-    var panner = this.panner = feng3d.audioCtx.createPanner();
+    const panner = this.panner = audioCtx.createPanner();
 
     if (panner.orientationX)
     {
         panner.orientationX.value = 1;
         panner.orientationY.value = 0;
         panner.orientationZ.value = 0;
-    } else
+    }
+    else
     {
         panner.setOrientation(1, 0, 0);
     }
+
     return panner;
 }

@@ -1,5 +1,7 @@
+import { GameObject } from '../core/GameObject';
+
 /**
- * 
+ *
  */
 export interface MenuItem
 {
@@ -23,6 +25,6 @@ export interface MenuItem
      * 是否显示，默认显示
      */
     show?: () => boolean;
-};
+}
 
 export const createNodeMenu: MenuItem[] = [];

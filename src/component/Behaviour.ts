@@ -1,15 +1,18 @@
+import { oav } from '@feng3d/objectview';
+import { serialize } from '@feng3d/serialization';
+import { RunEnvironment } from '../core/RunEnvironment';
+import { RegisterComponent, Component } from './Component';
 
 export interface ComponentMap { Behaviour: Behaviour; }
 
 /**
  * 行为
- * 
+ *
  * 可以控制开关的组件
  */
 @RegisterComponent()
 export class Behaviour extends Component
 {
-
     /**
      * 是否启用update方法
      */
@@ -28,7 +31,8 @@ export class Behaviour extends Component
      */
     get isVisibleAndEnabled()
     {
-        var v = this.enabled && this.gameObject && this.gameObject.activeSelf;
+        const v = this.enabled && this.gameObject && this.gameObject.activeSelf;
+
         return v;
     }
 

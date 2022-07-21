@@ -1,3 +1,15 @@
+import { globalEmitter } from '@feng3d/event';
+import { oav } from '@feng3d/objectview';
+import { gPartial, watch } from '@feng3d/polyfill';
+import { RenderParams, RenderAtomic, RenderMode, shaderConfig, Shader } from '@feng3d/renderer';
+import { serialization, serialize } from '@feng3d/serialization';
+import { AssetData } from '../core/AssetData';
+import { Feng3dObject } from '../core/Feng3dObject';
+import { HideFlags } from '../core/HideFlags';
+import { Texture2D } from '../textures/Texture2D';
+import { TextureCube } from '../textures/TextureCube';
+import { StandardUniforms } from './StandardMaterial';
+
 export interface UniformsTypes { }
 export type ShaderNames = keyof UniformsTypes;
 export type UniformsLike = UniformsTypes[keyof UniformsTypes];
@@ -7,12 +19,13 @@ export type UniformsLike = UniformsTypes[keyof UniformsTypes];
  */
 export class Material extends Feng3dObject
 {
-    __class__: "feng3d.Material";
+    __class__: 'feng3d.Material';
 
     static create<K extends keyof UniformsTypes>(shaderName: K, uniforms?: gPartial<UniformsTypes[K]>, renderParams?: gPartial<RenderParams>)
     {
-        var material = new Material();
+        const material = new Material();
         material.init(shaderName, uniforms, renderParams);
+
         return material;
     }
 
@@ -22,48 +35,49 @@ export class Material extends Feng3dObject
         //
         uniforms && serialization.setValue(this.uniforms, <any>uniforms);
         renderParams && serialization.setValue(this.renderParams, renderParams);
+
         return this;
     }
 
     //
     private renderAtomic = new RenderAtomic();
 
-    @oav({ component: "OAVFeng3dPreView" })
-    private preview = "";
+    @oav({ component: 'OAVFeng3dPreView' })
+    private preview = '';
 
     /**
      * shader名称
      */
-    @oav({ component: "OAVMaterialName" })
+    @oav({ component: 'OAVMaterialName' })
     @serialize
-    @watch("_onShaderChanged")
+    @watch('_onShaderChanged')
     shaderName: ShaderNames;
 
     @oav()
     @serialize
-    name = "";
+    name = '';
 
     /**
      * Uniform数据
      */
     @serialize
-    @oav({ component: "OAVObjectView" })
-    @watch("_onUniformsChanged")
+    @oav({ component: 'OAVObjectView' })
+    @watch('_onUniformsChanged')
     uniforms: UniformsLike;
 
     /**
      * 渲染参数
      */
     @serialize
-    @oav({ block: "渲染参数", component: "OAVObjectView" })
-    @watch("_onRenderParamsChanged")
+    @oav({ block: '渲染参数', component: 'OAVObjectView' })
+    @watch('_onRenderParamsChanged')
     renderParams: RenderParams;
 
     constructor()
     {
         super();
-        globalEmitter.on("asset.shaderChanged", this._onShaderChanged, this);
-        this.shaderName = "standard";
+        globalEmitter.on('asset.shaderChanged', this._onShaderChanged, this);
+        this.shaderName = 'standard';
         this.uniforms = new StandardUniforms();
         this.renderParams = new RenderParams();
     }
@@ -82,15 +96,16 @@ export class Material extends Feng3dObject
      */
     get isLoaded()
     {
-        var uniforms = this.uniforms;
+        const uniforms = this.uniforms;
         for (const key in uniforms)
         {
-            var texture = uniforms[key];
+            const texture = uniforms[key];
             if (texture instanceof Texture2D || texture instanceof TextureCube)
             {
                 if (!texture.isLoaded) return false;
             }
         }
+
         return true;
     }
 
@@ -100,17 +115,17 @@ export class Material extends Feng3dObject
      */
     onLoadCompleted(callback: () => void)
     {
-        var loadingNum = 0;
-        var uniforms = this.uniforms;
+        let loadingNum = 0;
+        const uniforms = this.uniforms;
         for (const key in uniforms)
         {
-            var texture = uniforms[key];
+            const texture = uniforms[key];
             if (texture instanceof Texture2D || texture instanceof TextureCube)
             {
                 if (!texture.isLoaded)
                 {
                     loadingNum++;
-                    texture.on("loadCompleted", () =>
+                    texture.on('loadCompleted', () =>
                     {
                         loadingNum--;
                         if (loadingNum == 0) callback();
@@ -123,20 +138,21 @@ export class Material extends Feng3dObject
 
     private _onShaderChanged()
     {
-        var cls = shaderConfig.shaders[this.shaderName].cls;
+        const cls = shaderConfig.shaders[this.shaderName].cls;
         if (cls)
         {
             if (this.uniforms == null || this.uniforms.constructor != cls)
             {
-                var newuniforms = new cls();
+                const newuniforms = new cls();
                 this.uniforms = newuniforms;
             }
-        } else
+        }
+        else
         {
             this.uniforms = <any>{};
         }
 
-        var renderParams = shaderConfig.shaders[this.shaderName].renderParams;
+        const renderParams = shaderConfig.shaders[this.shaderName].renderParams;
         renderParams && serialization.setValue(this.renderParams, renderParams);
 
         this.renderAtomic.shader = new Shader({ shaderName: this.shaderName });
@@ -154,23 +170,23 @@ export class Material extends Feng3dObject
 
     /**
      * 设置默认材质
-     * 
+     *
      * 资源名称与材质名称相同，且无法在检查器界面中编辑。
-     * 
+     *
      * @param name 材质名称
      * @param material 材质数据
      */
     static setDefault<K extends keyof DefaultMaterial>(name: K, material: gPartial<Material>)
     {
-        var newMaterial = this._defaultMaterials[<any>name] = new Material();
+        const newMaterial = this._defaultMaterials[<any>name] = new Material();
         serialization.setValue(newMaterial, material);
-        serialization.setValue(newMaterial, { name: name, hideFlags: HideFlags.NotEditable });
+        serialization.setValue(newMaterial, { name, hideFlags: HideFlags.NotEditable });
         AssetData.addAssetData(name, newMaterial);
     }
 
     /**
      * 获取材质
-     * 
+     *
      * @param name 材质名称
      */
     static getDefault<K extends keyof DefaultMaterial>(name: K)

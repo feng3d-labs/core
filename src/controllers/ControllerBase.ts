@@ -1,3 +1,4 @@
+import { GameObject } from '../core/GameObject';
 
 export class ControllerBase
 {
@@ -19,7 +20,7 @@ export class ControllerBase
      */
     update(interpolate = true): void
     {
-        throw new Error("Abstract method");
+        throw new Error('Abstract method');
     }
 
     get targetObject()
