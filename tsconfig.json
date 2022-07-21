@@ -18,9 +18,6 @@
             "path": "../renderer"
         },
         {
-            "path": "../shortcut"
-        },
-        {
             "path": "../filesystem"
         },
     ],
@@ -33,6 +30,7 @@
         "../watcher/index.d.ts",
         "../serialization/index.d.ts",
         "../math/index.d.ts",
+        "../shortcut/index.d.ts",
         //
         "src/menu/CreateNodeMenu.ts",
         //
