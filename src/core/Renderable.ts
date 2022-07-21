@@ -1,18 +1,22 @@
-import { Ray3, Vector3, Box3 } from '@feng3d/math';
+import { IEvent } from '@feng3d/event';
+import { Box3, Ray3, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { watch } from '@feng3d/polyfill';
-import { RenderAtomic, CullFace } from '@feng3d/renderer';
+import { CullFace, RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
 import { RegisterComponent } from '../component/Component';
-import { GeometryLike, Geometry } from '../geometry/Geometry';
+import { Geometry, GeometryLike } from '../geometry/Geometry';
 import { LightPicker } from '../light/pickers/LightPicker';
 import { Material } from '../materials/Material';
 import { PickingCollisionVO } from '../pick/Raycaster';
 import { Scene } from '../scene/Scene';
 import { RayCastable } from './RayCastable';
 
-export interface ComponentMap { Renderable: Renderable; }
+declare global
+{
+    export interface MixinsComponentMap { Renderable: Renderable; }
+}
 
 /**
  * 可渲染组件
@@ -85,7 +89,7 @@ export class Renderable extends RayCastable
 
         this.gameObject.components.forEach((element) =>
         {
-            if (element != this)
+            if (element !== this)
             { element.beforeRender(renderAtomic, scene, camera); }
         });
     }
@@ -127,7 +131,7 @@ export class Renderable extends RayCastable
             localNormal,
             localRay,
             rayEntryDistance,
-            rayOriginIsInsideBounds: rayEntryDistance == 0,
+            rayOriginIsInsideBounds: rayEntryDistance === 0,
             geometry: this.geometry,
             cullFace: this.material.renderParams.cullFace as CullFace,
         };
@@ -185,7 +189,7 @@ export class Renderable extends RayCastable
         this._selfLocalBounds = this.geometry.bounding;
     }
 
-    protected _onGetSelfBounds(event: feng3d.IEvent<{ bounds: Box3[]; }>)
+    protected _onGetSelfBounds(event: IEvent<{ bounds: Box3[]; }>)
     {
         event.data.bounds.push(this.geometry.bounding);
     }

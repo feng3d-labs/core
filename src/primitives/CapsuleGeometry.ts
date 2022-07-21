@@ -1,12 +1,28 @@
 import { oav } from '@feng3d/objectview';
-import { watch } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
 import { Geometry } from '../geometry/Geometry';
 import { createNodeMenu } from '../menu/CreateNodeMenu';
 
-export interface GeometryTypes { CapsuleGeometry: CapsuleGeometry }
+declare global
+{
+    export interface MixinsGeometryTypes
+    {
+        CapsuleGeometry: CapsuleGeometry
+    }
+
+    export interface MixinsDefaultGeometry
+    {
+        Capsule: CapsuleGeometry;
+    }
+
+    export interface MixinsPrimitiveGameObject
+    {
+        Capsule: GameObject;
+    }
+}
 
 /**
  * 胶囊体几何体
@@ -107,7 +123,7 @@ export class CapsuleGeometry extends Geometry
                     comp2 = z;
                 }
 
-                if (xi == this.segmentsW)
+                if (xi === this.segmentsW)
                 {
                     vertexPositionData[index] = vertexPositionData[startIndex];
                     vertexPositionData[index + 1] = vertexPositionData[startIndex + 1];
@@ -138,7 +154,7 @@ export class CapsuleGeometry extends Geometry
 
                 if (xi > 0 && yi > 0)
                 {
-                    if (yi == this.segmentsH)
+                    if (yi === this.segmentsH)
                     {
                         vertexPositionData[index] = vertexPositionData[startIndex];
                         vertexPositionData[index + 1] = vertexPositionData[startIndex + 1];
@@ -181,13 +197,13 @@ export class CapsuleGeometry extends Geometry
                     const c = (this.segmentsW + 1) * (yi - 1) + xi - 1;
                     const d = (this.segmentsW + 1) * (yi - 1) + xi;
 
-                    if (yi == this.segmentsH)
+                    if (yi === this.segmentsH)
                     {
                         indices[numIndices++] = a;
                         indices[numIndices++] = c;
                         indices[numIndices++] = d;
                     }
-                    else if (yi == 1)
+                    else if (yi === 1)
                     {
                         indices[numIndices++] = a;
                         indices[numIndices++] = b;
@@ -231,21 +247,12 @@ export class CapsuleGeometry extends Geometry
     }
 }
 
-export interface DefaultGeometry
-{
-    Capsule: CapsuleGeometry;
-}
 Geometry.setDefault('Capsule', new CapsuleGeometry());
 
 GameObject.registerPrimitive('Capsule', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Capsule');
 });
-
-export interface PrimitiveGameObject
-{
-    Capsule: GameObject;
-}
 
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(

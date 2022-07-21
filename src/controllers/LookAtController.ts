@@ -47,13 +47,15 @@ export class LookAtController extends ControllerBase
 
     set lookAtObject(value)
     {
-        if (this._lookAtObject == value)
-        { return; }
+        if (this._lookAtObject === value)
+        {
+            return;
+        }
 
         this._lookAtObject = value;
     }
 
-    update(interpolate = true): void
+    update(_interpolate = true): void
     {
         if (this._targetObject)
         {

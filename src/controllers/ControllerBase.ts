@@ -18,7 +18,7 @@ export class ControllerBase
     /**
      * 手动应用更新到目标3D对象
      */
-    update(interpolate = true): void
+    update(_interpolate = true): void
     {
         throw new Error('Abstract method');
     }

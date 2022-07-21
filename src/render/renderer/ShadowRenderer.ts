@@ -9,10 +9,13 @@ import { SpotLight } from '../../light/SpotLight';
 import { Scene } from '../../scene/Scene';
 import { FrameBufferObject } from '../FrameBufferObject';
 
-/**
- * 阴影图渲染器
- */
-export var shadowRenderer: ShadowRenderer;
+declare global
+{
+    export interface MixinsRenderAtomic
+    {
+        shadowShader: Shader;
+    }
+}
 
 export class ShadowRenderer
 {
@@ -23,22 +26,22 @@ export class ShadowRenderer
      */
     draw(gl: WebGLRenderer, scene: Scene, camera: Camera)
     {
-        const pointLights = scene.activePointLights.filter((i) => i.shadowType != ShadowType.No_Shadows);
-        for (var i = 0; i < pointLights.length; i++)
+        const pointLights = scene.activePointLights.filter((i) => i.shadowType !== ShadowType.No_Shadows);
+        for (let i = 0; i < pointLights.length; i++)
         {
             pointLights[i].updateDebugShadowMap(scene, camera);
             this.drawForPointLight(gl, pointLights[i], scene, camera);
         }
 
-        const spotLights = scene.activeSpotLights.filter((i) => i.shadowType != ShadowType.No_Shadows);
-        for (var i = 0; i < spotLights.length; i++)
+        const spotLights = scene.activeSpotLights.filter((i) => i.shadowType !== ShadowType.No_Shadows);
+        for (let i = 0; i < spotLights.length; i++)
         {
             spotLights[i].updateDebugShadowMap(scene, camera);
             this.drawForSpotLight(gl, spotLights[i], scene, camera);
         }
 
-        const directionalLights = scene.activeDirectionalLights.filter((i) => i.shadowType != ShadowType.No_Shadows);
-        for (var i = 0; i < directionalLights.length; i++)
+        const directionalLights = scene.activeDirectionalLights.filter((i) => i.shadowType !== ShadowType.No_Shadows);
+        for (let i = 0; i < directionalLights.length; i++)
         {
             directionalLights[i].updateDebugShadowMap(scene, camera);
             this.drawForDirectionalLight(gl, directionalLights[i], scene, camera);
@@ -231,22 +234,21 @@ export class ShadowRenderer
         this.renderAtomic.shader = null;
     }
 }
-shadowRenderer = new ShadowRenderer();
 
-var cube2DViewPorts = [
+/**
+ * 阴影图渲染器
+ */
+export const shadowRenderer = new ShadowRenderer();
+
+const cube2DViewPorts = [
     new Rectangle(), new Rectangle(), new Rectangle(),
     new Rectangle(), new Rectangle(), new Rectangle()
 ];
-var cubeUps = [
+const cubeUps = [
     new Vector3(0, 1, 0), new Vector3(0, 1, 0), new Vector3(0, 1, 0),
     new Vector3(0, 1, 0), new Vector3(0, 0, 1), new Vector3(0, 0, -1)
 ];
-var cubeDirections = [
+const cubeDirections = [
     new Vector3(1, 0, 0), new Vector3(-1, 0, 0), new Vector3(0, 0, 1),
     new Vector3(0, 0, -1), new Vector3(0, 1, 0), new Vector3(0, -1, 0)
 ];
-
-export interface RenderAtomic
-{
-    shadowShader: Shader;
-}

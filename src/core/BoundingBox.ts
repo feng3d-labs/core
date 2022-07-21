@@ -2,17 +2,20 @@ import { Box3, Vector3 } from '@feng3d/math';
 import { Component } from '../component/Component';
 import { GameObject } from './GameObject';
 
-export interface GameObjectEventMap
+declare global
 {
-    /**
-     * 获取自身包围盒
-     */
-    getSelfBounds: { bounds: Box3[] };
+    export interface MixinsGameObjectEventMap
+    {
+        /**
+         * 获取自身包围盒
+         */
+        getSelfBounds: { bounds: Box3[] };
 
-    /**
-     * 自身包围盒发生变化
-     */
-    selfBoundsChanged: Component;
+        /**
+         * 自身包围盒发生变化
+         */
+        selfBoundsChanged: Component;
+    }
 }
 
 /**

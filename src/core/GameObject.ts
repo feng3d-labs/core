@@ -15,10 +15,8 @@ import { Transform } from './Transform';
 
 declare global
 {
-    interface MixinsGameObjectEventMap
-    {
-
-    }
+    interface MixinsGameObjectEventMap { }
+    interface MixinsPrimitiveGameObject { }
 }
 
 export interface GameObjectEventMap extends MixinsGameObjectEventMap, MouseEventMap, Feng3dObjectEventMap
@@ -101,7 +99,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     }
     set activeSelf(v)
     {
-        if (this._activeSelf == v) return;
+        if (this._activeSelf === v) return;
         this._activeSelf = v;
         this._invalidateActiveInHierarchy();
     }
@@ -231,11 +229,11 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     set children(value)
     {
         if (!value) return;
-        for (var i = this._children.length - 1; i >= 0; i--)
+        for (let i = this._children.length - 1; i >= 0; i--)
         {
             this.removeChildAt(i);
         }
-        for (var i = 0; i < value.length; i++)
+        for (let i = 0; i < value.length; i++)
         {
             this.addChild(value[i]);
         }
@@ -274,31 +272,31 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     /**
      * Adds a component class of type componentType to the game object.
      *
-     * @param type A component class of type.
+     * @param Type A component class of type.
      * @returns The component that is added.
      */
     /**
      * 添加一个类型为`type`的组件到游戏对象。
      *
-     * @param type 组件类定义。
+     * @param Type 组件类定义。
      * @returns 被添加的组件。
      */
-    addComponent<T extends Component>(type: Constructor<T>): T
+    addComponent<T extends Component>(Type: Constructor<T>): T
     {
-        let component = this.getComponent(type);
-        if (component && Component.isSingleComponent(type))
+        let component = this.getComponent(Type);
+        if (component && Component.isSingleComponent(Type))
         {
             // alert(`The compnent ${param["name"]} can't be added because ${this.name} already contains the same component.`);
             return component;
         }
-        const dependencies = Component.getDependencies(type);
+        const dependencies = Component.getDependencies(Type);
         // 先添加依赖
         dependencies.forEach((dependency) =>
         {
             this.addComponent(dependency);
         });
         //
-        component = new type();
+        component = new Type();
         this.addComponentAt(component, this._components.length);
 
         return component;
@@ -565,7 +563,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     getComponentIndex(component: Components): number
     {
-        console.assert(this._components.indexOf(component) != -1, '组件不在容器中');
+        console.assert(this._components.indexOf(component) !== -1, '组件不在容器中');
 
         const index = this._components.indexOf(component);
 
@@ -625,8 +623,8 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
         const removeComponents: T[] = [];
         for (let i = this._components.length - 1; i >= 0; i--)
         {
-            if (this._components[i].constructor == type)
-            { removeComponents.push(<T>this.removeComponentAt(i)); }
+            if (this._components[i].constructor === type)
+            { removeComponents.push(this.removeComponentAt(i) as T); }
         }
 
         return removeComponents;
@@ -639,7 +637,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     private hasComponent(com: Components): boolean
     {
-        return this._components.indexOf(com) != -1;
+        return this._components.indexOf(com) !== -1;
     }
 
     /**
@@ -649,7 +647,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     protected addComponentAt(component: Components, index: number): void
     {
-        if (component == null)
+        if (!component)
         { return; }
         console.assert(index >= 0 && index <= this.numComponents, '给出索引超出范围');
 
@@ -678,7 +676,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     find(name: string): GameObject
     {
-        if (this.name == name)
+        if (this.name === name)
         { return this; }
         for (let i = 0; i < this._children.length; i++)
         {
@@ -713,7 +711,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
         let checkitem = child;
         do
         {
-            if (checkitem == this)
+            if (checkitem === this)
             { return true; }
             checkitem = checkitem.parent;
         } while (checkitem);
@@ -728,13 +726,13 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     addChild(child: GameObject)
     {
-        if (child == null)
+        if (!child)
         { return; }
-        if (child.parent == this)
+        if (child.parent === this)
         {
             // 把子对象移动到最后
             const childIndex = this._children.indexOf(child);
-            if (childIndex != -1) this._children.splice(childIndex, 1);
+            if (childIndex !== -1) this._children.splice(childIndex, 1);
             this._children.push(child);
         }
         else
@@ -762,9 +760,9 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     addChildren(...childarray: GameObject[])
     {
-        for (const child_key_a in childarray)
+        for (const childKey in childarray)
         {
-            const child: GameObject = childarray[child_key_a];
+            const child: GameObject = childarray[childKey];
             this.addChild(child);
         }
     }
@@ -795,9 +793,9 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     removeChild(child: GameObject)
     {
-        if (child == null) return;
+        if (!child) return;
         const childIndex = this._children.indexOf(child);
-        if (childIndex != -1) this.removeChildInternal(childIndex, child);
+        if (childIndex !== -1) this.removeChildInternal(childIndex, child);
     }
 
     /**
@@ -819,8 +817,6 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     getChildAt(index: number)
     {
-        index = index;
-
         return this._children[index];
     }
 
@@ -834,7 +830,6 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
 
     private removeChildInternal(childIndex: number, child: GameObject)
     {
-        childIndex = childIndex;
         this._children.splice(childIndex, 1);
         child._setParent(null);
 
@@ -849,11 +844,11 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     {
         if (this.parent)
         { this.parent.removeChild(this); }
-        for (var i = this._children.length - 1; i >= 0; i--)
+        for (let i = this._children.length - 1; i >= 0; i--)
         {
             this.removeChildAt(i);
         }
-        for (var i = this._components.length - 1; i >= 0; i--)
+        for (let i = this._components.length - 1; i >= 0; i--)
         {
             this.removeComponentAt(i);
         }
@@ -926,7 +921,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
             this.onSelfLoadCompleted(() =>
             {
                 loadingNum--;
-                if (loadingNum == 0) callback();
+                if (loadingNum === 0) callback();
             });
         }
         for (let i = 0; i < this.children.length; i++)
@@ -935,14 +930,15 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
             if (!element.isLoaded)
             {
                 loadingNum++;
+                // eslint-disable-next-line no-loop-func
                 element.onLoadCompleted(() =>
                 {
                     loadingNum--;
-                    if (loadingNum == 0) callback();
+                    if (loadingNum === 0) callback();
                 });
             }
         }
-        if (loadingNum == 0) callback();
+        if (loadingNum === 0) callback();
     }
 
     /**
@@ -953,7 +949,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     static find(name: string)
     {
         const gameobjects = Feng3dObject.getObjects(GameObject);
-        const result = gameobjects.filter((v) => !v.disposed && (v.name == name));
+        const result = gameobjects.filter((v) => !v.disposed && (v.name === name));
 
         return result[0];
     }
@@ -994,7 +990,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
     private updateScene()
     {
         const newScene = this._parent ? this._parent._scene : null;
-        if (this._scene == newScene)
+        if (this._scene === newScene)
         { return; }
         if (this._scene)
         {
@@ -1036,7 +1032,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
         g.name = type;
 
         const createHandler = this._registerPrimitives[type];
-        if (createHandler != null) createHandler(g);
+        if (createHandler) createHandler(g);
 
         serialization.setValue(g, param);
 
@@ -1061,7 +1057,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
 /**
  * 原始游戏对象，可以通过GameObject.createPrimitive进行创建。
  */
-export interface PrimitiveGameObject
+export interface PrimitiveGameObject extends MixinsPrimitiveGameObject
 {
 }
 
@@ -1070,6 +1066,6 @@ createNodeMenu.push(
     {
         path: 'Create Empty',
         click: () =>
-            new feng3d.GameObject()
+            new GameObject()
     },
 );

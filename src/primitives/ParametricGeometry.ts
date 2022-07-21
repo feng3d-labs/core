@@ -2,7 +2,13 @@ import { Vector3 } from '@feng3d/math';
 import { Geometry } from '../geometry/Geometry';
 import { geometryUtils } from '../geometry/GeometryUtils';
 
-export interface GeometryTypes { ParametricGeometry: ParametricGeometry }
+declare global
+{
+    export interface MixinsGeometryTypes
+    {
+        ParametricGeometry: ParametricGeometry
+    }
+}
 
 export class ParametricGeometry extends Geometry
 {

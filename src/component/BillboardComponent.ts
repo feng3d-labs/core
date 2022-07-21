@@ -1,11 +1,18 @@
 import { oav } from '@feng3d/objectview';
-import { watch } from '@feng3d/polyfill';
+import { watch } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
-import { RegisterComponent, Component } from './Component';
+import { AddComponentMenu } from '../Menu';
+import { Component, RegisterComponent } from './Component';
 
-export interface ComponentMap { BillboardComponent: BillboardComponent; }
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        BillboardComponent: BillboardComponent;
+    }
+}
 
-@feng3d.AddComponentMenu('Layout/BillboardComponent')
+@AddComponentMenu('Layout/BillboardComponent')
 @RegisterComponent()
 export class BillboardComponent extends Component
 {

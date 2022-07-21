@@ -7,11 +7,6 @@ import { Scene } from '../../scene/Scene';
 /**
  * 轮廓渲染器
  */
-export var outlineRenderer: OutlineRenderer;
-
-/**
- * 轮廓渲染器
- */
 export class OutlineRenderer
 {
     renderAtomic: RenderAtomic;
@@ -51,4 +46,7 @@ export class OutlineRenderer
     }
 }
 
-outlineRenderer = new OutlineRenderer();
+/**
+ * 轮廓渲染器
+ */
+export const outlineRenderer = new OutlineRenderer();

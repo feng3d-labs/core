@@ -1,7 +1,7 @@
-import { Matrix4x4, Ray3, Vector3, Vector2, Frustum, Box3 } from '@feng3d/math';
+import { Frustum, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialization, serialize } from '@feng3d/serialization';
-import { RegisterComponent, Component } from '../component/Component';
+import { Component, RegisterComponent } from '../component/Component';
 import { GameObject } from '../core/GameObject';
 import { AddComponentMenu } from '../Menu';
 import { createNodeMenu } from '../menu/CreateNodeMenu';
@@ -10,12 +10,23 @@ import { OrthographicLens } from './lenses/OrthographicLens';
 import { PerspectiveLens } from './lenses/PerspectiveLens';
 import { Projection } from './Projection';
 
-export interface GameObjectEventMap
+declare global
 {
-    lensChanged;
-}
+    export interface MixinsGameObjectEventMap
+    {
+        lensChanged;
+    }
 
-export interface ComponentMap { Camera: Camera; }
+    export interface MixinsComponentMap
+    {
+        Camera: Camera;
+    }
+
+    export interface MixinsPrimitiveGameObject
+    {
+        Camera: GameObject;
+    }
+}
 
 /**
  * 摄像机
@@ -45,7 +56,7 @@ export class Camera extends Component
     set projection(v)
     {
         const projectionType = this.projection;
-        if (projectionType == v) return;
+        if (projectionType === v) return;
         //
         let aspect = 1;
         let near = 0.3;
@@ -55,15 +66,15 @@ export class Camera extends Component
             aspect = this.lens.aspect;
             near = this.lens.near;
             far = this.lens.far;
-            serialization.setValue(this._backups, <any> this.lens);
+            serialization.setValue(this._backups, this.lens as any);
         }
         const fov = this._backups ? this._backups.fov : 60;
         const size = this._backups ? this._backups.size : 1;
-        if (v == Projection.Perspective)
+        if (v === Projection.Perspective)
         {
             this.lens = new PerspectiveLens(fov, aspect, near, far);
         }
- else
+        else
         {
             this.lens = new OrthographicLens(size, aspect, near, far);
         }
@@ -80,7 +91,7 @@ export class Camera extends Component
     }
     set lens(v)
     {
-        if (this._lens == v) return;
+        if (this._lens === v) return;
 
         if (this._lens)
         {
@@ -127,7 +138,7 @@ export class Camera extends Component
             this._frustumInvalid = false;
         }
 
-return this._frustum;
+        return this._frustum;
     }
 
     /**
@@ -162,7 +173,7 @@ return this._frustum;
     {
         const v: Vector3 = this.lens.project(this.transform.worldToLocalMatrix.transformPoint3(point3d));
 
-return v;
+        return v;
     }
 
     /**
@@ -189,7 +200,7 @@ return v;
         const rb = this.unproject(+0.5 * dir.x, +0.5 * dir.y, depth);
         const scale = lt.subTo(rb).length;
 
-return scale;
+        return scale;
     }
 
     /**
@@ -208,18 +219,11 @@ return scale;
     private _frustum = new Frustum();
     private _frustumInvalid = true;
 }
-// 投影后可视区域
-const visibleBox = new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
 
 GameObject.registerPrimitive('Camera', (g) =>
 {
     g.addComponent(Camera);
 });
-
-export interface PrimitiveGameObject
-{
-    Camera: GameObject;
-}
 
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(
@@ -227,7 +231,7 @@ createNodeMenu.push(
         path: 'Camera',
         priority: -2,
         click: () =>
-        GameObject.createPrimitive('Camera')
+            GameObject.createPrimitive('Camera')
     }
 );
 

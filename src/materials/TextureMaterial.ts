@@ -4,7 +4,13 @@ import { shaderConfig } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { Texture2D } from '../textures/Texture2D';
 
-export interface UniformsTypes { texture: TextureUniforms }
+declare global
+{
+    export interface MixinsUniformsTypes
+    {
+        texture: TextureUniforms
+    }
+}
 export class TextureUniforms
 {
     __class__: 'feng3d.TextureUniforms';

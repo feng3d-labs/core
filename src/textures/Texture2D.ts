@@ -1,8 +1,8 @@
 import { loader } from '@feng3d/filesystem';
 import { Color4, ColorKeywords } from '@feng3d/math';
 import { ArrayUtils } from '@feng3d/polyfill';
-import { TextureType, TextureFormat } from '@feng3d/renderer';
-import { serialize, serialization } from '@feng3d/serialization';
+import { TextureFormat, TextureType } from '@feng3d/renderer';
+import { serialization, serialize } from '@feng3d/serialization';
 import { AssetType } from '../assets/AssetType';
 import { AssetData } from '../core/AssetData';
 import { HideFlags } from '../core/HideFlags';
@@ -20,7 +20,7 @@ export enum ImageDatas
     defaultParticle = 'defaultParticle',
 }
 
-export var imageDatas: {
+export let imageDatas: {
     black: ImageData;
     white: ImageData;
     red: ImageData;
@@ -72,12 +72,12 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
     /**
      * 是否已加载
      */
-    get isLoaded() { return this._loadings.length == 0; }
+    get isLoaded() { return this._loadings.length === 0; }
     private _loadings = [];
 
     get image(): HTMLImageElement
     {
-        return <any> this._pixels;
+        return this._pixels as any;
     }
 
     /**
@@ -96,7 +96,7 @@ export class Texture2D<T extends Texture2DEventMap = Texture2DEventMap> extends 
             this._pixels = null;
             this.invalidate();
 
-return;
+            return;
         }
         if (v.url)
         {
@@ -124,7 +124,7 @@ return;
 
     private onItemLoadCompleted()
     {
-        if (this._loadings.length == 0) this.emit('loadCompleted');
+        if (this._loadings.length === 0) this.emit('loadCompleted');
     }
 
     /**
@@ -134,11 +134,11 @@ return;
     onLoadCompleted(callback: () => void)
     {
         if (this.isLoaded)
-{
- callback();
+        {
+            callback();
 
-return;
-}
+            return;
+        }
         this.once('loadCompleted', callback);
     }
 
@@ -174,7 +174,7 @@ return;
         const texture = new Texture2D();
         texture.source = { url };
 
-return texture;
+        return texture;
     }
 }
 

@@ -1,7 +1,8 @@
 import { globalEmitter } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
-import { classUtils, watch } from '@feng3d/polyfill';
+import { classUtils } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 import { Behaviour } from '../component/Behaviour';
 import { RegisterComponent } from '../component/Component';
 import { AddComponentMenu } from '../Menu';
@@ -52,9 +53,9 @@ export class ScriptComponent extends Behaviour
         this._scriptInstance = null;
         if (!this.scriptName) return;
 
-        const cls = classUtils.getDefinitionByName(this.scriptName, false);
+        const Cls = classUtils.getDefinitionByName(this.scriptName, false);
 
-        if (cls) this._scriptInstance = new cls();
+        if (Cls) this._scriptInstance = new Cls();
         else console.warn(`无法初始化脚本 ${this.scriptName}`);
 
         this.scriptInit = false;
@@ -63,7 +64,7 @@ export class ScriptComponent extends Behaviour
         if (oldInstance)
         {
             // 如果两个类定义名称相同，则保留上个对象数据
-            if (classUtils.getQualifiedClassName(oldInstance) == this.scriptName)
+            if (classUtils.getQualifiedClassName(oldInstance) === this.scriptName)
             {
                 serialization.setValue(this._scriptInstance, <any>oldInstance);
             }

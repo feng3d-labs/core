@@ -28,7 +28,7 @@ export class SkyBox extends Component
     @oav({ component: 'OAVPick', componentParam: { accepttype: 'texturecube', datatype: 'texturecube' } })
     s_skyboxTexture = TextureCube.default;
 
-    beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
+    beforeRender(renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {
         renderAtomic.uniforms.s_skyboxTexture = () => this.s_skyboxTexture;
     }

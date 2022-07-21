@@ -2,8 +2,10 @@ import { Ray3, Rectangle, Vector2, Vector3 } from '@feng3d/math';
 import { WebGLRenderer } from '@feng3d/renderer';
 import { serialization } from '@feng3d/serialization';
 import { windowEventProxy } from '../../../shortcut/dist';
+import { AudioListener } from '../audio/AudioListener';
 import { Camera } from '../cameras/Camera';
 import { DirectionalLight } from '../light/DirectionalLight';
+import { ShadowType } from '../light/shadow/ShadowType';
 import { forwardRenderer } from '../render/renderer/ForwardRenderer';
 import { outlineRenderer } from '../render/renderer/OutlineRenderer';
 import { shadowRenderer } from '../render/renderer/ShadowRenderer';
@@ -43,7 +45,7 @@ export class View extends Feng3dObject
         if (!this._camera)
         {
             const cameras = this.scene.getComponentsInChildren(Camera);
-            if (cameras.length == 0)
+            if (cameras.length === 0)
             {
                 this._camera = serialization.setValue(new GameObject(), { name: 'defaultCamera' }).addComponent(Camera);
                 this.scene.gameObject.addChild(this._camera.gameObject);
@@ -189,7 +191,7 @@ export class View extends Feng3dObject
 
         this.canvas.width = this.canvas.clientWidth;
         this.canvas.height = this.canvas.clientHeight;
-        if (this.canvas.width * this.canvas.height == 0) return;
+        if (this.canvas.width * this.canvas.height === 0) return;
 
         const clientRect = this.canvas.getBoundingClientRect();
 
@@ -302,7 +304,7 @@ export class View extends Feng3dObject
      * @param start 起点
      * @param end 终点
      */
-    getObjectsInGlobalArea(start: feng3d.Vector2, end: feng3d.Vector2)
+    getObjectsInGlobalArea(start: Vector2, end: Vector2)
     {
         const s = this.viewRect.clampPoint(start);
         const e = this.viewRect.clampPoint(end);
@@ -314,7 +316,7 @@ export class View extends Feng3dObject
         //
         const gs = this.scene.getComponentsInChildren(Transform).filter((t) =>
         {
-            if (t == this.scene.transform) return false;
+            if (t === this.scene.transform) return false;
             const m = t.getComponent(Renderable);
             if (m)
             {
@@ -339,17 +341,17 @@ export class View extends Feng3dObject
 
     static createNewScene()
     {
-        const scene = feng3d.serialization.setValue(new feng3d.GameObject(), { name: 'Untitled' }).addComponent(Scene);
+        const scene = serialization.setValue(new GameObject(), { name: 'Untitled' }).addComponent(Scene);
         scene.background.setTo(0.2784, 0.2784, 0.2784);
         scene.ambientColor.setTo(0.4, 0.4, 0.4);
 
-        const camera = feng3d.GameObject.createPrimitive('Camera', { name: 'Main Camera' });
+        const camera = GameObject.createPrimitive('Camera', { name: 'Main Camera' });
         camera.addComponent(AudioListener);
-        camera.transform.position = new feng3d.Vector3(0, 1, -10);
+        camera.transform.position = new Vector3(0, 1, -10);
         scene.gameObject.addChild(camera);
 
-        const directionalLight = feng3d.serialization.setValue(new feng3d.GameObject(), { name: 'DirectionalLight' });
-        directionalLight.addComponent(DirectionalLight).shadowType = feng3d.ShadowType.Hard_Shadows;
+        const directionalLight = serialization.setValue(new GameObject(), { name: 'DirectionalLight' });
+        directionalLight.addComponent(DirectionalLight).shadowType = ShadowType.Hard_Shadows;
         directionalLight.transform.rx = 50;
         directionalLight.transform.ry = -30;
         directionalLight.transform.y = 3;

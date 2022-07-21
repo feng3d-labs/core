@@ -7,7 +7,12 @@ import { Texture2D } from '../textures/Texture2D';
 
 declare global
 {
-    export interface UniformsTypes { water: WaterUniforms }
+    export interface MixinsUniformsTypes { water: WaterUniforms }
+
+    export interface MixinsDefaultMaterial
+    {
+        'Water-Material': Material;
+    }
 }
 
 export class WaterUniforms
@@ -55,10 +60,5 @@ export class WaterUniforms
 }
 
 shaderConfig.shaders['water'].cls = WaterUniforms;
-
-export interface DefaultMaterial
-{
-    'Water-Material': Material;
-}
 
 Material.setDefault('Water-Material', { shaderName: 'water' });

@@ -1,6 +1,7 @@
-import { IEvent } from '@feng3d/event';
+import { EventEmitter, IEvent } from '@feng3d/event';
 import { Rectangle } from '@feng3d/math';
-import { watch, Lazy, lazy } from '@feng3d/polyfill';
+import { Lazy, lazy } from '@feng3d/polyfill';
+import { watch } from '@feng3d/watcher';
 import { windowEventProxy } from '../../../shortcut/dist';
 import { Camera } from '../cameras/Camera';
 import { raycaster } from '../pick/Raycaster';
@@ -33,17 +34,17 @@ export class Mouse3DManager
     /**
      * 拾取
      * @param scene 场景
-     * @param camera 摄像机
+     * @param _camera 摄像机
      */
-    pick(view: View, scene: Scene, camera: Camera)
+    pick(view: View, scene: Scene, _camera: Camera)
     {
-        if (this._mouseEventTypes.length == 0) return;
+        if (this._mouseEventTypes.length === 0) return;
         // 计算得到鼠标射线相交的物体
         const pickingCollisionVO = raycaster.pick(view.mouseRay3D, scene.mouseCheckObjects);
 
         const gameobject = pickingCollisionVO && pickingCollisionVO.gameObject;
 
-return gameobject;
+        return gameobject;
     }
 
     constructor(mouseInput: MouseInput, viewport?: Lazy<Rectangle>)
@@ -65,7 +66,7 @@ return gameobject;
      */
     private gameObjectClickNum: number;
 
-    private _mouseInputChanged(property: string, oldValue: MouseInput, newValue: MouseInput)
+    private _mouseInputChanged(_property: string, oldValue: MouseInput, newValue: MouseInput)
     {
         if (oldValue)
         {
@@ -89,11 +90,11 @@ return gameobject;
         {
             const bound = lazy.getvalue(this.viewport);
             if (!bound.contains(windowEventProxy.clientX, windowEventProxy.clientY))
-                { return; }
+            { return; }
         }
 
-        if (this._mouseEventTypes.indexOf(type) == -1)
-            { this._mouseEventTypes.push(type); }
+        if (this._mouseEventTypes.indexOf(type) === -1)
+        { this._mouseEventTypes.push(type); }
     }
 
     /**
@@ -109,12 +110,12 @@ return gameobject;
      */
     private setSelectedGameObject(value: GameObject)
     {
-        if (this._selectedGameObject != value)
+        if (this._selectedGameObject !== value)
         {
             if (this._selectedGameObject)
-                { this._selectedGameObject.emit('mouseout', null, true); }
+            { this._selectedGameObject.emit('mouseout', null, true); }
             if (value)
-                { value.emit('mouseover', null, true); }
+            { value.emit('mouseover', null, true); }
         }
         this._selectedGameObject = value;
         this._mouseEventTypes.forEach((element) =>
@@ -122,7 +123,7 @@ return gameobject;
             switch (element)
             {
                 case 'mousedown':
-                    if (this.preMouseDownGameObject != this._selectedGameObject)
+                    if (this.preMouseDownGameObject !== this._selectedGameObject)
                     {
                         this.gameObjectClickNum = 0;
                         this.preMouseDownGameObject = this._selectedGameObject;
@@ -130,11 +131,11 @@ return gameobject;
                     this._selectedGameObject && this._selectedGameObject.emit(element, null, true);
                     break;
                 case 'mouseup':
-                    if (this._selectedGameObject == this.preMouseDownGameObject)
+                    if (this._selectedGameObject === this.preMouseDownGameObject)
                     {
                         this.gameObjectClickNum++;
                     }
- else
+                    else
                     {
                         this.gameObjectClickNum = 0;
                         this.preMouseDownGameObject = null;
@@ -146,7 +147,7 @@ return gameobject;
                     break;
                 case 'click':
                     if (this.gameObjectClickNum > 0)
-                        { this._selectedGameObject && this._selectedGameObject.emit(element, null, true); }
+                    { this._selectedGameObject && this._selectedGameObject.emit(element, null, true); }
                     break;
                 case 'dblclick':
                     if (this.gameObjectClickNum > 1)
@@ -164,7 +165,7 @@ return gameobject;
 /**
  * 鼠标事件输入
  */
-export class MouseInput<T = MouseEventMap> extends feng3d.EventEmitter<T>
+export class MouseInput<T = MouseEventMap> extends EventEmitter<T>
 {
     /**
      * 是否启动
@@ -185,32 +186,32 @@ export class MouseInput<T = MouseEventMap> extends feng3d.EventEmitter<T>
     emit<K extends keyof T & string>(type: K, data?: T[K], bubbles = false)
     {
         if (!this.enable)
-            { return null; }
-        if (!this.catchMouseMove && type == 'mousemove')
-            { return null; }
+        { return null; }
+        if (!this.catchMouseMove && type === 'mousemove')
+        { return null; }
 
-return super.emit(type, data, bubbles);
+        return super.emit(type, data, bubbles);
     }
 
     /**
      * 派发事件
      * @param event   事件对象
      */
-    emitEvent<K extends keyof T & string>(event: feng3d.IEvent<T[K]>)
+    emitEvent<K extends keyof T & string>(event: IEvent<T[K]>)
     {
         if (!this.enable)
-            { return event; }
-        if (!this.catchMouseMove && event.type == 'mousemove')
-            { return event; }
+        { return event; }
+        if (!this.catchMouseMove && event.type === 'mousemove')
+        { return event; }
 
-return super.emitEvent(event);
+        return super.emitEvent(event);
     }
 }
 
 /**
  * 鼠标事件列表
  */
-var mouseEventTypes: (keyof MouseEventMap)[]
+const mouseEventTypes: (keyof MouseEventMap)[]
     = [
         'mouseout',
         'mouseover',
@@ -252,7 +253,7 @@ export class WindowMouseInput extends MouseInput
         // 处理鼠标中键与右键
         if (mouseEvent instanceof MouseEvent)
         {
-            if (['click', 'mousedown', 'mouseup'].indexOf(mouseEvent.type) != -1)
+            if (['click', 'mousedown', 'mouseup'].indexOf(mouseEvent.type) !== -1)
             {
                 type = ['', 'middle', 'right'][mouseEvent.button] + mouseEvent.type;
             }

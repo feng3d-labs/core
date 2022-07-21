@@ -11,7 +11,18 @@ import { Scene } from '../scene/Scene';
 import { Light } from './Light';
 import { LightType } from './LightType';
 
-export interface ComponentMap { DirectionalLight: DirectionalLight; }
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        DirectionalLight: DirectionalLight;
+    }
+
+    export interface MixinsPrimitiveGameObject
+    {
+        'Directional light': GameObject;
+    }
+}
 
 /**
  * 方向光源
@@ -77,11 +88,6 @@ GameObject.registerPrimitive('Directional light', (g) =>
 {
     g.addComponent(DirectionalLight);
 });
-
-export interface PrimitiveGameObject
-{
-    'Directional light': GameObject;
-}
 
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(

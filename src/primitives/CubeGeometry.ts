@@ -1,12 +1,24 @@
 import { oav } from '@feng3d/objectview';
-import { watch } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
 import { Geometry } from '../geometry/Geometry';
 import { createNodeMenu } from '../menu/CreateNodeMenu';
 
-export interface GeometryTypes { CubeGeometry: CubeGeometry }
+declare global
+{
+    export interface MixinsGeometryTypes { CubeGeometry: CubeGeometry }
+
+    export interface MixinsDefaultGeometry
+    {
+        Cube: CubeGeometry;
+    }
+    export interface MixinsPrimitiveGameObject
+    {
+        Cube: GameObject;
+    }
+}
 
 /**
  * 立（长）方体几何体
@@ -101,41 +113,36 @@ export class CubeGeometry extends Geometry
         const vertexPositionData: number[] = [];
 
         let i: number; let
-j: number;
+            j: number;
 
-        let hw: number; let hh: number; let
-hd: number; // halves
-        let dw: number; let dh: number; let
-dd: number; // deltas
-
-        let outer_pos: number;
+        let outerPos: number;
 
         // Indices
         let positionIndex = 0;
 
         // half cube dimensions
-        hw = this.width / 2;
-        hh = this.height / 2;
-        hd = this.depth / 2;
+        const hw = this.width / 2;
+        const hh = this.height / 2;
+        const hd = this.depth / 2;
 
         // Segment dimensions
-        dw = this.width / this.segmentsW;
-        dh = this.height / this.segmentsH;
-        dd = this.depth / this.segmentsD;
+        const dw = this.width / this.segmentsW;
+        const dh = this.height / this.segmentsH;
+        const dd = this.depth / this.segmentsD;
 
         for (i = 0; i <= this.segmentsW; i++)
         {
-            outer_pos = -hw + i * dw;
+            outerPos = -hw + i * dw;
 
             for (j = 0; j <= this.segmentsH; j++)
             {
                 // front
-                vertexPositionData[positionIndex++] = outer_pos;
+                vertexPositionData[positionIndex++] = outerPos;
                 vertexPositionData[positionIndex++] = -hh + j * dh;
                 vertexPositionData[positionIndex++] = -hd;
 
                 // back
-                vertexPositionData[positionIndex++] = outer_pos;
+                vertexPositionData[positionIndex++] = outerPos;
                 vertexPositionData[positionIndex++] = -hh + j * dh;
                 vertexPositionData[positionIndex++] = hd;
             }
@@ -143,17 +150,17 @@ dd: number; // deltas
 
         for (i = 0; i <= this.segmentsW; i++)
         {
-            outer_pos = -hw + i * dw;
+            outerPos = -hw + i * dw;
 
             for (j = 0; j <= this.segmentsD; j++)
             {
                 // top
-                vertexPositionData[positionIndex++] = outer_pos;
+                vertexPositionData[positionIndex++] = outerPos;
                 vertexPositionData[positionIndex++] = hh;
                 vertexPositionData[positionIndex++] = -hd + j * dd;
 
                 // bottom
-                vertexPositionData[positionIndex++] = outer_pos;
+                vertexPositionData[positionIndex++] = outerPos;
                 vertexPositionData[positionIndex++] = -hh;
                 vertexPositionData[positionIndex++] = -hd + j * dd;
             }
@@ -161,19 +168,19 @@ dd: number; // deltas
 
         for (i = 0; i <= this.segmentsD; i++)
         {
-            outer_pos = hd - i * dd;
+            outerPos = hd - i * dd;
 
             for (j = 0; j <= this.segmentsH; j++)
             {
                 // left
                 vertexPositionData[positionIndex++] = -hw;
                 vertexPositionData[positionIndex++] = -hh + j * dh;
-                vertexPositionData[positionIndex++] = outer_pos;
+                vertexPositionData[positionIndex++] = outerPos;
 
                 // right
                 vertexPositionData[positionIndex++] = hw;
                 vertexPositionData[positionIndex++] = -hh + j * dh;
-                vertexPositionData[positionIndex++] = outer_pos;
+                vertexPositionData[positionIndex++] = outerPos;
             }
         }
 
@@ -191,7 +198,7 @@ dd: number; // deltas
         const vertexNormalData: number[] = [];
 
         let i: number; let
-j: number;
+            j: number;
 
         // Indices
         let normalIndex = 0;
@@ -244,7 +251,7 @@ j: number;
             }
         }
 
-return vertexNormalData;
+        return vertexNormalData;
     }
 
     /**
@@ -258,7 +265,7 @@ return vertexNormalData;
         const vertexTangentData: number[] = [];
 
         let i: number; let
-j: number;
+            j: number;
 
         // Indices
         let tangentIndex = 0;
@@ -325,9 +332,9 @@ j: number;
         const indices: number[] = [];
 
         let tl: number; let tr: number; let bl: number; let
-br: number;
+            br: number;
         let i: number; let j: number; let
-inc = 0;
+            inc = 0;
 
         let fidx = 0;
 
@@ -436,29 +443,29 @@ inc = 0;
     private buildUVs()
     {
         let i: number; let j: number; let
-uidx: number;
+            uidx: number;
         const data: number[] = [];
 
-        let u_tile_dim: number; let
-v_tile_dim: number;
-        let u_tile_step: number; let
-v_tile_step: number;
+        let uTileDim: number; let
+            vTileDim: number;
+        let uTileStep: number; let
+            vTileStep: number;
         let tl0u: number; let
-tl0v: number;
+            tl0v: number;
         let tl1u: number; let
-tl1v: number;
+            tl1v: number;
         let du: number; let
-dv: number;
+            dv: number;
 
         if (this.tile6)
         {
-            u_tile_dim = u_tile_step = 1 / 3;
-            v_tile_dim = v_tile_step = 1 / 2;
+            uTileDim = uTileStep = 1 / 3;
+            vTileDim = vTileStep = 1 / 2;
         }
         else
         {
-            u_tile_dim = v_tile_dim = 1;
-            u_tile_step = v_tile_step = 0;
+            uTileDim = vTileDim = 1;
+            uTileStep = vTileStep = 0;
         }
 
         // Create planes two and two, the same way that they were
@@ -476,66 +483,61 @@ dv: number;
         uidx = 0;
 
         // FRONT / BACK
-        tl0u = Number(u_tile_step);
-        tl0v = Number(v_tile_step);
-        tl1u = 2 * u_tile_step;
-        tl1v = 0 * v_tile_step;
-        du = u_tile_dim / this.segmentsW;
-        dv = v_tile_dim / this.segmentsH;
+        tl0u = Number(uTileStep);
+        tl0v = Number(vTileStep);
+        tl1u = 2 * uTileStep;
+        tl1v = 0 * vTileStep;
+        du = uTileDim / this.segmentsW;
+        dv = vTileDim / this.segmentsH;
         for (i = 0; i <= this.segmentsW; i++)
         {
             for (j = 0; j <= this.segmentsH; j++)
             {
                 data[uidx++] = tl0u + i * du;
-                data[uidx++] = tl0v + (v_tile_dim - j * dv);
-                data[uidx++] = tl1u + (u_tile_dim - i * du);
-                data[uidx++] = tl1v + (v_tile_dim - j * dv);
+                data[uidx++] = tl0v + (vTileDim - j * dv);
+                data[uidx++] = tl1u + (uTileDim - i * du);
+                data[uidx++] = tl1v + (vTileDim - j * dv);
             }
         }
 
         // TOP / BOTTOM
-        tl0u = Number(u_tile_step);
-        tl0v = 0 * v_tile_step;
-        tl1u = 0 * u_tile_step;
-        tl1v = 0 * v_tile_step;
-        du = u_tile_dim / this.segmentsW;
-        dv = v_tile_dim / this.segmentsD;
+        tl0u = Number(uTileStep);
+        tl0v = 0 * vTileStep;
+        tl1u = 0 * uTileStep;
+        tl1v = 0 * vTileStep;
+        du = uTileDim / this.segmentsW;
+        dv = vTileDim / this.segmentsD;
         for (i = 0; i <= this.segmentsW; i++)
         {
             for (j = 0; j <= this.segmentsD; j++)
             {
                 data[uidx++] = tl0u + i * du;
-                data[uidx++] = tl0v + (v_tile_dim - j * dv);
+                data[uidx++] = tl0v + (vTileDim - j * dv);
                 data[uidx++] = tl1u + i * du;
                 data[uidx++] = tl1v + j * dv;
             }
         }
 
         // LEFT / RIGHT
-        tl0u = 0 * u_tile_step;
-        tl0v = Number(v_tile_step);
-        tl1u = 2 * u_tile_step;
-        tl1v = Number(v_tile_step);
-        du = u_tile_dim / this.segmentsD;
-        dv = v_tile_dim / this.segmentsH;
+        tl0u = 0 * uTileStep;
+        tl0v = Number(vTileStep);
+        tl1u = 2 * uTileStep;
+        tl1v = Number(vTileStep);
+        du = uTileDim / this.segmentsD;
+        dv = vTileDim / this.segmentsH;
         for (i = 0; i <= this.segmentsD; i++)
         {
             for (j = 0; j <= this.segmentsH; j++)
             {
                 data[uidx++] = tl0u + i * du;
-                data[uidx++] = tl0v + (v_tile_dim - j * dv);
-                data[uidx++] = tl1u + (u_tile_dim - i * du);
-                data[uidx++] = tl1v + (v_tile_dim - j * dv);
+                data[uidx++] = tl0v + (vTileDim - j * dv);
+                data[uidx++] = tl1u + (uTileDim - i * du);
+                data[uidx++] = tl1v + (vTileDim - j * dv);
             }
         }
 
         return data;
     }
-}
-
-export interface DefaultGeometry
-{
-    Cube: CubeGeometry;
 }
 
 Geometry.setDefault('Cube', new CubeGeometry());
@@ -545,18 +547,13 @@ GameObject.registerPrimitive('Cube', (g) =>
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cube');
 });
 
-export interface PrimitiveGameObject
-{
-    Cube: GameObject;
-}
-
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(
     {
         path: '3D Object/Cube',
         priority: -1,
         click: () =>
-        GameObject.createPrimitive('Cube')
+            GameObject.createPrimitive('Cube')
     }
 );
 

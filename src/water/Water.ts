@@ -1,4 +1,4 @@
-import { Vector3, Matrix4x4, Plane, Vector4 } from '@feng3d/math';
+import { Matrix4x4, Plane, Vector3, Vector4 } from '@feng3d/math';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialization } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
@@ -11,11 +11,15 @@ import { AddComponentMenu } from '../Menu';
 import { createNodeMenu } from '../menu/CreateNodeMenu';
 import { FrameBufferObject } from '../render/FrameBufferObject';
 import { Scene } from '../scene/Scene';
+import { WaterUniforms } from './WaterMaterial';
 
 declare global
 {
-    export interface ComponentMap { Water: Water }
-    export interface PrimitiveGameObject
+    export interface MixinsComponentMap
+    {
+        Water: Water
+    }
+    export interface MixinsPrimitiveGameObject
     {
         Water: GameObject;
     }
@@ -41,7 +45,7 @@ export class Water extends Renderable
 
     beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
     {
-        const uniforms = <feng3d.WaterUniforms> this.material.uniforms;
+        const uniforms = this.material.uniforms as WaterUniforms;
         const sun = this.gameObject.scene.activeDirectionalLights[0];
         if (sun)
         {
@@ -57,6 +61,7 @@ export class Water extends Renderable
 
         super.beforeRender(renderAtomic, scene, camera);
 
+        // eslint-disable-next-line no-constant-condition
         if (1) return;
         //
         const mirrorWorldPosition = this.transform.worldPosition;
@@ -153,7 +158,7 @@ createNodeMenu.push(
         path: '3D Object/Water',
         priority: -20000,
         click: () =>
-        GameObject.createPrimitive('Water')
+            GameObject.createPrimitive('Water')
     }
 );
 

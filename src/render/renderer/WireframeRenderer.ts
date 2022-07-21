@@ -93,7 +93,7 @@ export class WireframeRenderer
         //
         const oldIndexBuffer = renderAtomic.index;
         if (oldIndexBuffer.count < 3) return;
-        if (!renderAtomic.wireframeindexBuffer || renderAtomic.wireframeindexBuffer.count != 2 * oldIndexBuffer.count)
+        if (!renderAtomic.wireframeindexBuffer || renderAtomic.wireframeindexBuffer.count !== 2 * oldIndexBuffer.count)
         {
             const wireframeindices: number[] = [];
             const indices = lazy.getvalue(oldIndexBuffer.indices);

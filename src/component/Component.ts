@@ -3,7 +3,7 @@ import { Constructor, IDisposable } from '@feng3d/polyfill';
 import { RenderAtomic } from '@feng3d/renderer';
 import { Camera } from '../cameras/Camera';
 import { Feng3dObject } from '../core/Feng3dObject';
-import { GameObjectEventMap, GameObject } from '../core/GameObject';
+import { GameObject, GameObjectEventMap } from '../core/GameObject';
 import { Scene } from '../scene/Scene';
 
 interface ComponentInfo
@@ -319,7 +319,7 @@ export class Component extends Feng3dObject<GameObjectEventMap> implements IDisp
         this._disposed = true;
     }
 
-    beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
+    beforeRender(_renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {
 
     }
@@ -330,7 +330,7 @@ export class Component extends Feng3dObject<GameObjectEventMap> implements IDisp
     private _onAnyListener(e: IEvent<any>)
     {
         if (this._gameObject)
-            { this._gameObject.emitEvent(e); }
+        { this._gameObject.emitEvent(e); }
     }
 
     /**

@@ -3,7 +3,13 @@ import { serialize } from '@feng3d/serialization';
 import { RunEnvironment } from '../core/RunEnvironment';
 import { RegisterComponent, Component } from './Component';
 
-export interface ComponentMap { Behaviour: Behaviour; }
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        Behaviour: Behaviour;
+    }
+}
 
 /**
  * 行为
@@ -39,7 +45,7 @@ export class Behaviour extends Component
     /**
      * 每帧执行
      */
-    update(interval?: number)
+    update(_interval?: number)
     {
     }
 

@@ -1,13 +1,14 @@
 import { FS } from '@feng3d/filesystem';
 import { oav } from '@feng3d/objectview';
-import { watch, ArrayUtils } from '@feng3d/polyfill';
+import { ArrayUtils } from '@feng3d/polyfill';
 import { TextureType } from '@feng3d/renderer';
-import { serialize, serialization } from '@feng3d/serialization';
+import { serialization, serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 import { AssetType } from '../assets/AssetType';
 import { AssetData } from '../core/AssetData';
 import { HideFlags } from '../core/HideFlags';
 import { TextureInfo } from '../render/data/TextureInfo';
-import { Texture2D, ImageDatas } from './Texture2D';
+import { ImageDatas, Texture2D } from './Texture2D';
 
 export interface TextureCubeEventMap
 {
@@ -49,12 +50,12 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
     /**
      * 是否加载完成
      */
-    get isLoaded() { return this._loading.length == 0; }
+    get isLoaded() { return this._loading.length === 0; }
     private _loading = [];
 
     setTexture2D(pos: TextureCubeImageName, texture: Texture2D)
     {
-        if (this.rawData == null || this.rawData.type != 'texture')
+        if (!this.rawData || this.rawData.type !== 'texture')
         {
             this.rawData = { type: 'texture', textures: [] };
         }
@@ -66,7 +67,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
 
     setTexture2DPath(pos: TextureCubeImageName, path: string)
     {
-        if (this.rawData == null || this.rawData.type != 'path')
+        if (!this.rawData || this.rawData.type !== 'path')
         {
             this.rawData = { type: 'path', paths: [] };
         }
@@ -79,36 +80,36 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
     getTextureImage(pos: TextureCubeImageName, callback: (img?: HTMLImageElement) => void)
     {
         if (!this.rawData)
-{
- callback();
+        {
+            callback();
 
-return;
-}
+            return;
+        }
         const index = TextureCube.ImageNames.indexOf(pos);
-        if (this.rawData.type == 'texture')
+        if (this.rawData.type === 'texture')
         {
             const texture = this.rawData.textures[index];
             if (!texture)
-{
- callback();
+            {
+                callback();
 
-return;
-}
+                return;
+            }
             texture.onLoadCompleted(() =>
             {
                 callback(texture.image);
             });
         }
- else if (this.rawData.type == 'path')
+        else if (this.rawData.type === 'path')
         {
             const path = this.rawData.paths[index];
             if (!path)
-{
- callback();
+            {
+                callback();
 
-return;
-}
-            FS.fs.readImage(path, (err: Error, img: HTMLImageElement) =>
+                return;
+            }
+            FS.fs.readImage(path, (_err: Error, img: HTMLImageElement) =>
             {
                 callback(img);
             });
@@ -119,7 +120,7 @@ return;
     {
         if (!this.rawData) return;
 
-        if (this.rawData.type == 'texture')
+        if (this.rawData.type === 'texture')
         {
             this.rawData.textures.forEach((v, index) =>
             {
@@ -127,7 +128,7 @@ return;
             });
             this.invalidate();
         }
- else if (this.rawData.type == 'path')
+        else if (this.rawData.type === 'path')
         {
             this.rawData.paths.forEach((v, index) =>
             {
@@ -144,12 +145,12 @@ return;
      */
     private _loadItemTexture(texture: Texture2D, index: number)
     {
-        if (texture == null) return;
+        if (!texture) return;
 
         this._loading.push(texture);
         texture.onLoadCompleted(() =>
         {
-            if (this.rawData.type == 'texture' && this.rawData.textures[index] == texture)
+            if (this.rawData.type === 'texture' && this.rawData.textures[index] === texture)
             {
                 this._pixels[index] = texture.image;
                 this.invalidate();
@@ -167,12 +168,12 @@ return;
      */
     private _loadItemImagePath(imagepath: string, index: number)
     {
-        if (imagepath == null) return;
+        if (!imagepath) return;
 
         this._loading.push(imagepath);
-        FS.fs.readImage(imagepath, (err, img) =>
+        FS.fs.readImage(imagepath, (_err, img) =>
         {
-            if (img != null && this.rawData.type == 'path' && this.rawData.paths[index] == imagepath)
+            if (img && this.rawData.type === 'path' && this.rawData.paths[index] === imagepath)
             {
                 this._pixels[index] = img;
                 this.invalidate();
@@ -184,7 +185,7 @@ return;
 
     private _onItemLoadCompleted()
     {
-        if (this._loading.length == 0) this.emit('loadCompleted');
+        if (this._loading.length === 0) this.emit('loadCompleted');
     }
 
     /**
@@ -194,11 +195,11 @@ return;
     onLoadCompleted(callback: () => void)
     {
         if (this.isLoaded)
-{
- callback();
+        {
+            callback();
 
-return;
-}
+            return;
+        }
         this.once('loadCompleted', callback);
     }
 

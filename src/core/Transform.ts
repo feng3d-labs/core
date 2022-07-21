@@ -306,7 +306,7 @@ export class Transform extends Component
         rotationMatrix.appendRotation(axis, angle, pivotPoint);
         const newrotation = rotationMatrix.toTRS()[1];
         const v = Math.round((newrotation.x - this.rx) / 180);
-        if (v % 2 != 0)
+        if (v % 2 !== 0)
         {
             newrotation.x += 180;
             newrotation.y = 180 - newrotation.y;
@@ -572,7 +572,7 @@ export class Transform extends Component
         return localRay;
     }
 
-    beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
+    beforeRender(renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {
         Object.assign(renderAtomic.uniforms, this._renderAtomic.uniforms);
     }
@@ -602,13 +602,13 @@ export class Transform extends Component
 
     private _renderAtomic = new RenderAtomic();
 
-    private _positionChanged(newValue: number, oldValue: number, object: Vector3, property: string)
+    private _positionChanged(newValue: number, oldValue: number, _object: Vector3, _property: string)
     {
         if (!mathUtil.equals(newValue, oldValue))
         { this._invalidateTransform(); }
     }
 
-    private _rotationChanged(newValue: number, oldValue: number, object: Vector3, property: string)
+    private _rotationChanged(newValue: number, oldValue: number, _object: Vector3, _property: string)
     {
         if (!mathUtil.equals(newValue, oldValue))
         {
@@ -617,7 +617,7 @@ export class Transform extends Component
         }
     }
 
-    private _scaleChanged(newValue: number, oldValue: number, object: Vector3, property: string)
+    private _scaleChanged(newValue: number, oldValue: number, _object: Vector3, _property: string)
     {
         if (!mathUtil.equals(newValue, oldValue))
         { this._invalidateTransform(); }

@@ -1,12 +1,28 @@
 import { oav } from '@feng3d/objectview';
-import { watch } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
 import { Geometry } from '../geometry/Geometry';
 import { createNodeMenu } from '../menu/CreateNodeMenu';
 
-export interface GeometryTypes { CylinderGeometry: CylinderGeometry }
+declare global
+{
+    export interface MixinsGeometryTypes
+    {
+        CylinderGeometry: CylinderGeometry
+    }
+
+    export interface MixinsDefaultGeometry
+    {
+        Cylinder: CylinderGeometry;
+    }
+
+    export interface MixinsPrimitiveGameObject
+    {
+        Cylinder: GameObject;
+    }
+}
 
 /**
  * 圆柱体几何体
@@ -96,17 +112,15 @@ export class CylinderGeometry extends Geometry
     protected buildGeometry()
     {
         let i: number; let j: number; let
-index = 0;
+            index = 0;
         let x: number; let y: number; let z: number; let radius: number; let
-revolutionAngle = 0;
-        let dr: number; let latNormElev: number; let
-latNormBase: number;
+            revolutionAngle = 0;
 
         let comp1: number; let
-comp2: number;
+            comp2: number;
         let startIndex = 0;
         let t1: number; let
-t2: number;
+            t2: number;
 
         const vertexPositionData: number[] = [];
         const vertexNormalData: number[] = [];
@@ -155,7 +169,7 @@ t2: number;
                     comp2 = z;
                 }
 
-                if (i == this.segmentsW)
+                if (i === this.segmentsW)
                 {
                     addVertex(vertexPositionData[startIndex + 3], vertexPositionData[startIndex + 4], vertexPositionData[startIndex + 5],
                         0, t1, t2, 1, 0, 0);
@@ -209,7 +223,7 @@ t2: number;
                     comp2 = z;
                 }
 
-                if (i == this.segmentsW)
+                if (i === this.segmentsW)
                 {
                     addVertex(x, vertexPositionData[startIndex + 1], vertexPositionData[startIndex + 2],
                         0, t1, t2, 1, 0, 0);
@@ -223,16 +237,14 @@ t2: number;
         }
 
         // 侧面
-        dr = this.bottomRadius - this.topRadius;
-        latNormElev = dr / this.height;
-        latNormBase = (latNormElev == 0) ? 1 : this.height / dr;
+        const dr = this.bottomRadius - this.topRadius;
+        const latNormElev = dr / this.height;
+        const latNormBase = (latNormElev === 0) ? 1 : this.height / dr;
 
         if (this.surfaceClosed)
         {
-            let a: number; let b: number; let c: number; let
-d: number;
             let na0: number; let na1: number; let naComp1: number; let
-naComp2: number;
+                naComp2: number;
 
             for (j = 0; j <= this.segmentsH; ++j)
             {
@@ -267,7 +279,7 @@ naComp2: number;
                         naComp2 = latNormElev;
                     }
 
-                    if (i == this.segmentsW)
+                    if (i === this.segmentsW)
                     {
                         addVertex(vertexPositionData[startIndex], vertexPositionData[startIndex + 1], vertexPositionData[startIndex + 2],
                             na0, latNormElev, na1,
@@ -321,7 +333,7 @@ naComp2: number;
     private buildIndices()
     {
         let i: number; let j: number; let
-index = 0;
+            index = 0;
 
         const indices: number[] = [];
         let numIndices = 0;
@@ -332,7 +344,7 @@ index = 0;
             {
                 index += 2;
                 if (i > 0)
-                    { addTriangleClockWise(index - 1, index - 3, index - 2); }
+                { addTriangleClockWise(index - 1, index - 3, index - 2); }
             }
         }
 
@@ -343,7 +355,7 @@ index = 0;
             {
                 index += 2;
                 if (i > 0)
-                    { addTriangleClockWise(index - 2, index - 3, index - 1); }
+                { addTriangleClockWise(index - 2, index - 3, index - 1); }
             }
         }
 
@@ -351,7 +363,7 @@ index = 0;
         if (this.surfaceClosed)
         {
             let a: number; let b: number; let c: number; let
-d: number;
+                d: number;
             for (j = 0; j <= this.segmentsH; ++j)
             {
                 for (i = 0; i <= this.segmentsW; ++i)
@@ -389,9 +401,9 @@ d: number;
     private buildUVs()
     {
         let i: number; let
-j: number;
+            j: number;
         let x: number; let y: number; let
-revolutionAngle: number;
+            revolutionAngle: number;
 
         const data: number[] = [];
         const revolutionAngleDelta = 2 * Math.PI / this.segmentsW;
@@ -449,11 +461,6 @@ revolutionAngle: number;
     }
 }
 
-export interface DefaultGeometry
-{
-    Cylinder: CylinderGeometry;
-}
-
 Geometry.setDefault('Cylinder', new CylinderGeometry());
 
 GameObject.registerPrimitive('Cylinder', (g) =>
@@ -461,18 +468,13 @@ GameObject.registerPrimitive('Cylinder', (g) =>
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cylinder');
 });
 
-export interface PrimitiveGameObject
-{
-    Cylinder: GameObject;
-}
-
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(
     {
         path: '3D Object/Cylinder',
         priority: -4,
         click: () =>
-        GameObject.createPrimitive('Cylinder')
+            GameObject.createPrimitive('Cylinder')
     }
 );
 

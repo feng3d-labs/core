@@ -39,7 +39,7 @@ export class Graphics extends Component
             this.image = img;
         });
 
-return this;
+        return this;
     }
 }
 

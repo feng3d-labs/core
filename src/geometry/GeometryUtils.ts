@@ -1,7 +1,6 @@
-import { Matrix4x4, Vector3, Ray3, Vector2, Box3 } from '@feng3d/math';
+import { Box3, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
 import { CullFace } from '@feng3d/renderer';
 
-export var geometryUtils: GeometryUtils;
 export class GeometryUtils
 {
     /**
@@ -34,7 +33,7 @@ export class GeometryUtils
         {
             target[idx++] = uvIdx * 0.5;
             target[idx++] = 1.0 - (uvIdx & 1);
-            if (++uvIdx == 3)
+            if (++uvIdx === 3)
             { uvIdx = 0; }
         }
 
@@ -339,8 +338,8 @@ export class GeometryUtils
             i2: number;
         let vector = new Vector3();
 
-        const bakeNormals = normals != null;
-        const bakeTangents = tangents != null;
+        const bakeNormals = !!normals;
+        const bakeTangents = !!tangents;
         const invTranspose = new Matrix4x4();
 
         if (bakeNormals || bakeTangents)
@@ -415,7 +414,7 @@ export class GeometryUtils
         for (let i = 0; i < geometrys.length; i++)
         {
             const geometry = geometrys[i];
-            if (i == 0)
+            if (i === 0)
             {
                 result.indices = geometry.indices.concat();
                 result.positions = geometry.positions.concat();
@@ -425,7 +424,7 @@ export class GeometryUtils
             }
             else
             {
-                var startIndex = result.positions.length / 3;
+                const startIndex = result.positions.length / 3;
                 geometry.indices.forEach((v) => result.indices.push(v + startIndex));
                 geometry.positions.forEach((v) => result.positions.push(v));
                 result.uvs && geometry.uvs.forEach((v) => result.uvs.push(v));
@@ -450,7 +449,7 @@ export class GeometryUtils
      */
     raycast(ray: Ray3, indices: number[], positions: number[], uvs: number[], shortestCollisionDistance = Number.MAX_VALUE, cullFace = CullFace.NONE)
     {
-        if (cullFace == CullFace.FRONT_AND_BACK) return null;
+        if (cullFace === CullFace.FRONT_AND_BACK) return null;
 
         let t = 0;
         let i0 = 0; let i1 = 0; let
@@ -525,7 +524,7 @@ export class GeometryUtils
             // 计算射线与法线的点积，不等于零表示射线所在直线与三角面相交
             nDotV = nx * rayDirection.x + ny * rayDirection.y + nz * rayDirection.z; // rayDirection . normal
             // 判断射线是否与三角面相交
-            if ((cullFace == CullFace.FRONT && nDotV > 0.0) || (cullFace == CullFace.BACK && nDotV < 0.0) || (cullFace == CullFace.NONE && nDotV != 0.0))
+            if ((cullFace === CullFace.FRONT && nDotV > 0.0) || (cullFace === CullFace.BACK && nDotV < 0.0) || (cullFace === CullFace.NONE && nDotV !== 0.0))
             { // an intersection must exist
                 // 计算平面方程D值，参考Plane3D
                 D = -(nx * p0x + ny * p0y + nz * p0z);
@@ -616,4 +615,4 @@ export class GeometryUtils
     }
 }
 
-geometryUtils = new GeometryUtils();
+export const geometryUtils = new GeometryUtils();

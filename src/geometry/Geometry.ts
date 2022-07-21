@@ -1,8 +1,8 @@
-import { Matrix4x4, Box3, Ray3 } from '@feng3d/math';
+import { Box3, Matrix4x4, Ray3, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { gPartial } from '@feng3d/polyfill';
-import { Attribute, CullFace, RenderAtomic, Index, Attributes } from '@feng3d/renderer';
-import { serialize, serialization } from '@feng3d/serialization';
+import { Attribute, Attributes, CullFace, Index, RenderAtomic } from '@feng3d/renderer';
+import { serialization, serialize } from '@feng3d/serialization';
 import { AssetType } from '../assets/AssetType';
 import { AssetData } from '../core/AssetData';
 import { Feng3dObject } from '../core/Feng3dObject';
@@ -10,7 +10,13 @@ import { HideFlags } from '../core/HideFlags';
 import { CustomGeometry } from './CustomGeometry';
 import { geometryUtils } from './GeometryUtils';
 
-export interface GeometryTypes { }
+declare global
+{
+    interface MixinsDefaultGeometry { }
+    interface MixinsGeometryTypes { }
+}
+
+export interface GeometryTypes extends MixinsGeometryTypes { }
 
 export type GeometryLike = GeometryTypes[keyof GeometryTypes];
 
@@ -53,7 +59,7 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
             `  Attributes    ${Object.keys(this._attributes).join(',')}`,
         ].join('\n');
 
-return str;
+        return str;
     }
 
     /**
@@ -63,7 +69,7 @@ return str;
     {
         this.updateGrometry();
 
-return this._indexBuffer.indices;
+        return this._indexBuffer.indices;
     }
 
     /**
@@ -255,7 +261,7 @@ return this._indexBuffer.indices;
         this.updateGrometry();
         geometry.updateGrometry();
         // 变换被添加的几何体
-        if (transform != null)
+        if (transform)
         {
             geometry = geometry.clone();
             geometry.applyTransformation(transform);
@@ -266,7 +272,7 @@ return this._indexBuffer.indices;
         {
             this.cloneFrom(geometry);
 
-return;
+            return;
         }
 
         //
@@ -284,7 +290,7 @@ return;
         }
         this.indices = totalIndices;
         // 合并后顶点数量
-        const totalVertex = oldNumVertex + geometry.numVertex;
+        // const totalVertex = oldNumVertex + geometry.numVertex;
         // 合并属性数据
         for (const attributeName in attributes)
         {
@@ -343,12 +349,12 @@ return;
         if (!this._bounding)
         {
             const positions = this.positions;
-            if (!positions || positions.length == 0)
-                { return new Box3(); }
+            if (!positions || positions.length === 0)
+            { return new Box3(); }
             this._bounding = Box3.formPositions(this.positions);
         }
 
-return this._bounding;
+        return this._bounding;
     }
 
     /**
@@ -361,7 +367,7 @@ return this._bounding;
     {
         const result = geometryUtils.raycast(ray, this.indices, this.positions, this.uvs, shortestCollisionDistance, cullFace);
 
-return result;
+        return result;
     }
 
     /**
@@ -369,13 +375,12 @@ return result;
      *
      * @param result
      */
-    getVertices(result: feng3d.Vector3[] = [])
+    getVertices(result: Vector3[] = [])
     {
         const positions = this.positions;
-        var result: feng3d.Vector3[] = [];
         for (let i = 0, n = positions.length; i < n; i += 3)
         {
-            result.push(new feng3d.Vector3(positions[i], positions[i + 1], positions[i + 2]));
+            result.push(new Vector3(positions[i], positions[i + 1], positions[i + 2]));
         }
 
         return result;
@@ -389,7 +394,7 @@ return result;
             result.push([indices[i], indices[i + 1], indices[i + 2]]);
         }
 
-return result;
+        return result;
     }
 
     /**
@@ -400,7 +405,7 @@ return result;
         const geometry = new CustomGeometry();
         geometry.cloneFrom(this);
 
-return geometry;
+        return geometry;
     }
 
     /**
@@ -503,6 +508,6 @@ return geometry;
 /**
  * 默认几何体
  */
-export interface DefaultGeometry
+export interface DefaultGeometry extends MixinsDefaultGeometry
 {
 }

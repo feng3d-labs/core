@@ -1,12 +1,26 @@
 import { oav } from '@feng3d/objectview';
-import { watch } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
 import { Geometry } from '../geometry/Geometry';
 import { createNodeMenu } from '../menu/CreateNodeMenu';
 
-export interface GeometryTypes { TorusGeometry: TorusGeometry }
+declare global
+{
+	export interface MixinsGeometryTypes
+	{
+		TorusGeometry: TorusGeometry
+	}
+	export interface MixinsDefaultGeometry
+	{
+		Torus: TorusGeometry;
+	}
+	export interface MixinsPrimitiveGameObject
+	{
+		Torus: GameObject;
+	}
+}
 
 /**
  * 圆环几何体
@@ -108,7 +122,6 @@ export class TorusGeometry extends Geometry
 			j: number;
 		let x: number; let y: number; let z: number; let nx: number; let ny: number; let nz: number; let revolutionAngleR: number; let
 			revolutionAngleT: number;
-		let numTriangles: number;
 		// reset utility variables
 		this._numVertices = 0;
 		this._vertexIndex = 0;
@@ -116,7 +129,8 @@ export class TorusGeometry extends Geometry
 
 		// evaluate target number of vertices, triangles and indices
 		this._numVertices = (this.segmentsT + 1) * (this.segmentsR + 1); // this.segmentsT + 1 because of closure, this.segmentsR + 1 because of closure
-		numTriangles = this.segmentsT * this.segmentsR * 2; // each level has segmentsR quads, each of 2 triangles
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const numTriangles = this.segmentsT * this.segmentsR * 2; // each level has segmentsR quads, each of 2 triangles
 
 		this._vertexPositionData = [];
 		this._vertexNormalData = [];
@@ -158,7 +172,7 @@ export class TorusGeometry extends Geometry
 
 				x = this.radius * Math.cos(revolutionAngleR) + this.tubeRadius * nx;
 				y = this.radius * Math.sin(revolutionAngleR) + this.tubeRadius * ny;
-				z = (j == this.segmentsT) ? 0 : this.tubeRadius * nz;
+				z = (j === this.segmentsT) ? 0 : this.tubeRadius * nz;
 
 				if (this.yUp)
 				{
@@ -179,7 +193,7 @@ export class TorusGeometry extends Geometry
 					comp2 = z;
 				}
 
-				if (i == this.segmentsR)
+				if (i === this.segmentsR)
 				{
 					this.addVertex(this._vertexIndex, x, this._vertexPositionData[startPositionIndex + 1], this._vertexPositionData[startPositionIndex + 2], nx, n1, n2, -(length ? ny / length : y / this.radius), t1, t2);
 				}
@@ -218,12 +232,6 @@ export class TorusGeometry extends Geometry
 		const stride = 2;
 		const data: number[] = [];
 
-		// evaluate num uvs
-		const numUvs = this._numVertices * stride;
-
-		// current uv component index
-		const currentUvCompIndex = 0;
-
 		let index = 0;
 		// surface
 		for (j = 0; j <= this.segmentsT; ++j)
@@ -242,21 +250,12 @@ export class TorusGeometry extends Geometry
 	}
 }
 
-export interface DefaultGeometry
-{
-	Torus: TorusGeometry;
-}
 Geometry.setDefault('Torus', new TorusGeometry());
 
 GameObject.registerPrimitive('Torus', (g) =>
 {
 	g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Torus');
 });
-
-export interface PrimitiveGameObject
-{
-	Torus: GameObject;
-}
 
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(

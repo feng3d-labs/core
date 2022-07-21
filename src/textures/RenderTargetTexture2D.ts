@@ -1,5 +1,5 @@
-import { watch } from '@feng3d/polyfill';
-import { TextureFormat, TextureMinFilter, TextureMagFilter } from '@feng3d/renderer';
+import { TextureFormat, TextureMagFilter, TextureMinFilter } from '@feng3d/renderer';
+import { watch } from '@feng3d/watcher';
 import { Texture2D } from './Texture2D';
 
 /**

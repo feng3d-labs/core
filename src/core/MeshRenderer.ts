@@ -1,7 +1,10 @@
 import { RegisterComponent } from '../component/Component';
 import { Renderable } from './Renderable';
 
-export interface ComponentMap { MeshRenderer: MeshRenderer }
+declare global
+{
+    export interface MixinsComponentMap { MeshRenderer: MeshRenderer }
+}
 
 /**
  * 网格渲染器

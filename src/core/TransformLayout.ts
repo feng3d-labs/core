@@ -1,9 +1,9 @@
 import { IEvent } from '@feng3d/event';
 import { Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { watcher } from '@feng3d/polyfill';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
+import { watcher } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
 import { Component, RegisterComponent } from '../component/Component';
 import { AddComponentMenu } from '../Menu';
@@ -11,20 +11,26 @@ import { Scene } from '../scene/Scene';
 import { ticker } from '../utils/Ticker';
 import { GameObject } from './GameObject';
 
-export interface GameObjectEventMap
+declare global
 {
-    /**
-     * 尺寸变化事件
-     */
-    sizeChanged: TransformLayout;
+    export interface MixinsGameObjectEventMap
+    {
+        /**
+         * 尺寸变化事件
+         */
+        sizeChanged: TransformLayout;
 
-    /**
-     * 中心点变化事件
-     */
-    pivotChanged: TransformLayout;
+        /**
+         * 中心点变化事件
+         */
+        pivotChanged: TransformLayout;
+    }
+
+    export interface MixinsComponentMap
+    {
+        TransformLayout: TransformLayout;
+    }
 }
-
-export interface ComponentMap { TransformLayout: TransformLayout; }
 
 /**
  * 变换布局
@@ -166,7 +172,7 @@ export class TransformLayout extends Component
     @serialize
     pivot = new Vector3(0.5, 0.5, 0.5);
 
-    beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
+    beforeRender(_renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {
         // renderAtomic.uniforms.u_rect = this.rect;
     }
@@ -206,7 +212,7 @@ export class TransformLayout extends Component
             anchorMax.z * parentSize.z - parentPivot.z * parentSize.z,
         );
 
-        if (anchorMin.x == anchorMax.x)
+        if (anchorMin.x === anchorMax.x)
         {
             leftTop.x = (-pivot.x * size.x + position.x) - anchorLeftTop.x;
             rightBottom.x = anchorRightBottom.x - (size.x - pivot.x * size.x + position.x);
@@ -217,7 +223,7 @@ export class TransformLayout extends Component
             position.x = leftTop.x + pivot.x * size.x;
         }
 
-        if (anchorMin.y == anchorMax.y)
+        if (anchorMin.y === anchorMax.y)
         {
             leftTop.y = (-pivot.y * size.y + position.y) - anchorLeftTop.y;
             rightBottom.y = anchorRightBottom.y - (size.y - pivot.y * size.y + position.y);
@@ -228,7 +234,7 @@ export class TransformLayout extends Component
             position.y = leftTop.y + pivot.y * size.y;
         }
 
-        if (anchorMin.z == anchorMax.z)
+        if (anchorMin.z === anchorMax.z)
         {
             leftTop.z = (-pivot.z * size.z + position.z) - anchorLeftTop.z;
             rightBottom.z = anchorRightBottom.z - (size.z - pivot.z * size.z + position.z);

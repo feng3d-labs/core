@@ -36,9 +36,9 @@ export class AssetData extends Feng3dObject
     }
     set assetId(v)
     {
-        if (this._assetId == v) return;
+        if (this._assetId === v) return;
 
-        if (this._assetId != undefined)
+        if (this._assetId !== undefined)
         {
             console.error(`不允许修改 assetId`);
 
@@ -188,7 +188,7 @@ serialization.setValueHandlers.push(
             if (AssetData.isAssetData(spv))
             {
                 // 此处需要反序列化资源完整数据
-                if (property == '__root__')
+                if (property === '__root__')
                 {
                     return false;
                 }
@@ -199,7 +199,7 @@ serialization.setValueHandlers.push(
             }
             if (AssetData.isAssetData(tpv))
             {
-                if (spv.__class__ == null)
+                if (spv.__class__ === null)
                 {
                     const className = classUtils.getQualifiedClassName(tpv);
                     const inst = classUtils.getInstanceByName(className);
@@ -229,7 +229,7 @@ serialization.serializeHandlers.push(
             if (AssetData.isAssetData(spv))
             {
                 // 此处需要反序列化资源完整数据
-                if (property == '__root__')
+                if (property === '__root__')
                 {
                     return false;
                 }
@@ -254,7 +254,7 @@ serialization.deserializeHandlers.push(
             if (AssetData.isAssetData(spv))
             {
                 // 此处需要反序列化资源完整数据
-                if (property == '__root__')
+                if (property === '__root__')
                 {
                     return false;
                 }
@@ -282,7 +282,7 @@ serialization.deserializeHandlers.push(
             if (AssetData.isAssetData(spv))
             {
                 // 此处需要反序列化资源完整数据
-                if (property == '__root__')
+                if (property === '__root__')
                 {
                     return false;
                 }
@@ -313,7 +313,7 @@ serialization.differentHandlers.push(
             if (AssetData.isAssetData(tpv))
             {
                 // 此处需要反序列化资源完整数据
-                if (property == '__root__')
+                if (property === '__root__')
                 {
                     return false;
                 }

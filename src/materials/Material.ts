@@ -1,8 +1,9 @@
 import { globalEmitter } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
-import { gPartial, watch } from '@feng3d/polyfill';
-import { RenderParams, RenderAtomic, RenderMode, shaderConfig, Shader } from '@feng3d/renderer';
+import { gPartial } from '@feng3d/polyfill';
+import { RenderAtomic, RenderMode, RenderParams, Shader, shaderConfig } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 import { AssetData } from '../core/AssetData';
 import { Feng3dObject } from '../core/Feng3dObject';
 import { HideFlags } from '../core/HideFlags';
@@ -10,7 +11,19 @@ import { Texture2D } from '../textures/Texture2D';
 import { TextureCube } from '../textures/TextureCube';
 import { StandardUniforms } from './StandardMaterial';
 
-export interface UniformsTypes { }
+declare global
+{
+    interface MixinsDefaultMaterial
+    {
+
+    }
+    interface MixinsUniformsTypes
+    {
+
+    }
+}
+
+export interface UniformsTypes extends MixinsUniformsTypes { }
 export type ShaderNames = keyof UniformsTypes;
 export type UniformsLike = UniformsTypes[keyof UniformsTypes];
 
@@ -88,7 +101,7 @@ export class Material extends Feng3dObject
 
         renderAtomic.shader = this.renderAtomic.shader;
         renderAtomic.renderParams = this.renderAtomic.renderParams;
-        renderAtomic.shaderMacro.IS_POINTS_MODE = this.renderParams.renderMode == RenderMode.POINTS;
+        renderAtomic.shaderMacro.IS_POINTS_MODE = this.renderParams.renderMode === RenderMode.POINTS;
     }
 
     /**
@@ -125,25 +138,26 @@ export class Material extends Feng3dObject
                 if (!texture.isLoaded)
                 {
                     loadingNum++;
+                    // eslint-disable-next-line no-loop-func
                     texture.on('loadCompleted', () =>
                     {
                         loadingNum--;
-                        if (loadingNum == 0) callback();
+                        if (loadingNum === 0) callback();
                     });
                 }
             }
         }
-        if (loadingNum == 0) callback();
+        if (loadingNum === 0) callback();
     }
 
     private _onShaderChanged()
     {
-        const cls = shaderConfig.shaders[this.shaderName].cls;
-        if (cls)
+        const Cls = shaderConfig.shaders[this.shaderName].cls;
+        if (Cls)
         {
-            if (this.uniforms == null || this.uniforms.constructor != cls)
+            if (!this.uniforms || this.uniforms.constructor !== Cls)
             {
-                const newuniforms = new cls();
+                const newuniforms = new Cls();
                 this.uniforms = newuniforms;
             }
         }
@@ -160,7 +174,7 @@ export class Material extends Feng3dObject
 
     private _onUniformsChanged()
     {
-        this.renderAtomic.uniforms = <any>this.uniforms;
+        this.renderAtomic.uniforms = <any> this.uniforms;
     }
 
     private _onRenderParamsChanged()
@@ -199,6 +213,6 @@ export class Material extends Feng3dObject
 /**
  * 默认材质
  */
-export interface DefaultMaterial
+export interface DefaultMaterial extends MixinsDefaultMaterial
 {
 }

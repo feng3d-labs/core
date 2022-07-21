@@ -1,12 +1,27 @@
 import { oav } from '@feng3d/objectview';
-import { watch } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
 import { Geometry } from '../geometry/Geometry';
 import { createNodeMenu } from '../menu/CreateNodeMenu';
 
-export interface GeometryTypes { PlaneGeometry: PlaneGeometry }
+declare global
+{
+    export interface MixinsGeometryTypes
+    {
+        PlaneGeometry: PlaneGeometry
+    }
+
+    export interface MixinsDefaultGeometry
+    {
+        Plane: PlaneGeometry;
+    }
+    export interface MixinsPrimitiveGameObject
+    {
+        Plane: GameObject;
+    }
+}
 
 /**
  * 平面几何体
@@ -90,7 +105,7 @@ export class PlaneGeometry extends Geometry
     {
         const vertexPositionData: number[] = [];
         let x: number; let
-y: number;
+            y: number;
         let positionIndex = 0;
         for (let yi = 0; yi <= this.segmentsH; ++yi)
         {
@@ -114,7 +129,7 @@ y: number;
             }
         }
 
-return vertexPositionData;
+        return vertexPositionData;
     }
 
     /**
@@ -147,7 +162,7 @@ return vertexPositionData;
             }
         }
 
-return vertexNormalData;
+        return vertexNormalData;
     }
 
     /**
@@ -179,7 +194,7 @@ return vertexNormalData;
             }
         }
 
-return vertexTangentData;
+        return vertexTangentData;
     }
 
     /**
@@ -200,7 +215,7 @@ return vertexTangentData;
             for (let xi = 0; xi <= this.segmentsW; ++xi)
             {
                 // 生成索引数据
-                if (xi != this.segmentsW && yi != this.segmentsH)
+                if (xi !== this.segmentsW && yi !== this.segmentsH)
                 {
                     base = xi + yi * tw;
                     if (this.yUp)
@@ -212,7 +227,7 @@ return vertexTangentData;
                         indices[numIndices++] = base + tw + 1;
                         indices[numIndices++] = base + 1;
                     }
- else
+                    else
                     {
                         indices[numIndices++] = base;
                         indices[numIndices++] = base + tw + 1;
@@ -247,7 +262,7 @@ return vertexTangentData;
                     data[index++] = xi / this.segmentsW;
                     data[index++] = 1 - yi / this.segmentsH;
                 }
- else
+                else
                 {
                     data[index++] = 1 - xi / this.segmentsW;
                     data[index++] = 1 - yi / this.segmentsH;
@@ -259,11 +274,6 @@ return vertexTangentData;
     }
 }
 
-export interface DefaultGeometry
-{
-    Plane: PlaneGeometry;
-}
-
 Geometry.setDefault('Plane', new PlaneGeometry(), { width: 10, height: 10 });
 
 GameObject.registerPrimitive('Plane', (g) =>
@@ -271,18 +281,13 @@ GameObject.registerPrimitive('Plane', (g) =>
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Plane');
 });
 
-export interface PrimitiveGameObject
-{
-    Plane: GameObject;
-}
-
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(
     {
         path: '3D Object/Plane',
         priority: -5,
         click: () =>
-        GameObject.createPrimitive('Plane')
+            GameObject.createPrimitive('Plane')
     }
 );
 

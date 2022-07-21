@@ -4,7 +4,18 @@ import { RenderMode, shaderConfig } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { Material } from './Material';
 
-export interface UniformsTypes { segment: SegmentUniforms }
+declare global
+{
+    export interface MixinsUniformsTypes
+    {
+        segment: SegmentUniforms
+    }
+
+    export interface MixinsDefaultMaterial
+    {
+        'Segment-Material': Material;
+    }
+}
 
 /**
  * 线段材质
@@ -24,10 +35,5 @@ export class SegmentUniforms
 
 shaderConfig.shaders['segment'].cls = SegmentUniforms;
 shaderConfig.shaders['segment'].renderParams = { renderMode: RenderMode.LINES, enableBlend: true };
-
-export interface DefaultMaterial
-{
-    'Segment-Material': Material;
-}
 
 Material.setDefault('Segment-Material', { shaderName: 'segment' });

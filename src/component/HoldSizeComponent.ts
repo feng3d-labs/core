@@ -1,10 +1,16 @@
 import { oav } from '@feng3d/objectview';
-import { watch } from '@feng3d/polyfill';
+import { watch } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
 import { AddComponentMenu } from '../Menu';
 import { RegisterComponent, Component } from './Component';
 
-export interface ComponentMap { HoldSizeComponent: HoldSizeComponent; }
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        HoldSizeComponent: HoldSizeComponent;
+    }
+}
 
 @AddComponentMenu('Layout/HoldSizeComponent')
 @RegisterComponent()
@@ -68,13 +74,15 @@ export class HoldSizeComponent extends Component
     {
         const cameraTranform = camera.transform.localToWorldMatrix;
         const distance = this.transform.worldPosition.subTo(cameraTranform.getPosition());
-        if (distance.length == 0)
-            { distance.x = 1; }
+        if (distance.length === 0)
+        {
+            distance.x = 1;
+        }
         const depth = distance.dot(cameraTranform.getAxisZ());
         let scale = camera.getScaleByDepth(depth);
         // 限制在放大缩小100倍之间，否则容易出现矩阵不可逆问题
         scale = Math.max(Math.min(100, scale), 0.01);
 
-return scale;
+        return scale;
     }
 }

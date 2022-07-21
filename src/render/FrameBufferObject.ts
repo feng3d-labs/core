@@ -1,6 +1,19 @@
-import { watch } from '@feng3d/polyfill';
-import { FrameBuffer, RenderBuffer, GL, Texture, WebGLRenderer } from '@feng3d/renderer';
+import { FrameBuffer, GL, RenderBuffer, Texture, WebGLRenderer } from '@feng3d/renderer';
+import { watch } from '@feng3d/watcher';
 import { RenderTargetTexture2D } from '../textures/RenderTargetTexture2D';
+
+declare global
+{
+    export interface MixinsGLCache
+    {
+        /**
+         * 此处用于缓存，需要获取有效数据请调用 Attribute.getBuffer
+         */
+        frameBufferObjects: Map<FrameBufferObject, {
+            framebuffer: WebGLFramebuffer, texture: WebGLTexture, depthBuffer: WebGLRenderbuffer
+        }>;
+    }
+}
 
 /**
  * 帧缓冲对象
@@ -58,9 +71,9 @@ export class FrameBufferObject
             const e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
             if (gl.FRAMEBUFFER_COMPLETE !== e)
             {
-                alert(`Frame buffer object is incomplete: ${e.toString()}`);
+                console.warn(`Frame buffer object is incomplete: ${e.toString()}`);
 
-return null;
+                return null;
             }
 
             gl.bindTexture(gl.TEXTURE_2D, null);
@@ -69,7 +82,7 @@ return null;
             obj = { framebuffer, texture, depthBuffer };
             gl.cache.frameBufferObjects.set(frameBufferObject, obj);
         }
- else
+        else
         {
             gl.bindFramebuffer(gl.FRAMEBUFFER, obj.framebuffer);
         }
@@ -123,14 +136,4 @@ return null;
             }
         });
     }
-}
-
-export interface GLCache
-{
-    /**
-     * 此处用于缓存，需要获取有效数据请调用 Attribute.getBuffer
-     */
-    frameBufferObjects: Map<FrameBufferObject, {
-        framebuffer: WebGLFramebuffer, texture: WebGLTexture, depthBuffer: WebGLRenderbuffer
-    }>;
 }

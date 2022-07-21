@@ -6,11 +6,6 @@ import { SkyBox } from './SkyBox';
 /**
  * 天空盒渲染器
  */
-export var skyboxRenderer: SkyBoxRenderer;
-
-/**
- * 天空盒渲染器
- */
 export class SkyBoxRenderer
 {
     private renderAtomic: RenderAtomic;
@@ -90,4 +85,7 @@ export class SkyBoxRenderer
     }
 }
 
-skyboxRenderer = new SkyBoxRenderer();
+/**
+ * 天空盒渲染器
+ */
+export const skyboxRenderer = new SkyBoxRenderer();

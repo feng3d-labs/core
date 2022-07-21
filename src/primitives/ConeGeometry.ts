@@ -4,6 +4,22 @@ import { Geometry } from '../geometry/Geometry';
 import { createNodeMenu } from '../menu/CreateNodeMenu';
 import { CylinderGeometry } from './CylinderGeometry';
 
+declare global
+{
+    export interface MixinsGeometryTypes
+    {
+        ConeGeometry: ConeGeometry
+    }
+    export interface MixinsDefaultGeometry
+    {
+        Cone: ConeGeometry;
+    }
+    export interface MixinsPrimitiveGameObject
+    {
+        Cone: GameObject;
+    }
+}
+
 /**
  * 圆锥体
  */
@@ -29,21 +45,12 @@ export class ConeGeometry extends CylinderGeometry
     surfaceClosed = true;
 }
 
-export interface DefaultGeometry
-{
-    Cone: ConeGeometry;
-}
 Geometry.setDefault('Cone', new ConeGeometry());
 
 GameObject.registerPrimitive('Cone', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cone');
 });
-
-export interface PrimitiveGameObject
-{
-    Cone: GameObject;
-}
 
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(

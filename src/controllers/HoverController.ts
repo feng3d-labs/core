@@ -24,8 +24,10 @@ export class HoverController extends LookAtController
     set steps(val: number)
     {
         val = (val < 1) ? 1 : val;
-        if (this._steps == val)
-        { return; }
+        if (this._steps === val)
+        {
+            return;
+        }
         this._steps = val;
         this.update();
     }
@@ -38,8 +40,10 @@ export class HoverController extends LookAtController
     set panAngle(val: number)
     {
         val = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, val));
-        if (this._panAngle == val)
-        { return; }
+        if (this._panAngle === val)
+        {
+            return;
+        }
         this._panAngle = val;
         this.update();
     }
@@ -52,8 +56,10 @@ export class HoverController extends LookAtController
     set tiltAngle(val: number)
     {
         val = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, val));
-        if (this._tiltAngle == val)
-        { return; }
+        if (this._tiltAngle === val)
+        {
+            return;
+        }
         this._tiltAngle = val;
         this.update();
     }
@@ -65,8 +71,10 @@ export class HoverController extends LookAtController
 
     set distance(val: number)
     {
-        if (this._distance == val)
-        { return; }
+        if (this._distance === val)
+        {
+            return;
+        }
         this._distance = val;
         this.update();
     }
@@ -78,8 +86,10 @@ export class HoverController extends LookAtController
 
     set minPanAngle(val: number)
     {
-        if (this._minPanAngle == val)
-        { return; }
+        if (this._minPanAngle === val)
+        {
+            return;
+        }
         this._minPanAngle = val;
         this.panAngle = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, this._panAngle));
     }
@@ -91,8 +101,10 @@ export class HoverController extends LookAtController
 
     set maxPanAngle(val: number)
     {
-        if (this._maxPanAngle == val)
-        { return; }
+        if (this._maxPanAngle === val)
+        {
+            return;
+        }
         this._maxPanAngle = val;
         this.panAngle = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, this._panAngle));
     }
@@ -104,8 +116,10 @@ export class HoverController extends LookAtController
 
     set minTiltAngle(val: number)
     {
-        if (this._minTiltAngle == val)
-        { return; }
+        if (this._minTiltAngle === val)
+        {
+            return;
+        }
         this._minTiltAngle = val;
         this.tiltAngle = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, this._tiltAngle));
     }
@@ -117,8 +131,10 @@ export class HoverController extends LookAtController
 
     set maxTiltAngle(val: number)
     {
-        if (this._maxTiltAngle == val)
-        { return; }
+        if (this._maxTiltAngle === val)
+        {
+            return;
+        }
         this._maxTiltAngle = val;
         this.tiltAngle = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, this._tiltAngle));
     }
@@ -130,8 +146,10 @@ export class HoverController extends LookAtController
 
     set yFactor(val: number)
     {
-        if (this._yFactor == val)
-        { return; }
+        if (this._yFactor === val)
+        {
+            return;
+        }
         this._yFactor = val;
         this.update();
     }
@@ -143,12 +161,15 @@ export class HoverController extends LookAtController
 
     set wrapPanAngle(val: boolean)
     {
-        if (this._wrapPanAngle == val)
-        { return; }
+        if (this._wrapPanAngle === val)
+        {
+            return;
+        }
         this._wrapPanAngle = val;
         this.update();
     }
 
+    // eslint-disable-next-line max-params
     constructor(targetObject?: GameObject, lookAtObject?: GameObject, panAngle = 0, tiltAngle = 90, distance = 1000, minTiltAngle = -90, maxTiltAngle = 90, minPanAngle = NaN, maxPanAngle = NaN, steps = 8, yFactor = 2, wrapPanAngle = false)
     {
         super(targetObject, lookAtObject);
@@ -168,7 +189,7 @@ export class HoverController extends LookAtController
 
     update(interpolate = true)
     {
-        if (this._tiltAngle != this._currentTiltAngle || this._panAngle != this._currentPanAngle)
+        if (this._tiltAngle !== this._currentTiltAngle || this._panAngle !== this._currentPanAngle)
         {
             if (this._wrapPanAngle)
             {
@@ -215,7 +236,7 @@ export class HoverController extends LookAtController
         {
             if (this._targetObject.transform.parent && this._lookAtObject.transform.parent)
             {
-                if (this._targetObject.transform.parent != this._lookAtObject.transform.parent)
+                if (this._targetObject.transform.parent !== this._lookAtObject.transform.parent)
                 {
                     this._pos.x = this._lookAtObject.transform.worldPosition.x;
                     this._pos.y = this._lookAtObject.transform.worldPosition.y;

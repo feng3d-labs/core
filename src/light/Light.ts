@@ -6,8 +6,10 @@ import { Camera } from '../cameras/Camera';
 import { Behaviour } from '../component/Behaviour';
 import { BillboardComponent } from '../component/BillboardComponent';
 import { GameObject } from '../core/GameObject';
+import { HideFlags } from '../core/HideFlags';
 import { Renderable } from '../core/Renderable';
 import { Material } from '../materials/Material';
+import { PlaneGeometry } from '../primitives/PlaneGeometry';
 import { FrameBufferObject } from '../render/FrameBufferObject';
 import { Scene } from '../scene/Scene';
 import { LightType } from './LightType';
@@ -127,14 +129,14 @@ export class Light extends Behaviour
         if (!gameObject)
         {
             gameObject = this.debugShadowMapObject = GameObject.createPrimitive('Plane', { name: 'debugShadowMapObject' });
-            gameObject.hideFlags = feng3d.HideFlags.Hide | feng3d.HideFlags.DontSave;
+            gameObject.hideFlags = HideFlags.Hide | HideFlags.DontSave;
             gameObject.mouseEnabled = false;
             gameObject.addComponent(BillboardComponent);
 
             // 材质
             const model = gameObject.getComponent(Renderable);
-            model.geometry = serialization.setValue(new feng3d.PlaneGeometry(), { width: this.lightType == LightType.Point ? 1 : 0.5, height: 0.5, segmentsW: 1, segmentsH: 1, yUp: false });
-            const textureMaterial = model.material = serialization.setValue(new Material(), { shaderName: 'texture', uniforms: { s_texture: <any> this.frameBufferObject.texture } });
+            model.geometry = serialization.setValue(new PlaneGeometry(), { width: this.lightType === LightType.Point ? 1 : 0.5, height: 0.5, segmentsW: 1, segmentsH: 1, yUp: false });
+            const textureMaterial = model.material = serialization.setValue(new Material(), { shaderName: 'texture', uniforms: { s_texture: this.frameBufferObject.texture as any } });
             //
             // textureMaterial.uniforms.s_texture.url = 'Assets/pz.jpg';
             // textureMaterial.uniforms.u_color.setTo(1.0, 0.0, 0.0, 1.0);
@@ -152,7 +154,7 @@ export class Light extends Behaviour
         {
             scene.gameObject.addChild(gameObject);
         }
- else
+        else
         {
             gameObject.remove();
         }

@@ -4,7 +4,23 @@ import { Geometry } from '../geometry/Geometry';
 import { geometryUtils } from '../geometry/GeometryUtils';
 import { createNodeMenu } from '../menu/CreateNodeMenu';
 
-export interface GeometryTypes { QuadGeometry: QuadGeometry }
+declare global
+{
+    export interface MixinsGeometryTypes
+    {
+        QuadGeometry: QuadGeometry
+    }
+
+    export interface MixinsDefaultGeometry
+    {
+        Quad: QuadGeometry;
+    }
+
+    export interface MixinsPrimitiveGameObject
+    {
+        Quad: GameObject;
+    }
+}
 
 /**
  * 四边形面皮几何体
@@ -27,21 +43,12 @@ export class QuadGeometry extends Geometry
     }
 }
 
-export interface DefaultGeometry
-{
-    Quad: QuadGeometry;
-}
 Geometry.setDefault('Quad', new QuadGeometry());
 
 GameObject.registerPrimitive('Quad', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Quad');
 });
-
-export interface PrimitiveGameObject
-{
-    Quad: GameObject;
-}
 
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(

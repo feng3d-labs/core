@@ -1,15 +1,24 @@
-import { Vector3, Color4 } from '@feng3d/math';
+import { Color4, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { watch } from '@feng3d/polyfill';
-import { serialize, serialization } from '@feng3d/serialization';
+import { serialization, serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
 import { Material } from '../materials/Material';
 import { createNodeMenu } from '../menu/CreateNodeMenu';
 import { Geometry } from './Geometry';
 
-export interface GeometryTypes { SegmentGeometry: SegmentGeometry }
-
+declare global
+{
+    export interface MixinsPrimitiveGameObject
+    {
+        Segment: GameObject;
+    }
+    export interface MixinsGeometryTypes
+    {
+        SegmentGeometry: SegmentGeometry
+    }
+}
 /**
  * 线段组件
  */
@@ -117,18 +126,13 @@ GameObject.registerPrimitive('Segment', (g) =>
     model.material = Material.getDefault('Segment-Material');
 });
 
-export interface PrimitiveGameObject
-{
-    Segment: GameObject;
-}
-
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(
     {
         path: '3D Object/Segment',
         priority: -10000,
         click: () =>
-        GameObject.createPrimitive('Segment')
+            GameObject.createPrimitive('Segment')
     }
 );
 

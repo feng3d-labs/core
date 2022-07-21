@@ -5,9 +5,24 @@ import { serialize } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { AddComponentMenu } from '../Menu';
 import { Scene } from '../scene/Scene';
-import { RegisterComponent, Component } from './Component';
+import { Component, RegisterComponent } from './Component';
 
-export interface ComponentMap { CartoonComponent: CartoonComponent; }
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        CartoonComponent: CartoonComponent;
+    }
+
+    export interface MixinsUniforms
+    {
+        u_diffuseSegment: Vector4;
+        u_diffuseSegmentValue: Vector4;
+
+        u_specularSegment: number;
+    }
+
+}
 
 /**
  * 参考
@@ -59,7 +74,7 @@ export class CartoonComponent extends Component
     }
     _cartoon_Anti_aliasing = false;
 
-    beforeRender(renderAtomic: RenderAtomic, scene: Scene, camera: Camera)
+    beforeRender(renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {
         renderAtomic.uniforms.u_diffuseSegment = this.diffuseSegment;
         renderAtomic.uniforms.u_diffuseSegmentValue = this.diffuseSegmentValue;
@@ -69,12 +84,4 @@ export class CartoonComponent extends Component
         renderAtomic.uniforms.u_outlineColor = this.outlineColor;
         renderAtomic.uniforms.u_outlineMorphFactor = this.outlineMorphFactor;
     }
-}
-
-export interface Uniforms
-{
-    u_diffuseSegment: Vector4;
-    u_diffuseSegmentValue: Vector4;
-
-    u_specularSegment: number;
 }

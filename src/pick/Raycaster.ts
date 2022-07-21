@@ -7,11 +7,6 @@ import { Geometry } from '../geometry/Geometry';
 /**
  * 射线投射拾取器
  */
-export var raycaster: Raycaster;
-
-/**
- * 射线投射拾取器
- */
 export class Raycaster
 {
     /**
@@ -22,7 +17,7 @@ export class Raycaster
      */
     pick(ray3D: Ray3, gameObjects: GameObject[])
     {
-        if (gameObjects.length == 0) return null;
+        if (gameObjects.length === 0) return null;
 
         const pickingCollisionVOs = gameObjects.reduce((pv: PickingCollisionVO[], gameObject) =>
         {
@@ -33,7 +28,7 @@ export class Raycaster
             return pv;
         }, []);
 
-        if (pickingCollisionVOs.length == 0) return null;
+        if (pickingCollisionVOs.length === 0) return null;
 
         // 根据与包围盒距离进行排序
         pickingCollisionVOs.sort((a, b) => a.rayEntryDistance - b.rayEntryDistance);
@@ -45,7 +40,7 @@ export class Raycaster
         for (let i = 0; i < pickingCollisionVOs.length; ++i)
         {
             const pickingCollisionVO = pickingCollisionVOs[i];
-            if (bestCollisionVO == null || pickingCollisionVO.rayEntryDistance < bestCollisionVO.rayEntryDistance)
+            if (!bestCollisionVO || pickingCollisionVO.rayEntryDistance < bestCollisionVO.rayEntryDistance)
             {
                 const result = pickingCollisionVO.geometry.raycast(pickingCollisionVO.localRay, shortestCollisionDistance, pickingCollisionVO.cullFace);
                 if (result)
@@ -74,7 +69,7 @@ export class Raycaster
      */
     pickAll(ray3D: Ray3, gameObjects: GameObject[])
     {
-        if (gameObjects.length == 0) return [];
+        if (gameObjects.length === 0) return [];
 
         const pickingCollisionVOs = gameObjects.reduce((pv: PickingCollisionVO[], gameObject) =>
         {
@@ -85,7 +80,7 @@ export class Raycaster
             return pv;
         }, []);
 
-        if (pickingCollisionVOs.length == 0) return [];
+        if (pickingCollisionVOs.length === 0) return [];
 
         const collisionVOs = pickingCollisionVOs.filter((v) =>
         {
@@ -108,7 +103,10 @@ export class Raycaster
     }
 }
 
-raycaster = new Raycaster();
+/**
+ * 射线投射拾取器
+ */
+export const raycaster = new Raycaster();
 
 /**
  * 拾取的碰撞数据

@@ -1,10 +1,16 @@
-import { Vector3, Color4, Vector2 } from '@feng3d/math';
+import { Color4, Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { watch } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
+import { watch } from '@feng3d/watcher';
 import { Geometry } from './Geometry';
 
-export interface GeometryTypes { PointGeometry: PointGeometry }
+declare global
+{
+    export interface MixinsGeometryTypes
+    {
+        PointGeometry: PointGeometry
+    }
+}
 
 /**
  * 点几何体

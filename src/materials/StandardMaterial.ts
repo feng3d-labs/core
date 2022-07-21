@@ -6,6 +6,19 @@ import { Texture2D } from '../textures/Texture2D';
 import { TextureCube } from '../textures/TextureCube';
 import { Material } from './Material';
 
+declare global
+{
+    export interface MixinsDefaultMaterial
+    {
+        'Default-Material': Material;
+    }
+
+    export interface MixinsUniformsTypes
+    {
+        standard: StandardUniforms
+    }
+}
+
 /**
  * 雾模式
  */
@@ -16,8 +29,6 @@ export enum FogMode
     EXP2 = 2,
     LINEAR = 3
 }
-
-export interface UniformsTypes { standard: StandardUniforms }
 
 export class StandardUniforms
 {
@@ -143,10 +154,5 @@ export class StandardUniforms
 }
 
 shaderConfig.shaders['standard'].cls = StandardUniforms;
-
-export interface DefaultMaterial
-{
-    'Default-Material': Material;
-}
 
 Material.setDefault('Default-Material', { shaderName: 'standard' });

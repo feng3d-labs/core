@@ -6,13 +6,6 @@ import { Scene } from '../../scene/Scene';
 
 /**
  * 前向渲染器
-
- */
-export var forwardRenderer: ForwardRenderer;
-
-/**
- * 前向渲染器
-
  */
 export class ForwardRenderer
 {
@@ -49,9 +42,9 @@ export class ForwardRenderer
             }
             //
             renderAtomic.uniforms.u_mvMatrix = () =>
-            lazy.getvalue(renderAtomic.uniforms.u_modelMatrix).clone().append(lazy.getvalue(renderAtomic.uniforms.u_viewMatrix));
+                lazy.getvalue(renderAtomic.uniforms.u_modelMatrix).clone().append(lazy.getvalue(renderAtomic.uniforms.u_viewMatrix));
             renderAtomic.uniforms.u_ITMVMatrix = () =>
-            lazy.getvalue(renderAtomic.uniforms.u_mvMatrix).clone().invert().transpose();
+                lazy.getvalue(renderAtomic.uniforms.u_mvMatrix).clone().invert().transpose();
 
             renderAtomic.shaderMacro.RotationOrder = mathUtil.DefaultRotationOrder;
 
@@ -62,4 +55,7 @@ export class ForwardRenderer
     }
 }
 
-forwardRenderer = new ForwardRenderer();
+/**
+ * 前向渲染器
+ */
+export const forwardRenderer = new ForwardRenderer();
