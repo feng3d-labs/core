@@ -5,7 +5,6 @@ declare global
         OAVDefault: OAVDefaultParam;
         OAVArray: OAVArrayParam;
         OAVPick: OAVPickParam;
-        OAVEnum: OAVEnumParam;
 
         OAVCubeMap: { component: 'OAVCubeMap', componentParam: Object };
         OAVImage: { component: 'OAVImage', componentParam: Object };
@@ -126,20 +125,5 @@ export interface OAVPickParam
          * 提供数据类型
          */
         datatype?: string,
-    }
-}
-
-/**
- * OAVEnum 组件参数
- */
-export interface OAVEnumParam
-{
-    component: 'OAVEnum';
-
-    componentParam: {
-        /**
-         * 枚举类型
-         */
-        enumClass: any,
     }
 }
