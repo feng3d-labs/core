@@ -17,6 +17,7 @@ declare global
 {
     interface MixinsGameObjectEventMap { }
     interface MixinsPrimitiveGameObject { }
+    interface MixinsGameObject { }
 }
 
 export interface GameObjectEventMap extends MixinsGameObjectEventMap, MouseEventMap, Feng3dObjectEventMap
@@ -70,6 +71,8 @@ export interface GameObjectEventMap extends MixinsGameObjectEventMap, MouseEvent
      */
     refreshView: any;
 }
+
+export interface GameObject extends MixinsGameObject { }
 
 /**
  * 游戏对象，场景唯一存在的对象类型

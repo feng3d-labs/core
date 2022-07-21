@@ -9,6 +9,7 @@ import { Scene } from '../scene/Scene';
 declare global
 {
     interface MixinsComponentMap { }
+    interface MixinsComponent { }
 }
 
 interface ComponentInfo
@@ -95,6 +96,8 @@ export interface ComponentMap extends MixinsComponentMap { Component: Component 
 
 export type ComponentNames = keyof ComponentMap;
 export type Components = ComponentMap[ComponentNames];
+
+export interface Component extends MixinsComponent { }
 
 /**
  * 组件
