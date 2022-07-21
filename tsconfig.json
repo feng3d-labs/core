@@ -17,9 +17,6 @@
         {
             "path": "../renderer"
         },
-        {
-            "path": "../filesystem"
-        },
     ],
     "files": [
         //
@@ -31,6 +28,7 @@
         "../serialization/index.d.ts",
         "../math/index.d.ts",
         "../shortcut/index.d.ts",
+        "../filesystem/index.d.ts",
         //
         "src/menu/CreateNodeMenu.ts",
         //
