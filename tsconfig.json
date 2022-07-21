@@ -13,11 +13,6 @@
         ],
         "outFile": "dist/index.js"
     },
-    "references": [
-        {
-            "path": "../renderer"
-        },
-    ],
     "files": [
         //
         "../event/index.d.ts",
@@ -29,6 +24,7 @@
         "../math/index.d.ts",
         "../shortcut/index.d.ts",
         "../filesystem/index.d.ts",
+        "../renderer/index.d.ts",
         //
         "src/menu/CreateNodeMenu.ts",
         //
