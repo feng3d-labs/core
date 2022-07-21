@@ -9,12 +9,8 @@ import Particles_AlphaBlendedPremultiplyVertex from './shaders/Particles_AlphaBl
 import Particles_AlphaBlendedPremultiplyFragment from './shaders/Particles_AlphaBlendedPremultiply.fragment.glsl';
 import shadowVertex from './shaders/shadow.vertex.glsl';
 import shadowFragment from './shaders/shadow.fragment.glsl';
-import skyboxVertex from './shaders/skybox.vertex.glsl';
-import skyboxFragment from './shaders/skybox.fragment.glsl';
 import terrainVertex from './shaders/terrain.vertex.glsl';
 import terrainFragment from './shaders/terrain.fragment.glsl';
-import waterVertex from './shaders/water.vertex.glsl';
-import waterFragment from './shaders/water.fragment.glsl';
 import wireframeVertex from './shaders/wireframe.vertex.glsl';
 import wireframeFragment from './shaders/wireframe.fragment.glsl';
 //
@@ -81,9 +77,7 @@ serialization.setValue(shaderlib.shaderConfig, {
         Particles_Additive: { fragment: Particles_AdditiveFragment, vertex: Particles_AdditiveVertex },
         Particles_AlphaBlendedPremultiply: { fragment: Particles_AlphaBlendedPremultiplyFragment, vertex: Particles_AlphaBlendedPremultiplyVertex },
         shadow: { fragment: shadowFragment, vertex: shadowVertex },
-        skybox: { fragment: skyboxFragment, vertex: skyboxVertex },
         terrain: { fragment: terrainFragment, vertex: terrainVertex },
-        water: { fragment: waterFragment, vertex: waterVertex },
         wireframe: { fragment: wireframeFragment, vertex: wireframeVertex },
     },
     modules: {

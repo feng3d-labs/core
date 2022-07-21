@@ -1,9 +1,11 @@
 import { Color3, Matrix4x4, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { shaderConfig } from '@feng3d/renderer';
+import { shaderlib } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { Material } from '../materials/Material';
 import { Texture2D } from '../textures/Texture2D';
+import waterVertex from '../shaders/water.vertex.glsl';
+import waterFragment from '../shaders/water.fragment.glsl';
 
 declare global
 {
@@ -59,6 +61,6 @@ export class WaterUniforms
     u_sunDirection = new Vector3(0.70707, 0.70707, 0);
 }
 
-shaderConfig.shaders['water'].cls = WaterUniforms;
+shaderlib.shaderConfig.shaders.water = { fragment: waterFragment, vertex: waterVertex, cls: WaterUniforms };
 
 Material.setDefault('Water-Material', { shaderName: 'water' });

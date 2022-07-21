@@ -63,6 +63,7 @@ export * from './materials/SegmentMaterial';
 export * from './materials/StandardMaterial';
 export * from './materials/TextureMaterial';
 export * from './Menu';
+export * from './menu/CreateNodeMenu';
 export * from './MixinsGlobalEvents';
 export * from './pick/Raycaster';
 export * from './primitives/CapsuleGeometry';
@@ -107,4 +108,3 @@ export * from './utils/Ticker';
 export * from './utils/Uuid';
 export * from './water/Water';
 export * from './water/WaterMaterial';
-

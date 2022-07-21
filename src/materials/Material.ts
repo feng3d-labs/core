@@ -1,7 +1,7 @@
 import { globalEmitter } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
 import { gPartial } from '@feng3d/polyfill';
-import { RenderAtomic, RenderMode, RenderParams, Shader, shaderConfig } from '@feng3d/renderer';
+import { RenderAtomic, RenderMode, RenderParams, Shader, shaderlib } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { AssetData } from '../core/AssetData';
@@ -10,6 +10,7 @@ import { HideFlags } from '../core/HideFlags';
 import { Texture2D } from '../textures/Texture2D';
 import { TextureCube } from '../textures/TextureCube';
 import { ticker } from '../utils/Ticker';
+import { StandardUniforms } from './StandardMaterial';
 
 declare global
 {
@@ -91,9 +92,8 @@ export class Material extends Feng3dObject
         super();
         globalEmitter.on('asset.shaderChanged', this._onShaderChanged, this);
         this.shaderName = 'standard';
-        ticker.once(1, () => { this._onShaderChanged(); });
-        // this.uniforms = new StandardUniforms();
-        // this.renderParams = new RenderParams();
+        this.uniforms = new StandardUniforms();
+        this.renderParams = new RenderParams();
     }
 
     beforeRender(renderAtomic: RenderAtomic)
@@ -153,7 +153,7 @@ export class Material extends Feng3dObject
 
     private _onShaderChanged()
     {
-        const Cls = shaderConfig.shaders[this.shaderName].cls;
+        const Cls = shaderlib.shaderConfig.shaders[this.shaderName].cls;
         if (Cls)
         {
             if (!this.uniforms || this.uniforms.constructor !== Cls)
@@ -167,7 +167,7 @@ export class Material extends Feng3dObject
             this.uniforms = <any>{};
         }
 
-        const renderParams = shaderConfig.shaders[this.shaderName].renderParams;
+        const renderParams = shaderlib.shaderConfig.shaders[this.shaderName].renderParams;
         renderParams && serialization.setValue(this.renderParams, renderParams);
 
         this.renderAtomic.shader = new Shader({ shaderName: this.shaderName });
@@ -217,3 +217,5 @@ export class Material extends Feng3dObject
 export interface DefaultMaterial extends MixinsDefaultMaterial
 {
 }
+
+Material.setDefault('Default-Material', { shaderName: 'standard' });
