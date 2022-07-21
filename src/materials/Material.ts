@@ -9,7 +9,7 @@ import { Feng3dObject } from '../core/Feng3dObject';
 import { HideFlags } from '../core/HideFlags';
 import { Texture2D } from '../textures/Texture2D';
 import { TextureCube } from '../textures/TextureCube';
-import { StandardUniforms } from './StandardMaterial';
+import { ticker } from '../utils/Ticker';
 
 declare global
 {
@@ -91,8 +91,9 @@ export class Material extends Feng3dObject
         super();
         globalEmitter.on('asset.shaderChanged', this._onShaderChanged, this);
         this.shaderName = 'standard';
-        this.uniforms = new StandardUniforms();
-        this.renderParams = new RenderParams();
+        ticker.once(1, () => { this._onShaderChanged(); });
+        // this.uniforms = new StandardUniforms();
+        // this.renderParams = new RenderParams();
     }
 
     beforeRender(renderAtomic: RenderAtomic)
@@ -174,7 +175,7 @@ export class Material extends Feng3dObject
 
     private _onUniformsChanged()
     {
-        this.renderAtomic.uniforms = <any> this.uniforms;
+        this.renderAtomic.uniforms = this.uniforms as any;
     }
 
     private _onRenderParamsChanged()

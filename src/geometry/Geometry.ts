@@ -1,13 +1,12 @@
 import { Box3, Matrix4x4, Ray3, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { gPartial } from '@feng3d/polyfill';
+import { Constructor, gPartial } from '@feng3d/polyfill';
 import { Attribute, Attributes, CullFace, Index, RenderAtomic } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
 import { AssetType } from '../assets/AssetType';
 import { AssetData } from '../core/AssetData';
 import { Feng3dObject } from '../core/Feng3dObject';
 import { HideFlags } from '../core/HideFlags';
-import { CustomGeometry } from './CustomGeometry';
 import { geometryUtils } from './GeometryUtils';
 
 declare global
@@ -37,7 +36,7 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
     private preview = '';
 
     @oav()
-    name: string;
+    declare name: string;
 
     /**
      * 资源编号
@@ -402,7 +401,8 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
      */
     clone()
     {
-        const geometry = new CustomGeometry();
+        const Cls = this.constructor as Constructor<Geometry>;
+        const geometry = new Cls();
         geometry.cloneFrom(this);
 
         return geometry;

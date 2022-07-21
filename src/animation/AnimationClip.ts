@@ -10,7 +10,7 @@ export class AnimationClip extends Feng3dObject
 
     @oav()
     @serialize
-    name: string;
+    declare name: string;
     /**
      * 动画时长，单位ms
      */

@@ -85,7 +85,7 @@ export class GameObject extends Feng3dObject<GameObjectEventMap> implements IDis
      */
     @serialize
     @oav({ component: 'OAVGameObjectName' })
-    name: string;
+    declare name: string;
 
     /**
      * The local active state of this GameObject.

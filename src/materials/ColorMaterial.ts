@@ -1,11 +1,13 @@
 import { Color4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { shaderConfig } from '@feng3d/renderer';
+import { shaderlib } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
+import colorFragment from '../shaders/color.fragment.glsl';
+import colorVertex from '../shaders/color.vertex.glsl';
 
 declare global
 {
-    export interface MixinsUniformsTypes
+    interface MixinsUniformsTypes
     {
         color: ColorUniforms
     }
@@ -22,4 +24,4 @@ export class ColorUniforms
     u_diffuseInput = new Color4();
 }
 
-shaderConfig.shaders['color'].cls = ColorUniforms;
+shaderlib.shaderConfig.shaders.color = { fragment: colorFragment, vertex: colorVertex, cls: ColorUniforms };
