@@ -1,7 +1,5 @@
-namespace feng3d
+
+globalEmitter.on("asset.shaderChanged", () =>
 {
-    globalEmitter.on("asset.shaderChanged", () =>
-    {
-        shaderlib.clearCache();
-    });
-}
+    shaderlib.clearCache();
+});
