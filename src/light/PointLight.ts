@@ -9,7 +9,18 @@ import { createNodeMenu } from '../menu/CreateNodeMenu';
 import { Light } from './Light';
 import { LightType } from './LightType';
 
-export interface ComponentMap { PointLight: PointLight; }
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        PointLight: PointLight;
+    }
+
+    export interface MixinsPrimitiveGameObject
+    {
+        'Point Light': GameObject;
+    }
+}
 
 /**
  * 点光源
@@ -33,7 +44,7 @@ export class PointLight extends Light
     }
     set range(v)
     {
-        if (this._range == v) return;
+        if (this._range === v) return;
         this._range = v;
         this.invalidRange();
     }
@@ -56,7 +67,7 @@ export class PointLight extends Light
     private invalidRange()
     {
         if (this.shadowCamera)
-            { this.shadowCamera.lens.far = this.range; }
+        { this.shadowCamera.lens.far = this.range; }
     }
 }
 
@@ -65,18 +76,13 @@ GameObject.registerPrimitive('Point Light', (g) =>
     g.addComponent(PointLight);
 });
 
-export interface PrimitiveGameObject
-{
-    'Point Light': GameObject;
-}
-
 // 在 Hierarchy 界面新增右键菜单项
 createNodeMenu.push(
     {
         path: 'Light/Point Light',
         priority: -1,
         click: () =>
-        GameObject.createPrimitive('Point Light')
+            GameObject.createPrimitive('Point Light')
     }
 );
 

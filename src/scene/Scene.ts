@@ -17,17 +17,20 @@ import { SkyBox } from '../skybox/SkyBox';
 import { ticker } from '../utils/Ticker';
 import { ScenePickCache } from './ScenePickCache';
 
-/**
- * 组件事件
- */
-export interface GameObjectEventMap
+declare global
 {
-    addToScene: GameObject;
-    removeFromScene: GameObject;
-    addComponentToScene: Component;
-}
+    /**
+     * 组件事件
+     */
+    export interface MixinsGameObjectEventMap
+    {
+        addToScene: GameObject;
+        removeFromScene: GameObject;
+        addComponentToScene: Component;
+    }
 
-export interface ComponentMap { Scene: Scene; }
+    export interface MixinsComponentMap { Scene: Scene; }
+}
 
 /**
  * 3D场景

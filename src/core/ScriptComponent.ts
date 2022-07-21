@@ -9,7 +9,13 @@ import { AddComponentMenu } from '../Menu';
 import { RunEnvironment } from './RunEnvironment';
 import { Script } from './Script';
 
-export interface ComponentMap { ScriptComponent: ScriptComponent; }
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        ScriptComponent: ScriptComponent;
+    }
+}
 
 /**
  * 3d对象脚本

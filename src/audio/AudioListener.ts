@@ -8,7 +8,13 @@ import { AddComponentMenu } from '../Menu';
 export let audioCtx: AudioContext;
 export let globalGain: GainNode;
 
-export interface ComponentMap { AudioListener: AudioListener; }
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        AudioListener: AudioListener;
+    }
+}
 /**
  * 声音监听器
  */

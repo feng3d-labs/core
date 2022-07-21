@@ -3,7 +3,13 @@ import { oav } from '@feng3d/objectview';
 import { shaderConfig } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 
-export interface UniformsTypes { color: ColorUniforms }
+declare global
+{
+    export interface MixinsUniformsTypes
+    {
+        color: ColorUniforms
+    }
+}
 
 export class ColorUniforms
 {

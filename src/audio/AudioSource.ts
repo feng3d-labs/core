@@ -7,6 +7,14 @@ import { RegisterComponent } from '../component/Component';
 import { AddComponentMenu } from '../Menu';
 import { audioCtx, globalGain } from './AudioListener';
 
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        AudioSource: AudioSource;
+    }
+}
+
 /**
  * 音量与距离算法
  * @see https://developer.mozilla.org/en-US/docs/Web/API/PannerNode/distanceModel
@@ -29,7 +37,6 @@ export enum DistanceModelType
     exponential = 'exponential',
 }
 
-export interface ComponentMap { AudioSource: AudioSource; }
 /**
  * 声源
  * @see https://developer.mozilla.org/en-US/docs/Web/API/AudioContext

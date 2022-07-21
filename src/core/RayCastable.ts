@@ -3,7 +3,13 @@ import { Behaviour } from '../component/Behaviour';
 import { RegisterComponent } from '../component/Component';
 import { PickingCollisionVO } from '../pick/Raycaster';
 
-export interface ComponentMap { RayCastable: RayCastable; }
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        RayCastable: RayCastable;
+    }
+}
 
 /**
  * 可射线捕获
@@ -20,7 +26,7 @@ export class RayCastable extends Behaviour
     get selfLocalBounds()
     {
         if (!this._selfLocalBounds)
-            { this._updateBounds(); }
+        { this._updateBounds(); }
 
         return this._selfLocalBounds;
     }
@@ -31,7 +37,7 @@ export class RayCastable extends Behaviour
     get selfWorldBounds()
     {
         if (!this._selfWorldBounds)
-            { this._updateWorldBounds(); }
+        { this._updateWorldBounds(); }
 
         return this._selfWorldBounds;
     }

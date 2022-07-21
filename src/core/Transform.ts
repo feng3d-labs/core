@@ -26,9 +26,12 @@ declare global
          */
         scenetransformChanged: Transform;
     }
-}
 
-export interface ComponentMap { Transform: Transform; }
+    export interface MixinsComponentMap
+    {
+        Transform: Transform;
+    }
+}
 
 /**
  * 变换

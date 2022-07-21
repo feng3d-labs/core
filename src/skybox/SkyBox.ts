@@ -7,7 +7,13 @@ import { AddComponentMenu } from '../Menu';
 import { Scene } from '../scene/Scene';
 import { TextureCube } from '../textures/TextureCube';
 
-export interface ComponentMap { SkyBox: SkyBox; }
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        SkyBox: SkyBox;
+    }
+}
 
 /**
  * 天空盒组件

@@ -3,7 +3,13 @@ import { oav } from '@feng3d/objectview';
 import { shaderConfig } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 
-export interface UniformsTypes { point: PointUniforms }
+declare global
+{
+    export interface MixinsUniformsTypes
+    {
+        point: PointUniforms
+    }
+}
 export class PointUniforms
 {
     __class__: 'feng3d.PointUniforms';

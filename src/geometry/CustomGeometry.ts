@@ -1,7 +1,13 @@
 import { serialize } from '@feng3d/serialization';
 import { Geometry } from './Geometry';
 
-export interface GeometryTypes { CustomGeometry: CustomGeometry }
+declare global
+{
+    export interface MixinsGeometryTypes
+    {
+        CustomGeometry: CustomGeometry
+    }
+}
 
 export class CustomGeometry extends Geometry
 {

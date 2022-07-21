@@ -6,6 +6,11 @@ import { Feng3dObject } from '../core/Feng3dObject';
 import { GameObject, GameObjectEventMap } from '../core/GameObject';
 import { Scene } from '../scene/Scene';
 
+declare global
+{
+    interface MixinsComponentMap { }
+}
+
 interface ComponentInfo
 {
     /**
@@ -86,7 +91,7 @@ export const componentMap: ComponentMap = <any>{};
 /**
  * 组件名称与类定义映射，新建组件一般都需扩展该接口。
  */
-export interface ComponentMap { Component: Component }
+export interface ComponentMap extends MixinsComponentMap { Component: Component }
 
 export type ComponentNames = keyof ComponentMap;
 export type Components = ComponentMap[ComponentNames];

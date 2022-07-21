@@ -7,7 +7,13 @@ import { HideFlags } from '../../core/HideFlags';
 import { Transform } from '../../core/Transform';
 import { SkeletonJoint } from './Skeleton';
 
-export interface ComponentMap { SkeletonComponent: SkeletonComponent; }
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        SkeletonComponent: SkeletonComponent;
+    }
+}
 
 @RegisterComponent()
 export class SkeletonComponent extends Component

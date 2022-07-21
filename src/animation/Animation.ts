@@ -7,7 +7,10 @@ import { AddComponentMenu } from '../Menu';
 import { AnimationClip } from './AnimationClip';
 import { PropertyClip, PropertyClipPathItemType } from './PropertyClip';
 
-export interface ComponentMap { Animation: Animation; }
+declare global
+{
+    export interface MixinsComponentMap { Animation: Animation; }
+}
 
 @AddComponentMenu('Animator/Animation')
 @RegisterComponent()

@@ -1,7 +1,7 @@
 import { IEvent } from '@feng3d/event';
-import { Vector3, Vector2 } from '@feng3d/math';
+import { Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { windowEventProxy } from '../../../shortcut/dist';
+import { windowEventProxy } from '@feng3d/shortcut';
 import { Behaviour } from '../component/Behaviour';
 import { RegisterComponent } from '../component/Component';
 import { RunEnvironment } from '../core/RunEnvironment';

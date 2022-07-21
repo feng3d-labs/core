@@ -11,7 +11,13 @@ import { Scene } from '../../scene/Scene';
 import { SkeletonComponent } from './SkeletonComponent';
 import { Animation } from '../../animation/Animation';
 
-export interface ComponentMap { SkinnedMeshRenderer: SkinnedMeshRenderer }
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        SkinnedMeshRenderer: SkinnedMeshRenderer
+    }
+}
 
 @RegisterComponent()
 export class SkinnedMeshRenderer extends Renderable
