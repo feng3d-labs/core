@@ -1,7 +1,7 @@
-import { __class__, classUtils, MapUtils } from '@feng3d/polyfill';
-import { serialize, serialization } from '@feng3d/serialization';
+import { classUtils, MapUtils, __class__ } from '@feng3d/polyfill';
+import { serialization, serialize } from '@feng3d/serialization';
 import { AssetType } from '../assets/AssetType';
-import { rs } from '../assets/rs/ReadRS';
+import { ReadRS } from '../assets/rs/ReadRS';
 import { Feng3dObject } from './Feng3dObject';
 
 /**
@@ -17,7 +17,7 @@ export class AssetData extends Feng3dObject
     @serialize
     get assetName(): string
     {
-        const asset = rs.getAssetById(this.assetId);
+        const asset = ReadRS.rs.getAssetById(this.assetId);
         if (asset)
         {
             return asset.fileName;

@@ -5,7 +5,7 @@ import { ticker } from '../utils/Ticker';
 import { AssetMeta } from './AssetMeta';
 import { AssetType } from './AssetType';
 import { FolderAsset } from './FolderAsset';
-import { rs } from './rs/ReadRS';
+import { ReadRS } from './rs/ReadRS';
 import { ReadWriteRS } from './rs/ReadWriteRS';
 
 declare global
@@ -238,7 +238,7 @@ export abstract class FileAsset
             this.deleteFile((_err) =>
             {
                 // 删除映射
-                rs.deleteAssetById(this.assetId);
+                ReadRS.rs.deleteAssetById(this.assetId);
                 callback && callback();
             });
         });
