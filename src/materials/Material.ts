@@ -9,7 +9,6 @@ import { Feng3dObject } from '../core/Feng3dObject';
 import { HideFlags } from '../core/HideFlags';
 import { Texture2D } from '../textures/Texture2D';
 import { TextureCube } from '../textures/TextureCube';
-import { ticker } from '../utils/Ticker';
 import { StandardUniforms } from './StandardMaterial';
 
 declare global
