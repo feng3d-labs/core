@@ -7,17 +7,16 @@ import { FileAsset } from '../FileAsset';
 import { FolderAsset } from '../FolderAsset';
 import { ReadRS } from './ReadRS';
 
+export interface ReadWriteRS
+{
+    get fs(): ReadWriteFS;
+}
+
 /**
  * 可读写资源系统
  */
 export class ReadWriteRS extends ReadRS
 {
-    /**
-     * 文件系统
-     */
-    get fs() { return this._fs; }
-    protected _fs: ReadWriteFS = null;
-
     /**
      * 延迟保存执行函数
      */
@@ -113,7 +112,7 @@ export class ReadWriteRS extends ReadRS
         let fp = folder;
         while (fp)
         {
-            if (fp === asset)
+            if (fp === <any>asset)
             {
                 callback && callback(new Error(`无法移动达到子文件夹中`));
 
@@ -134,6 +133,9 @@ export class ReadWriteRS extends ReadRS
             }
             index++;
         }
+
+        // 最后根据 parentAsset 修复 childrenAssets
+        // const copyassets = assets.concat();
 
         // 移动最后一个资源
         const moveLastAsset = () =>

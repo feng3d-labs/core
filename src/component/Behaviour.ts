@@ -1,11 +1,14 @@
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { RunEnvironment } from '../core/RunEnvironment';
-import { Component, RegisterComponent } from '../ecs/Component';
+import { RegisterComponent, Component } from './Component';
 
 declare global
 {
-    interface MixinsComponentMap { Behaviour: Behaviour; }
+    export interface MixinsComponentMap
+    {
+        Behaviour: Behaviour;
+    }
 }
 
 /**
@@ -13,7 +16,7 @@ declare global
  *
  * 可以控制开关的组件
  */
-@RegisterComponent({ name: 'Behaviour' })
+@RegisterComponent()
 export class Behaviour extends Component
 {
     /**
@@ -21,7 +24,7 @@ export class Behaviour extends Component
      */
     @oav()
     @serialize
-        enabled = true;
+    enabled = true;
 
     /**
      * 可运行环境
@@ -34,7 +37,7 @@ export class Behaviour extends Component
      */
     get isVisibleAndEnabled()
     {
-        const v = this.enabled && this.gameObject?.globalVisible;
+        const v = this.enabled && this.gameObject && this.gameObject.activeSelf;
 
         return v;
     }
@@ -46,9 +49,9 @@ export class Behaviour extends Component
     {
     }
 
-    destroy()
+    dispose()
     {
         this.enabled = false;
-        super.destroy();
+        super.dispose();
     }
 }

@@ -6,9 +6,12 @@ import { SpotLight } from '../../light/SpotLight';
 import { Texture2D } from '../../textures/Texture2D';
 import { TextureCube } from '../../textures/TextureCube';
 
+export { };
+
 declare global
 {
-    interface MixinsUniforms
+
+    export interface MixinsUniforms
     {
         /**
          * t(单位秒) 是自该初始化开始所经过的时间，4个分量分别是 (t/20, t, t*2, t*3)
@@ -291,5 +294,3 @@ declare global
         u_shadowCameraFar: number;
     }
 }
-
-export { };

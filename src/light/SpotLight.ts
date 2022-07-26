@@ -3,22 +3,29 @@ import { mathUtil } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { PerspectiveLens } from '../cameras/lenses/PerspectiveLens';
-import { RegisterComponent } from '../ecs/Component';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
+import { RegisterComponent } from '../component/Component';
+import { GameObject } from '../core/GameObject';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 import { Light } from './Light';
 import { LightType } from './LightType';
 
 declare global
 {
-    interface MixinsPrimitiveEntity { 'Spot light': GameObject; }
-    interface MixinsComponentMap { SpotLight: SpotLight; }
+    export interface MixinsComponentMap
+    {
+        SpotLight: SpotLight;
+    }
+
+    export interface MixinsPrimitiveGameObject
+    {
+        'Spot Light': GameObject;
+    }
 }
 
 /**
  * 聚光灯光源
  */
-@RegisterComponent({ name: 'SpotLight' })
+@RegisterComponent()
 export class SpotLight extends Light
 {
     lightType = LightType.Spot;
@@ -80,7 +87,18 @@ export class SpotLight extends Light
     }
 }
 
-GameObjectFactory.registerPrimitive('Spot light', (g) =>
+GameObject.registerPrimitive('Spot Light', (g) =>
 {
     g.addComponent(SpotLight);
 });
+
+// 在 Hierarchy 界面新增右键菜单项
+createNodeMenu.push(
+    {
+        path: 'Light/Spot Light',
+        priority: -2,
+        click: () =>
+            GameObject.createPrimitive('Spot Light')
+    }
+);
+

@@ -1,14 +1,24 @@
+import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
 import { geometryUtils } from '../geometry/GeometryUtils';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 
 declare global
 {
-    interface MixinsGeometryTypes
+    export interface MixinsGeometryTypes
     {
         QuadGeometry: QuadGeometry
+    }
+
+    export interface MixinsDefaultGeometry
+    {
+        Quad: QuadGeometry;
+    }
+
+    export interface MixinsPrimitiveGameObject
+    {
+        Quad: GameObject;
     }
 }
 
@@ -33,20 +43,20 @@ export class QuadGeometry extends Geometry
     }
 }
 
-declare global
-{
-    interface MixinsDefaultGeometry
-    {
-        Quad: QuadGeometry;
-    }
-    interface MixinsPrimitiveEntity
-    {
-        Quad: GameObject;
-    }
-}
 Geometry.setDefault('Quad', new QuadGeometry());
 
-GameObjectFactory.registerPrimitive('Quad', (g) =>
+GameObject.registerPrimitive('Quad', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Quad');
 });
+
+// 在 Hierarchy 界面新增右键菜单项
+createNodeMenu.push(
+    {
+        path: '3D Object/Quad',
+        priority: -6,
+        click: () =>
+            GameObject.createPrimitive('Quad')
+    }
+);
+

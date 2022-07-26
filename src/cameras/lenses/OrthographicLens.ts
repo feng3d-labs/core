@@ -15,7 +15,7 @@ export class OrthographicLens extends LensBase
     @serialize
     @oav()
     @watch('invalidate')
-        size: number;
+    size: number;
 
     /**
      * 构建正射投影镜头

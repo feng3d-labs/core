@@ -1,18 +1,33 @@
+import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 import { CylinderGeometry } from './CylinderGeometry';
+
+declare global
+{
+    export interface MixinsGeometryTypes
+    {
+        ConeGeometry: ConeGeometry
+    }
+    export interface MixinsDefaultGeometry
+    {
+        Cone: ConeGeometry;
+    }
+    export interface MixinsPrimitiveGameObject
+    {
+        Cone: GameObject;
+    }
+}
 
 /**
  * 圆锥体
-
  */
 export class ConeGeometry extends CylinderGeometry
 {
     __class__: 'feng3d.ConeGeometry' = 'feng3d.ConeGeometry';
 
-    protected _name = 'Cone';
+    name = 'Cone';
 
     /**
      * 底部半径 private
@@ -32,19 +47,18 @@ export class ConeGeometry extends CylinderGeometry
 
 Geometry.setDefault('Cone', new ConeGeometry());
 
-GameObjectFactory.registerPrimitive('Cone', (g) =>
+GameObject.registerPrimitive('Cone', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cone');
 });
 
-declare global
-{
-    interface MixinsDefaultGeometry
+// 在 Hierarchy 界面新增右键菜单项
+createNodeMenu.push(
     {
-        Cone: ConeGeometry;
+        path: '3D Object/Cone',
+        priority: -10000,
+        click: () =>
+            GameObject.createPrimitive('Cone')
     }
-    interface MixinsPrimitiveEntity
-    {
-        Cone: GameObject;
-    }
-}
+);
+

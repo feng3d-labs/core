@@ -89,6 +89,7 @@ export class ImageUtil
 
     /**
      * 设置指定位置颜色值
+     * @param imageData 图片数据
      * @param x 图片数据x坐标
      * @param y 图片数据y坐标
      * @param color 颜色值
@@ -267,7 +268,7 @@ export class ImageUtil
                 const bottom = leftBottom.mixTo(rightBottom, i / this.imageData.width);
                 const v = top.mixTo(bottom, j / this.imageData.height);
 
-                this.setPixel(i, j, new Color4(v.r, v.g, v.b, 1));
+                this.setPixel(i, j, new Color4().fromColor3(v));
             }
         }
 
@@ -364,7 +365,7 @@ export class ImageUtil
      * 绘制双曲线
      * @param curve 曲线
      * @param curve1 曲线
-     * @param between0And1 是否显示值在[0,1]区间，否则[-1,1]区间
+     * @param between0And1  是否显示值在[0,1]区间，否则[-1,1]区间
      * @param curveColor 颜色
      */
     drawBetweenTwoCurves(curve: AnimationCurve, curve1: AnimationCurve, between0And1: boolean, curveColor = new Color4(), fillcolor = new Color4(1, 1, 1, 0.5), rect = null)

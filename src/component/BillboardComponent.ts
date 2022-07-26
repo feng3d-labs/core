@@ -1,17 +1,19 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { oav } from '@feng3d/objectview';
 import { watch } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
-import { Component, RegisterComponent } from '../ecs/Component';
 import { AddComponentMenu } from '../Menu';
+import { Component, RegisterComponent } from './Component';
 
 declare global
 {
-    interface MixinsComponentMap { BillboardComponent: BillboardComponent; }
+    export interface MixinsComponentMap
+    {
+        BillboardComponent: BillboardComponent;
+    }
 }
 
 @AddComponentMenu('Layout/BillboardComponent')
-@RegisterComponent({ name: 'BillboardComponent' })
+@RegisterComponent()
 export class BillboardComponent extends Component
 {
     __class__: 'feng3d.BillboardComponent';
@@ -39,14 +41,12 @@ export class BillboardComponent extends Component
 
     private _invalidHoldSizeMatrix()
     {
-        // @ts-ignore
-        if (this._gameObject) this.transform._invalidateSceneTransform();
+        if (this._gameObject) this.transform['_invalidateSceneTransform']();
     }
 
     private _onUpdateLocalToWorldMatrix()
     {
-        // @ts-ignore
-        const _localToWorldMatrix = this.transform._localToWorldMatrix;
+        const _localToWorldMatrix = this.transform['_localToWorldMatrix'];
         if (_localToWorldMatrix && this.camera)
         {
             const camera = this.camera;
@@ -56,10 +56,10 @@ export class BillboardComponent extends Component
         }
     }
 
-    destroy()
+    dispose()
     {
         this.camera = null;
         this.transform.off('updateLocalToWorldMatrix', this._onUpdateLocalToWorldMatrix, this);
-        super.destroy();
+        super.dispose();
     }
 }

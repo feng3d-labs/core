@@ -1,6 +1,5 @@
 import { Vector3, Vector4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { decoratorRegisterClass } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { Projection } from '../Projection';
@@ -9,7 +8,6 @@ import { LensBase } from './LensBase';
 /**
  * 透视摄像机镜头
  */
-@decoratorRegisterClass()
 export class PerspectiveLens extends LensBase
 {
     /**
@@ -52,7 +50,7 @@ export class PerspectiveLens extends LensBase
      *
      * @param point3d 摄像机空间坐标
      * @param v GPU空间坐标
-     * @returns GPU空间坐标
+     * @return GPU空间坐标
      */
     project(point3d: Vector3, v = new Vector3()): Vector3
     {
@@ -61,7 +59,7 @@ export class PerspectiveLens extends LensBase
         v4.scale(1 / v4.w);
         v4.toVector3(v);
 
-        return v;
+return v;
     }
 
     /**
@@ -88,7 +86,7 @@ export class PerspectiveLens extends LensBase
         // 输出3维坐标
         v44.toVector3(v);
 
-        return v;
+return v;
     }
 
     protected _updateMatrix()
@@ -101,4 +99,3 @@ export class PerspectiveLens extends LensBase
         return new PerspectiveLens(this.fov, this.aspect, this.near, this.far);
     }
 }
-

@@ -1,8 +1,16 @@
-import { IEventTarget } from '@feng3d/event';
-import { Constructor } from '@feng3d/polyfill';
-import { serialize } from '@feng3d/serialization';
-import { Feng3dObject } from './Feng3dObject';
-import { GameObject, GameObjectEventMap } from './GameObject';
+import { IEvent } from '@feng3d/event';
+import { Constructor, IDisposable } from '@feng3d/polyfill';
+import { RenderAtomic } from '@feng3d/renderer';
+import { Camera } from '../cameras/Camera';
+import { Feng3dObject } from '../core/Feng3dObject';
+import { GameObject, GameObjectEventMap } from '../core/GameObject';
+import { Scene } from '../scene/Scene';
+
+declare global
+{
+    interface MixinsComponentMap { }
+    interface MixinsComponent { }
+}
 
 interface ComponentInfo
 {
@@ -32,7 +40,7 @@ const __component__ = '__component__';
 /**
  * 注册组件
  *
- * 使用 @RegisterComponent 在组件类定义上注册组件，配合扩展 ComponentMap 接口后可使用 Entity.getComponent 等方法。
+ * 使用 @RegisterComponent 在组件类定义上注册组件，配合扩展 ComponentMap 接口后可使用 GameObject.getComponent 等方法。
  *
  * @param component 组件名称，默认使用类名称
  */
@@ -55,7 +63,7 @@ export function RegisterComponent(component?: {
     {
         component = component || <any>{};
         const info = component as ComponentInfo;
-        info.name = info.name || component.name;
+        info.name = info.name || component.name || constructor.name;
         info.type = constructor;
         info.dependencies = info.dependencies || [];
         constructor.prototype[__component__] = info;
@@ -77,133 +85,83 @@ export function getComponentType<T extends ComponentNames>(type: T): Constructor
 }
 
 /**
+ * 组件名称与类定义映射，由 @RegisterComponent 装饰器进行填充。
+ */
+export const componentMap: ComponentMap = <any>{};
+
+/**
  * 组件名称与类定义映射，新建组件一般都需扩展该接口。
  */
-export interface ComponentMap extends MixinsComponentMap
-{
-    Component: Component
-}
+export interface ComponentMap extends MixinsComponentMap { Component: Component }
 
 export type ComponentNames = keyof ComponentMap;
+export type Components = ComponentMap[ComponentNames];
+
+export interface Component extends MixinsComponent { }
 
 /**
- * Base class for everything attached to GameObjects.
+ * 组件
  *
- * Note that your code will never directly create a Component. Instead, you write script code, and attach the script to a GameObject.
+ * 所有附加到GameObjects的基类。
+ *
+ * 注意，您的代码永远不会直接创建组件。相反，你可以编写脚本代码，并将脚本附加到GameObject(游戏物体)上。
  */
-/**
- * 附加到`GameObject`的所有内容的基类。
- *
- * 请注意，您的代码永远不会直接创建组件。相反，您编写脚本代码，并将脚本附加到GameObject。
- *
- * `Component`上的所有的事件将会分享到`GameObject`上，再有`GameObject`进行分享给其他`Component`以及向上级游戏对象报告以及向下级游戏对象广播。
- */
-export class Component extends Feng3dObject<GameObjectEventMap> implements IEventTarget
+export class Component extends Feng3dObject<GameObjectEventMap> implements IDisposable
 {
+    // ------------------------------------------
+    // Variables
+    // ------------------------------------------
     /**
-     * 组件名称与类定义映射，由 @RegisterComponent 装饰器进行填充。
-     * @private
-     */
-    static _componentMap: { [name: string]: Constructor<Component> } = {};
-
-    /**
-     * 获取组件依赖列表
-     *
-     * @param type 组件类定义
-     */
-    static getDependencies(type: Constructor<Component>)
-    {
-        let prototype = type.prototype;
-        let dependencies: Constructor<Component>[] = [];
-        while (prototype)
-        {
-            dependencies = dependencies.concat((prototype[__component__] as ComponentInfo)?.dependencies || []);
-            prototype = prototype.__proto__;
-        }
-
-        return dependencies;
-    }
-
-    /**
-     * 判断组件是否为唯一组件。
-     *
-     * @param type 组件类定义
-     */
-    static isSingleComponent<T extends Component>(type: Constructor<T>)
-    {
-        let prototype = type.prototype;
-        let isSingle = false;
-        while (prototype && !isSingle)
-        {
-            isSingle = !!((prototype[__component__] as ComponentInfo)?.single);
-            prototype = prototype.__proto__;
-        }
-
-        return isSingle;
-    }
-
-    /**
-     * 对象的名称。
-     *
-     * 组件与游戏对象和所有附加组件共享相同的名称。
-     */
-    get name()
-    {
-        return this._gameObject.name;
-    }
-    set name(v)
-    {
-        this._gameObject.name = v;
-    }
-
-    /**
-     * The game object this component is attached to. A component is always attached to a game object.
-     */
-    /**
-     * 此组件附加到的游戏对象。组件始终附加到游戏对象。
+     * 此组件附加到的游戏对象。组件总是附加到游戏对象上。
      */
     get gameObject()
     {
         return this._gameObject;
     }
-    @serialize
-    protected _gameObject: GameObject;
 
     /**
-     * The tag of this game object.
-     *
-     * A tag can be used to identify a game object. Tags must be declared in the Tags and Layers manager before using them.
-     */
-    /**
-     * 此游戏对象的标签。
-     *
-     * 标签可用于识别游戏对象。在使用标签之前，标签必须在标签和层管理器中声明。
+     * 标签
      */
     get tag()
     {
         return this._gameObject.tag;
     }
 
-    set tag(v)
-    {
-        this._gameObject.tag = v;
-    }
-
     /**
-     * The Transform attached to this GameObject.
-     */
-    /**
-     * 附加到此GameObject的变换。
+     * The Transform attached to this GameObject (null if there is none attached).
      */
     get transform()
     {
-        return this._gameObject.transform;
+        return this._gameObject && this._gameObject.transform;
     }
 
+    /**
+     * 是否唯一，同类型3D对象组件只允许一个
+     */
+    get single()
+    {
+        return false;
+    }
+
+    // ------------------------------------------
+    // Functions
+    // ------------------------------------------
+    /**
+     * 创建一个组件
+     */
     constructor()
     {
         super();
-        this.once('destroy', this._onDestroy, this);
+        this.onAny(this._onAnyListener, this);
+    }
+
+    /**
+     * 初始化组件
+     *
+     * 在添加到GameObject时立即被调用。
+     */
+    init()
+    {
     }
 
     /**
@@ -349,7 +307,7 @@ export class Component extends Feng3dObject<GameObjectEventMap> implements IEven
      */
     getComponentsInParent<T extends Component>(type: Constructor<T>, includeInactive = false, results: T[] = []): T[]
     {
-        return this.getComponentsInParent(type, includeInactive, results);
+        return this._gameObject.getComponentsInParent(type, includeInactive, results);
     }
 
     /**
@@ -361,42 +319,79 @@ export class Component extends Feng3dObject<GameObjectEventMap> implements IEven
     }
 
     /**
-     * 初始化组件
-     *
-     * 在添加到Entity时立即被调用。
-     */
-    init()
-    {
-    }
-
-    /**
      * 销毁
      */
-    destroy()
+    dispose()
     {
-        super.destroy();
-        this._gameObject = null;
+        this._gameObject = <any>null;
+        this._disposed = true;
     }
 
-    beforeRender(_renderAtomic: any, _scene: any, _camera: any)
+    beforeRender(_renderAtomic: RenderAtomic, _scene: Scene, _camera: Camera)
     {
 
     }
 
     /**
-     * 该方法仅在Entity中使用
+     * 监听对象的所有事件并且传播到所有组件中
+     */
+    private _onAnyListener(e: IEvent<any>)
+    {
+        if (this._gameObject)
+        { this._gameObject.emitEvent(e); }
+    }
+
+    /**
+     * 该方法仅在GameObject中使用
      * @private
      *
-     * @param entity 实体
+     * @param gameObject 游戏对象
      */
-    _setEntity(entity: GameObject)
+    setGameObject(gameObject: GameObject)
     {
-        this._gameObject = entity;
+        this._gameObject = gameObject;
+    }
+    protected _gameObject: GameObject;
+
+    /**
+     * 组件名称与类定义映射，由 @RegisterComponent 装饰器进行填充。
+     * @private
+     */
+    static _componentMap: { [name: string]: Constructor<Component> } = {};
+
+    /**
+     * 获取组件依赖列表
+     *
+     * @param type 组件类定义
+     */
+    static getDependencies(type: Constructor<Component>)
+    {
+        let prototype = type.prototype;
+        let dependencies: Constructor<Component>[] = [];
+        while (prototype)
+        {
+            dependencies = dependencies.concat((prototype[__component__] as ComponentInfo)?.dependencies || []);
+            prototype = prototype.__proto__;
+        }
+
+        return dependencies;
     }
 
-    private _onDestroy()
+    /**
+     * 判断组件是否为唯一组件。
+     *
+     * @param type 组件类定义
+     */
+    static isSingleComponent<T extends Component>(type: Constructor<T>)
     {
-        this._gameObject = null;
+        let prototype = type.prototype;
+        let isSingle = false;
+        while (prototype && !isSingle)
+        {
+            isSingle = !!((prototype[__component__] as ComponentInfo)?.single);
+            prototype = prototype.__proto__;
+        }
+
+        return isSingle;
     }
 }
-

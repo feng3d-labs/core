@@ -2,23 +2,29 @@ import { Matrix4x4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
-import { Animation } from '../../animation/Animation';
 import { Camera } from '../../cameras/Camera';
+import { RegisterComponent } from '../../component/Component';
+import { GameObject } from '../../core/GameObject';
+import { HideFlags } from '../../core/HideFlags';
 import { Renderable } from '../../core/Renderable';
-import { RegisterComponent } from '../../ecs/Component';
-import { HideFlags } from '../../ecs/HideFlags';
 import { Scene } from '../../scene/Scene';
 import { SkeletonComponent } from './SkeletonComponent';
+import { Animation } from '../../animation/Animation';
 
 declare global
 {
-    interface MixinsComponentMap { SkinnedMeshRenderer: SkinnedMeshRenderer }
+    export interface MixinsComponentMap
+    {
+        SkinnedMeshRenderer: SkinnedMeshRenderer
+    }
 }
 
-@RegisterComponent({ name: 'SkinnedMeshRenderer', single: true })
+@RegisterComponent()
 export class SkinnedMeshRenderer extends Renderable
 {
     __class__: 'feng3d.SkinnedMeshRenderer';
+
+    get single() { return true; }
 
     @serialize
     @oav()
@@ -41,7 +47,7 @@ export class SkinnedMeshRenderer extends Renderable
         super.beforeRender(renderAtomic, scene, camera);
 
         let frameId: string = null;
-        const animation = this.getComponentInParent(Animation);
+        const animation = this.getComponentsInParent(Animation)[0];
         if (animation)
         {
             frameId = `${animation.clipName}&${animation.frame}`;
@@ -51,7 +57,8 @@ export class SkinnedMeshRenderer extends Renderable
         renderAtomic.uniforms.u_ITModelMatrix = () => this.u_ITModelMatrix;
         //
         let skeletonGlobalMatriices = this.cacheU_skeletonGlobalMatriices[frameId];
-        if (!skeletonGlobalMatriices)
+        // if (!skeletonGlobalMatriices)
+        // eslint-disable-next-line no-lone-blocks
         {
             skeletonGlobalMatriices = this.u_skeletonGlobalMatriices;
             if (frameId) this.cacheU_skeletonGlobalMatriices[frameId] = skeletonGlobalMatriices;
@@ -65,10 +72,10 @@ export class SkinnedMeshRenderer extends Renderable
     /**
      * 销毁
      */
-    destroy()
+    dispose()
     {
         this.cacheSkeletonComponent = null;
-        super.destroy();
+        super.dispose();
     }
 
     /**
@@ -98,12 +105,12 @@ export class SkinnedMeshRenderer extends Renderable
     {
         if (!this.cacheSkeletonComponent)
         {
-            let node3d = this.transform;
+            let gameObject: GameObject = this.gameObject;
             let skeletonComponent: SkeletonComponent = null;
-            while (node3d && !skeletonComponent)
+            while (gameObject && !skeletonComponent)
             {
-                skeletonComponent = node3d.getComponent(SkeletonComponent);
-                node3d = node3d.parent;
+                skeletonComponent = gameObject.getComponent(SkeletonComponent);
+                gameObject = gameObject.parent;
             }
             this.cacheSkeletonComponent = skeletonComponent;
         }

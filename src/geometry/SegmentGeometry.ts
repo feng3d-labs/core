@@ -2,20 +2,23 @@ import { Color4, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
 import { Material } from '../materials/Material';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 import { Geometry } from './Geometry';
 
 declare global
 {
-    interface MixinsGeometryTypes
+    export interface MixinsPrimitiveGameObject
+    {
+        Segment: GameObject;
+    }
+    export interface MixinsGeometryTypes
     {
         SegmentGeometry: SegmentGeometry
     }
 }
-
 /**
  * 线段组件
  */
@@ -23,7 +26,7 @@ export class SegmentGeometry extends Geometry
 {
     __class__: 'feng3d.SegmentGeometry';
 
-    protected _name = 'Segment';
+    name = 'Segment';
 
     /**
      * 线段列表
@@ -45,6 +48,11 @@ export class SegmentGeometry extends Geometry
         serialization.setValue(s, segment);
         this.segments.push(s);
         this.invalidateGeometry();
+    }
+
+    constructor()
+    {
+        super();
     }
 
     /**
@@ -111,17 +119,20 @@ export class Segment
     endColor = new Color4();
 }
 
-declare global
-{
-    interface MixinsPrimitiveEntity
-    {
-        Segment: GameObject;
-    }
-}
-
-GameObjectFactory.registerPrimitive('Segment', (g) =>
+GameObject.registerPrimitive('Segment', (g) =>
 {
     const model = g.addComponent(MeshRenderer);
     model.geometry = new SegmentGeometry();
     model.material = Material.getDefault('Segment-Material');
 });
+
+// 在 Hierarchy 界面新增右键菜单项
+createNodeMenu.push(
+    {
+        path: '3D Object/Segment',
+        priority: -10000,
+        click: () =>
+            GameObject.createPrimitive('Segment')
+    }
+);
+

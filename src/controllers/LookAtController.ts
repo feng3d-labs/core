@@ -1,5 +1,5 @@
 import { Vector3 } from '@feng3d/math';
-import { GameObject } from '../ecs/GameObject';
+import { GameObject } from '../core/GameObject';
 import { ControllerBase } from './ControllerBase';
 
 export class LookAtController extends ControllerBase
@@ -15,13 +15,9 @@ export class LookAtController extends ControllerBase
         super(target);
 
         if (lookAtObject)
-        {
-            this.lookAtObject = lookAtObject;
-        }
+        { this.lookAtObject = lookAtObject; }
         else
-        {
-            this.lookAtPosition = new Vector3();
-        }
+        { this.lookAtPosition = new Vector3(); }
     }
 
     get upAxis(): Vector3
@@ -61,18 +57,17 @@ export class LookAtController extends ControllerBase
 
     update(_interpolate = true): void
     {
-        if (this._target)
+        if (this._targetObject)
         {
             if (this._lookAtPosition)
             {
-                this._target.transform.lookAt(this.lookAtPosition, this._upAxis);
+                this._targetObject.transform.lookAt(this.lookAtPosition, this._upAxis);
             }
             else if (this._lookAtObject)
             {
-                this._pos.copy(this._lookAtObject.transform.localPosition);
-                this._target.transform.lookAt(this._pos, this._upAxis);
+                this._pos = this._lookAtObject.transform.position;
+                this._targetObject.transform.lookAt(this._pos, this._upAxis);
             }
         }
     }
 }
-

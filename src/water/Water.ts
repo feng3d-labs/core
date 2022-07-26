@@ -2,25 +2,24 @@ import { Matrix4x4, Plane, Vector3, Vector4 } from '@feng3d/math';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialization } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
+import { RegisterComponent } from '../component/Component';
+import { GameObject } from '../core/GameObject';
 import { Renderable } from '../core/Renderable';
-import { RegisterComponent } from '../ecs/Component';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
 import { Material } from '../materials/Material';
 import { AddComponentMenu } from '../Menu';
-import { PlaneGeometry } from '../primitives/PlaneGeometry';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 import { FrameBufferObject } from '../render/FrameBufferObject';
 import { Scene } from '../scene/Scene';
 import { WaterUniforms } from './WaterMaterial';
 
 declare global
 {
-    interface MixinsComponentMap
+    export interface MixinsComponentMap
     {
         Water: Water
     }
-    interface MixinsPrimitiveEntity
+    export interface MixinsPrimitiveGameObject
     {
         Water: GameObject;
     }
@@ -30,14 +29,14 @@ declare global
  * The Water component renders the terrain.
  */
 @AddComponentMenu('Graphics/Water')
-@RegisterComponent({ name: 'Water' })
+@RegisterComponent()
 export class Water extends Renderable
 {
     __class__: 'feng3d.Water';
 
-    geometry: PlaneGeometry = Geometry.getDefault('Plane');
+    geometry = Geometry.getDefault('Plane');
 
-    protected _material = Material.getDefault('Water-Material');
+    material = Material.getDefault('Water-Material');
 
     /**
      * 帧缓冲对象，用于处理水面反射
@@ -62,7 +61,8 @@ export class Water extends Renderable
 
         super.beforeRender(renderAtomic, scene, camera);
 
-        return;
+        // eslint-disable-next-line no-constant-condition
+        if (1) return;
         //
         const mirrorWorldPosition = this.transform.worldPosition;
         const cameraWorldPosition = camera.transform.worldPosition;
@@ -88,9 +88,7 @@ export class Water extends Renderable
         target.add(mirrorWorldPosition);
 
         const mirrorCamera = serialization.setValue(new GameObject(), { name: 'waterMirrorCamera' }).addComponent(Camera);
-        mirrorCamera.transform.localPosition.x = view.x;
-        mirrorCamera.transform.localPosition.y = view.y;
-        mirrorCamera.transform.localPosition.z = view.z;
+        mirrorCamera.transform.position = view;
         mirrorCamera.transform.lookAt(target, rotationMatrix.getAxisY());
 
         mirrorCamera.lens = camera.lens.clone();
@@ -123,7 +121,8 @@ export class Water extends Renderable
         projectionMatrix.elements[10] = clipPlane.z + 1.0 - clipBias;
         projectionMatrix.elements[14] = clipPlane.w;
 
-        // const eye = camera.node3d.worldPosition;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const eye = camera.transform.worldPosition;
 
         // 不支持直接操作gl，下面代码暂时注释掉！
         // //
@@ -148,7 +147,18 @@ export class Water extends Renderable
     }
 }
 
-GameObjectFactory.registerPrimitive('Water', (g) =>
+GameObject.registerPrimitive('Water', (g) =>
 {
     g.addComponent(Water);
 });
+
+// 在 Hierarchy 界面新增右键菜单项
+createNodeMenu.push(
+    {
+        path: '3D Object/Water',
+        priority: -20000,
+        click: () =>
+            GameObject.createPrimitive('Water')
+    }
+);
+

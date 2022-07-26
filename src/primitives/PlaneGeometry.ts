@@ -1,16 +1,25 @@
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 
 declare global
 {
-    interface MixinsGeometryTypes
+    export interface MixinsGeometryTypes
     {
         PlaneGeometry: PlaneGeometry
+    }
+
+    export interface MixinsDefaultGeometry
+    {
+        Plane: PlaneGeometry;
+    }
+    export interface MixinsPrimitiveGameObject
+    {
+        Plane: GameObject;
     }
 }
 
@@ -61,7 +70,7 @@ export class PlaneGeometry extends Geometry
     @watch('invalidateGeometry')
     yUp = true;
 
-    protected _name = 'Plane';
+    name = 'Plane';
 
     /**
      * 构建几何体数据
@@ -86,6 +95,11 @@ export class PlaneGeometry extends Geometry
 
     /**
      * 构建顶点坐标
+     * @param this.width 宽度
+     * @param this.height 高度
+     * @param this.segmentsW 横向分割数
+     * @param this.segmentsH 纵向分割数
+     * @param this.yUp 正面朝向 true:Y+ false:Z+
      */
     private buildPosition()
     {
@@ -120,6 +134,9 @@ export class PlaneGeometry extends Geometry
 
     /**
      * 构建顶点法线
+     * @param this.segmentsW 横向分割数
+     * @param this.segmentsH 纵向分割数
+     * @param this.yUp 正面朝向 true:Y+ false:Z+
      */
     private buildNormal()
     {
@@ -150,6 +167,9 @@ export class PlaneGeometry extends Geometry
 
     /**
      * 构建顶点切线
+     * @param this.segmentsW 横向分割数
+     * @param this.segmentsH 纵向分割数
+     * @param this.yUp 正面朝向 true:Y+ false:Z+
      */
     private buildTangent()
     {
@@ -179,6 +199,9 @@ export class PlaneGeometry extends Geometry
 
     /**
      * 构建顶点索引
+     * @param this.segmentsW 横向分割数
+     * @param this.segmentsH 纵向分割数
+     * @param this.yUp 正面朝向 true:Y+ false:Z+
      */
     private buildIndices()
     {
@@ -222,6 +245,8 @@ export class PlaneGeometry extends Geometry
 
     /**
      * 构建uv
+     * @param this.segmentsW 横向分割数
+     * @param this.segmentsH 纵向分割数
      */
     private buildUVs()
     {
@@ -249,20 +274,20 @@ export class PlaneGeometry extends Geometry
     }
 }
 
-declare global
-{
-    interface MixinsDefaultGeometry
-    {
-        Plane: PlaneGeometry;
-    }
-    interface MixinsPrimitiveEntity
-    {
-        Plane: GameObject;
-    }
-}
 Geometry.setDefault('Plane', new PlaneGeometry(), { width: 10, height: 10 });
 
-GameObjectFactory.registerPrimitive('Plane', (g) =>
+GameObject.registerPrimitive('Plane', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Plane');
 });
+
+// 在 Hierarchy 界面新增右键菜单项
+createNodeMenu.push(
+    {
+        path: '3D Object/Plane',
+        priority: -5,
+        click: () =>
+            GameObject.createPrimitive('Plane')
+    }
+);
+

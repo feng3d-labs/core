@@ -1,45 +1,40 @@
 import { Box3, Vector3 } from '@feng3d/math';
-import { decoratorRegisterClass } from '@feng3d/polyfill';
 import { serialization } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { OrthographicLens } from '../cameras/lenses/OrthographicLens';
+import { RegisterComponent } from '../component/Component';
+import { GameObject } from '../core/GameObject';
 import { Renderable } from '../core/Renderable';
-import { RegisterComponent } from '../ecs/Component';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
 import { AddComponentMenu } from '../Menu';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 import { Scene } from '../scene/Scene';
 import { Light } from './Light';
 import { LightType } from './LightType';
 
 declare global
 {
-    interface MixinsComponentMap { DirectionalLight: DirectionalLight; }
+    export interface MixinsComponentMap
+    {
+        DirectionalLight: DirectionalLight;
+    }
+
+    export interface MixinsPrimitiveGameObject
+    {
+        'Directional light': GameObject;
+    }
 }
 
 /**
  * 方向光源
  */
 @AddComponentMenu('Rendering/DirectionalLight')
-@RegisterComponent({ name: 'DirectionalLight' })
-@decoratorRegisterClass()
+@RegisterComponent()
 export class DirectionalLight extends Light
 {
-    static create(name = 'DirectionalLight')
-    {
-        const entity = new GameObject();
-        entity.name = name;
-        const directionalLight = entity.addComponent(DirectionalLight);
-
-        return directionalLight;
-    }
     __class__: 'feng3d.DirectionalLight';
 
     lightType = LightType.Directional;
 
-    /**
-     * 用于计算方向光
-     */
     private orthographicLens: OrthographicLens;
 
     /**
@@ -50,6 +45,11 @@ export class DirectionalLight extends Light
         return this.shadowCamera.transform.worldPosition;
     }
 
+    constructor()
+    {
+        super();
+    }
+
     /**
      * 通过视窗摄像机进行更新
      * @param viewCamera 视窗摄像机
@@ -58,7 +58,7 @@ export class DirectionalLight extends Light
     {
         const worldBounds: Box3 = models.reduce((pre: Box3, i) =>
         {
-            const box = i.transform.boundingBox.worldBounds;
+            const box = i.gameObject.boundingBox.worldBounds;
             if (!pre)
             { return box.clone(); }
             pre.union(box);
@@ -70,10 +70,7 @@ export class DirectionalLight extends Light
         const center = worldBounds.getCenter();
         const radius = worldBounds.getSize().length / 2;
         //
-        const position = center.addTo(this.direction.scaleNumberTo(radius + this.shadowCameraNear).negate());
-        this.shadowCamera.transform.localPosition.x = position.x;
-        this.shadowCamera.transform.localPosition.y = position.y;
-        this.shadowCamera.transform.localPosition.z = position.z;
+        this.shadowCamera.transform.position = center.addTo(this.direction.scaleNumberTo(radius + this.shadowCameraNear).negate());
         this.shadowCamera.transform.lookAt(center, this.shadowCamera.transform.matrix.getAxisY());
         //
         if (!this.orthographicLens)
@@ -87,12 +84,18 @@ export class DirectionalLight extends Light
     }
 }
 
-GameObjectFactory.registerPrimitive('Directional light', (g) =>
+GameObject.registerPrimitive('Directional light', (g) =>
 {
     g.addComponent(DirectionalLight);
 });
 
-declare global
-{
-    interface MixinsPrimitiveEntity { 'Directional light': GameObject; }
-}
+// 在 Hierarchy 界面新增右键菜单项
+createNodeMenu.push(
+    {
+        path: 'Light/Directional light',
+        priority: -2,
+        click: () =>
+            GameObject.createPrimitive('Directional light')
+    }
+);
+

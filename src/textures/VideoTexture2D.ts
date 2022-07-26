@@ -4,7 +4,7 @@ import { Texture2D } from './Texture2D';
 export class VideoTexture2D extends Texture2D
 {
     @watch('_videoChanged')
-        video: HTMLVideoElement;
+    video: HTMLVideoElement;
 
     private _videoChanged()
     {

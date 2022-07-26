@@ -3,17 +3,37 @@ import { oav } from '@feng3d/objectview';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
-import { Component, RegisterComponent } from '../ecs/Component';
 import { AddComponentMenu } from '../Menu';
 import { Scene } from '../scene/Scene';
+import { RegisterComponent, Component } from './Component';
 
 declare global
 {
-    interface MixinsComponentMap { OutLineComponent: OutLineComponent; }
+    export interface MixinsComponentMap
+    {
+        OutLineComponent: OutLineComponent;
+    }
+
+    export interface MixinsUniforms
+    {
+        /**
+         * 描边宽度
+         */
+        u_outlineSize: number;
+        /**
+         * 描边颜色
+         */
+        u_outlineColor: Color4;
+        /**
+         * 描边形态因子
+         * (0.0，1.0):0.0表示延法线方向，1.0表示延顶点方向
+         */
+        u_outlineMorphFactor: number;
+    }
 }
 
 @AddComponentMenu('Rendering/OutLineComponent')
-@RegisterComponent({ name: 'OutLineComponent' })
+@RegisterComponent()
 export class OutLineComponent extends Component
 {
     __class__: 'feng3d.OutLineComponent';
@@ -35,25 +55,5 @@ export class OutLineComponent extends Component
         renderAtomic.uniforms.u_outlineSize = this.size;
         renderAtomic.uniforms.u_outlineColor = this.color;
         renderAtomic.uniforms.u_outlineMorphFactor = this.outlineMorphFactor;
-    }
-}
-
-declare global
-{
-    interface MixinsUniforms
-    {
-        /**
-         * 描边宽度
-         */
-        u_outlineSize: number;
-        /**
-         * 描边颜色
-         */
-        u_outlineColor: Color4;
-        /**
-         * 描边形态因子
-         * (0.0，1.0):0.0表示延法线方向，1.0表示延顶点方向
-         */
-        u_outlineMorphFactor: number;
     }
 }

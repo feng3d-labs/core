@@ -1,4 +1,4 @@
-import { mathUtil, ObjectUtils } from '@feng3d/polyfill';
+import { ObjectUtils, mathUtil } from '@feng3d/polyfill';
 
 /**
  * 通用唯一标识符（Universally Unique Identifier）

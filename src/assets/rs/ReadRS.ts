@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { FS, pathUtils, ReadFS } from '@feng3d/filesystem';
 import { ArrayUtils, classUtils, Constructor, gPartial, mathUtil, ObjectUtils, __class__ } from '@feng3d/polyfill';
 import { serialization } from '@feng3d/serialization';
@@ -14,10 +13,15 @@ import { FolderAsset } from '../FolderAsset';
 export class ReadRS
 {
     /**
+     * 默认资源系统
+     */
+    static rs = new ReadRS();
+
+    /**
      * 文件系统
      */
     get fs() { return this._fs || FS.fs; }
-    protected _fs: ReadFS;
+    private _fs: ReadFS;
 
     /**
      * 根资源路径
@@ -66,7 +70,7 @@ export class ReadRS
         {
             if (object)
             {
-                const allAssets: FileAsset[] = serialization.deserialize(object) as any;
+                const allAssets: FileAsset[] = <any>serialization.deserialize(object);
                 //
                 allAssets.forEach((asset) =>
                 {
@@ -105,7 +109,7 @@ export class ReadRS
 
         // 初始化
         asset.rs = this as any;
-        serialization.setValue(asset, value);
+        serialization.setValue(<T>asset, value);
         asset.assetId = assetId;
         asset.meta = { guid: assetId, mtimeMs: Date.now(), birthtimeMs: Date.now(), assetType: asset.assetType };
         asset.initAsset();
@@ -113,8 +117,7 @@ export class ReadRS
 
         // 计算扩展名
         let extenson = path.extname(fileName);
-        // @ts-ignore
-        if (extenson === '') extenson = Cls.extenson;
+        if (extenson === '') extenson = Cls['extenson'];
         console.assert(extenson !== undefined, `对象 ${Cls} 没有设置 extenson 值，参考 FolderAsset.extenson`);
 
         // 计算名称
@@ -139,7 +142,7 @@ export class ReadRS
         //
         asset.write((_err) =>
         {
-            callback && callback(null, asset as T);
+            callback && callback(null, <T>asset);
         });
     }
 
@@ -217,7 +220,7 @@ export class ReadRS
         const result: AssetData[] = [];
         const fns = assetids.map((v) => (callback) =>
         {
-            rs.readAssetData(v, (_err, data) =>
+            ReadRS.rs.readAssetData(v, (_err, data) =>
             {
                 console.assert(!!data);
                 result.push(data);
@@ -240,7 +243,7 @@ export class ReadRS
     {
         const assets = Object.keys(this._idMap).map((v) => this._idMap[v]);
 
-        return assets.filter((v) => v instanceof type) as any;
+        return <any>assets.filter((v) => v instanceof type);
     }
 
     /**
@@ -252,7 +255,7 @@ export class ReadRS
     {
         const assets = AssetData.getAllLoadedAssetDatas();
 
-        return assets.filter((v) => v instanceof type);
+        return <any>assets.filter((v) => v instanceof type);
     }
 
     /**
@@ -415,8 +418,3 @@ export class ReadRS
         });
     }
 }
-
-/**
- * 默认资源系统
- */
-export const rs = new ReadRS();

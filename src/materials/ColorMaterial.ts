@@ -1,9 +1,9 @@
 import { Color4 } from '@feng3d/math';
-import { shaderlib } from '@feng3d/renderer';
 import { oav } from '@feng3d/objectview';
+import { shaderlib } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
-import colorVertex from '../shaders/color.vertex.glsl';
 import colorFragment from '../shaders/color.fragment.glsl';
+import colorVertex from '../shaders/color.vertex.glsl';
 
 declare global
 {

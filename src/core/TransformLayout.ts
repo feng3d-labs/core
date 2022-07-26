@@ -1,19 +1,19 @@
-import { IEvent as Event } from '@feng3d/event';
+import { IEvent } from '@feng3d/event';
 import { Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { watcher } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
-import { Component, RegisterComponent } from '../ecs/Component';
-import { GameObject } from '../ecs/GameObject';
+import { Component, RegisterComponent } from '../component/Component';
 import { AddComponentMenu } from '../Menu';
 import { Scene } from '../scene/Scene';
 import { ticker } from '../utils/Ticker';
+import { GameObject } from './GameObject';
 
 declare global
 {
-    interface MixinsEntityEventMap
+    export interface MixinsGameObjectEventMap
     {
         /**
          * 尺寸变化事件
@@ -25,7 +25,8 @@ declare global
          */
         pivotChanged: TransformLayout;
     }
-    interface MixinsComponentMap
+
+    export interface MixinsComponentMap
     {
         TransformLayout: TransformLayout;
     }
@@ -39,9 +40,11 @@ declare global
  * 通过修改Transform的数值实现
  */
 @AddComponentMenu('Layout/TransformLayout')
-@RegisterComponent({ name: 'TransformLayout', single: true })
+@RegisterComponent()
 export class TransformLayout extends Component
 {
+    get single() { return true; }
+
     /**
      * 创建一个实体，该类为虚类
      */
@@ -77,14 +80,14 @@ export class TransformLayout extends Component
         this.on('removed', this._onRemoved, this);
     }
 
-    private _onAdded(event: Event<{ parent: GameObject; }>)
+    private _onAdded(event: IEvent<{ parent: GameObject; }>)
     {
         event.data.parent.on('sizeChanged', this._invalidateLayout, this);
         event.data.parent.on('pivotChanged', this._invalidateLayout, this);
         this._invalidateLayout();
     }
 
-    private _onRemoved(event: Event<{ parent: GameObject; }>)
+    private _onRemoved(event: IEvent<{ parent: GameObject; }>)
     {
         event.data.parent.off('sizeChanged', this._invalidateLayout, this);
         event.data.parent.off('pivotChanged', this._invalidateLayout, this);
@@ -93,7 +96,7 @@ export class TransformLayout extends Component
     /**
      * 位移
      */
-    @oav({ tooltip: '当anchorMin.x === anchorMax.x时对position.x赋值生效，当 anchorMin.y === anchorMax.y 时对position.y赋值生效，否则赋值无效，自动被覆盖。', componentParam: { step: 1, stepScale: 1, stepDownup: 1 } })
+    @oav({ tooltip: '当anchorMin.x == anchorMax.x时对position.x赋值生效，当 anchorMin.y == anchorMax.y 时对position.y赋值生效，否则赋值无效，自动被覆盖。', componentParam: { step: 1, stepScale: 1, stepDownup: 1 } })
     @serialize
     get position()
     {
@@ -107,7 +110,7 @@ export class TransformLayout extends Component
     /**
      * 尺寸，宽高。
      */
-    @oav({ tooltip: '宽度，不会影响到缩放值。当 anchorMin.x === anchorMax.x 时对 size.x 赋值生效，当anchorMin.y === anchorMax.y时对 size.y 赋值生效，否则赋值无效，自动被覆盖。', componentParam: { step: 1, stepScale: 1, stepDownup: 1 } })
+    @oav({ tooltip: '宽度，不会影响到缩放值。当 anchorMin.x == anchorMax.x 时对 size.x 赋值生效，当anchorMin.y == anchorMax.y时对 size.y 赋值生效，否则赋值无效，自动被覆盖。', componentParam: { step: 1, stepScale: 1, stepDownup: 1 } })
     @serialize
     get size()
     {
@@ -119,9 +122,9 @@ export class TransformLayout extends Component
     private _size = new Vector3(1, 1, 1);
 
     /**
-     * 与最小最大锚点形成的边框的left、right、top、bottom距离。当 anchorMin.x !== anchorMax.x 时对 layout.x layout.y 赋值生效，当 anchorMin.y !== anchorMax.y 时对 layout.z layout.w 赋值生效，否则赋值无效，自动被覆盖。
+     * 与最小最大锚点形成的边框的left、right、top、bottom距离。当 anchorMin.x != anchorMax.x 时对 layout.x layout.y 赋值生效，当 anchorMin.y != anchorMax.y 时对 layout.z layout.w 赋值生效，否则赋值无效，自动被覆盖。
      */
-    @oav({ tooltip: '与最小最大锚点形成的边框的left、right、top、bottom距离。当 anchorMin.x !== anchorMax.x 时对 layout.x layout.y 赋值生效，当 anchorMin.y !== anchorMax.y 时对 layout.z layout.w 赋值生效，否则赋值无效，自动被覆盖。', componentParam: { step: 1, stepScale: 1, stepDownup: 1 } })
+    @oav({ tooltip: '与最小最大锚点形成的边框的left、right、top、bottom距离。当 anchorMin.x != anchorMax.x 时对 layout.x layout.y 赋值生效，当 anchorMin.y != anchorMax.y 时对 layout.z layout.w 赋值生效，否则赋值无效，自动被覆盖。', componentParam: { step: 1, stepScale: 1, stepDownup: 1 } })
     @serialize
     get leftTop()
     {
@@ -134,9 +137,9 @@ export class TransformLayout extends Component
     private _leftTop = new Vector3(0, 0, 0);
 
     /**
-     * 与最小最大锚点形成的边框的left、right、top、bottom距离。当 anchorMin.x !== anchorMax.x 时对 layout.x layout.y 赋值生效，当 anchorMin.y !== anchorMax.y 时对 layout.z layout.w 赋值生效，否则赋值无效，自动被覆盖。
+     * 与最小最大锚点形成的边框的left、right、top、bottom距离。当 anchorMin.x != anchorMax.x 时对 layout.x layout.y 赋值生效，当 anchorMin.y != anchorMax.y 时对 layout.z layout.w 赋值生效，否则赋值无效，自动被覆盖。
      */
-    @oav({ tooltip: '与最小最大锚点形成的边框的left、right、top、bottom距离。当 anchorMin.x !== anchorMax.x 时对 layout.x layout.y 赋值生效，当 anchorMin.y !== anchorMax.y 时对 layout.z layout.w 赋值生效，否则赋值无效，自动被覆盖。', componentParam: { step: 1, stepScale: 1, stepDownup: 1 } })
+    @oav({ tooltip: '与最小最大锚点形成的边框的left、right、top、bottom距离。当 anchorMin.x != anchorMax.x 时对 layout.x layout.y 赋值生效，当 anchorMin.y != anchorMax.y 时对 layout.z layout.w 赋值生效，否则赋值无效，自动被覆盖。', componentParam: { step: 1, stepScale: 1, stepDownup: 1 } })
     @serialize
     get rightBottom()
     {
@@ -178,7 +181,7 @@ export class TransformLayout extends Component
     {
         if (!this._layoutInvalid) return;
 
-        const transformLayout = this.transform?.parent?.getComponent(TransformLayout);
+        const transformLayout = this.gameObject && this.gameObject.parent && this.gameObject.parent.getComponent(TransformLayout);
         if (!transformLayout) return;
 
         // 中心点基于anchorMin的坐标
@@ -243,9 +246,9 @@ export class TransformLayout extends Component
         }
 
         //
-        this.transform.localPosition.x = anchorLeftTop.x + position.x;
-        this.transform.localPosition.y = anchorLeftTop.y + position.y;
-        this.transform.localPosition.z = anchorLeftTop.z + position.z;
+        this.transform.position.x = anchorLeftTop.x + position.x;
+        this.transform.position.y = anchorLeftTop.y + position.y;
+        this.transform.position.z = anchorLeftTop.z + position.z;
         //
         this._layoutInvalid = false;
         ticker.offframe(this._updateLayout, this);

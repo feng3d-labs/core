@@ -1,15 +1,27 @@
 import { globalEmitter } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
-import { gPartial, ObjectUtils } from '@feng3d/polyfill';
+import { gPartial } from '@feng3d/polyfill';
 import { RenderAtomic, RenderMode, RenderParams, Shader, shaderlib } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { AssetData } from '../core/AssetData';
-import { Feng3dObject } from '../ecs/Feng3dObject';
-import { HideFlags } from '../ecs/HideFlags';
+import { Feng3dObject } from '../core/Feng3dObject';
+import { HideFlags } from '../core/HideFlags';
 import { Texture2D } from '../textures/Texture2D';
 import { TextureCube } from '../textures/TextureCube';
 import { StandardUniforms } from './StandardMaterial';
+
+declare global
+{
+    interface MixinsDefaultMaterial
+    {
+
+    }
+    interface MixinsUniformsTypes
+    {
+
+    }
+}
 
 export interface UniformsTypes extends MixinsUniformsTypes { }
 export type ShaderNames = keyof UniformsTypes;
@@ -20,7 +32,7 @@ export type UniformsLike = UniformsTypes[keyof UniformsTypes];
  */
 export class Material extends Feng3dObject
 {
-    __class__: 'Material';
+    __class__: 'feng3d.Material';
 
     static create<K extends keyof UniformsTypes>(shaderName: K, uniforms?: gPartial<UniformsTypes[K]>, renderParams?: gPartial<RenderParams>)
     {
@@ -34,7 +46,7 @@ export class Material extends Feng3dObject
     {
         this.shaderName = shaderName;
         //
-        uniforms && serialization.setValue(this.uniforms, uniforms);
+        uniforms && serialization.setValue(this.uniforms, <any>uniforms);
         renderParams && serialization.setValue(this.renderParams, renderParams);
 
         return this;
@@ -56,15 +68,7 @@ export class Material extends Feng3dObject
 
     @oav()
     @serialize
-    get name()
-    {
-        return this._name;
-    }
-    set name(v)
-    {
-        this._name = v;
-    }
-    protected _name = 'standard';
+    name = '';
 
     /**
      * Uniform数据
@@ -72,7 +76,7 @@ export class Material extends Feng3dObject
     @serialize
     @oav({ component: 'OAVObjectView' })
     @watch('_onUniformsChanged')
-    uniforms: UniformsLike = new StandardUniforms();
+    uniforms: UniformsLike;
 
     /**
      * 渲染参数
@@ -80,13 +84,15 @@ export class Material extends Feng3dObject
     @serialize
     @oav({ block: '渲染参数', component: 'OAVObjectView' })
     @watch('_onRenderParamsChanged')
-    renderParams = new RenderParams();
+    renderParams: RenderParams;
 
     constructor()
     {
         super();
         globalEmitter.on('asset.shaderChanged', this._onShaderChanged, this);
         this.shaderName = 'standard';
+        this.uniforms = new StandardUniforms();
+        this.renderParams = new RenderParams();
     }
 
     beforeRender(renderAtomic: RenderAtomic)
@@ -133,7 +139,7 @@ export class Material extends Feng3dObject
                 {
                     loadingNum++;
                     // eslint-disable-next-line no-loop-func
-                    (texture as Texture2D).on('loadCompleted', () =>
+                    texture.on('loadCompleted', () =>
                     {
                         loadingNum--;
                         if (loadingNum === 0) callback();
@@ -149,7 +155,7 @@ export class Material extends Feng3dObject
         const Cls = shaderlib.shaderConfig.shaders[this.shaderName].cls;
         if (Cls)
         {
-            if (ObjectUtils.objectIsEmpty(this.uniforms) || this.uniforms.constructor !== Cls)
+            if (!this.uniforms || this.uniforms.constructor !== Cls)
             {
                 const newuniforms = new Cls();
                 this.uniforms = newuniforms;
@@ -157,13 +163,13 @@ export class Material extends Feng3dObject
         }
         else
         {
-            this.uniforms = {} as any;
+            this.uniforms = <any>{};
         }
 
         const renderParams = shaderlib.shaderConfig.shaders[this.shaderName].renderParams;
         renderParams && serialization.setValue(this.renderParams, renderParams);
 
-        this.renderAtomic.shader = new Shader(this.shaderName);
+        this.renderAtomic.shader = new Shader({ shaderName: this.shaderName });
     }
 
     private _onUniformsChanged()
@@ -186,7 +192,7 @@ export class Material extends Feng3dObject
      */
     static setDefault<K extends keyof DefaultMaterial>(name: K, material: gPartial<Material>)
     {
-        const newMaterial = this._defaultMaterials[name] = new Material();
+        const newMaterial = this._defaultMaterials[<any>name] = new Material();
         serialization.setValue(newMaterial, material);
         serialization.setValue(newMaterial, { name, hideFlags: HideFlags.NotEditable });
         AssetData.addAssetData(name, newMaterial);
@@ -201,7 +207,7 @@ export class Material extends Feng3dObject
     {
         return this._defaultMaterials[name];
     }
-    private static _defaultMaterials: DefaultMaterial = {} as any;
+    private static _defaultMaterials: DefaultMaterial = <any>{};
 }
 
 /**

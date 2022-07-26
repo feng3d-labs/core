@@ -1,17 +1,19 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { oav } from '@feng3d/objectview';
 import { watch } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
-import { Component, RegisterComponent } from '../ecs/Component';
 import { AddComponentMenu } from '../Menu';
+import { RegisterComponent, Component } from './Component';
 
 declare global
 {
-    interface MixinsComponentMap { HoldSizeComponent: HoldSizeComponent; }
+    export interface MixinsComponentMap
+    {
+        HoldSizeComponent: HoldSizeComponent;
+    }
 }
 
 @AddComponentMenu('Layout/HoldSizeComponent')
-@RegisterComponent({ name: 'HoldSizeComponent' })
+@RegisterComponent()
 export class HoldSizeComponent extends Component
 {
     __class__: 'feng3d.HoldSizeComponent';
@@ -35,11 +37,11 @@ export class HoldSizeComponent extends Component
         this.transform.on('updateLocalToWorldMatrix', this._onUpdateLocalToWorldMatrix, this);
     }
 
-    destroy()
+    dispose()
     {
         this.camera = null;
         this.transform.off('updateLocalToWorldMatrix', this._onUpdateLocalToWorldMatrix, this);
-        super.destroy();
+        super.dispose();
     }
 
     private _onCameraChanged(property: string, oldValue: Camera, value: Camera)
@@ -51,14 +53,12 @@ export class HoldSizeComponent extends Component
 
     private _invalidateSceneTransform()
     {
-        // @ts-ignore
-        if (this._gameObject) this.transform._invalidateSceneTransform();
+        if (this._gameObject) this.transform['_invalidateSceneTransform']();
     }
 
     private _onUpdateLocalToWorldMatrix()
     {
-        // @ts-ignore
-        const _localToWorldMatrix = this.transform._localToWorldMatrix;
+        const _localToWorldMatrix = this.transform['_localToWorldMatrix'];
         if (this.holdSize && this.camera && _localToWorldMatrix)
         {
             const depthScale = this._getDepthScale(this.camera);
@@ -75,7 +75,9 @@ export class HoldSizeComponent extends Component
         const cameraTranform = camera.transform.localToWorldMatrix;
         const distance = this.transform.worldPosition.subTo(cameraTranform.getPosition());
         if (distance.length === 0)
-        { distance.x = 1; }
+        {
+            distance.x = 1;
+        }
         const depth = distance.dot(cameraTranform.getAxisZ());
         let scale = camera.getScaleByDepth(depth);
         // 限制在放大缩小100倍之间，否则容易出现矩阵不可逆问题

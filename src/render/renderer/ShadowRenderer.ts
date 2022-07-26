@@ -1,5 +1,5 @@
 import { Rectangle, Vector3 } from '@feng3d/math';
-import { GL, RenderAtomic, Shader } from '@feng3d/renderer';
+import { RenderAtomic, Shader, WebGLRenderer } from '@feng3d/renderer';
 import { Camera } from '../../cameras/Camera';
 import { Renderable } from '../../core/Renderable';
 import { DirectionalLight } from '../../light/DirectionalLight';
@@ -9,6 +9,14 @@ import { SpotLight } from '../../light/SpotLight';
 import { Scene } from '../../scene/Scene';
 import { FrameBufferObject } from '../FrameBufferObject';
 
+declare global
+{
+    export interface MixinsRenderAtomic
+    {
+        shadowShader: Shader;
+    }
+}
+
 export class ShadowRenderer
 {
     private renderAtomic = new RenderAtomic();
@@ -16,7 +24,7 @@ export class ShadowRenderer
     /**
      * 渲染
      */
-    draw(gl: GL, scene: Scene, camera: Camera)
+    draw(gl: WebGLRenderer, scene: Scene, camera: Camera)
     {
         const pointLights = scene.activePointLights.filter((i) => i.shadowType !== ShadowType.No_Shadows);
         for (let i = 0; i < pointLights.length; i++)
@@ -40,8 +48,9 @@ export class ShadowRenderer
         }
     }
 
-    private drawForSpotLight(gl: GL, light: SpotLight, scene: Scene, camera: Camera): any
+    private drawForSpotLight(renderer: WebGLRenderer, light: SpotLight, scene: Scene, camera: Camera): any
     {
+        const gl = renderer.gl;
         FrameBufferObject.active(gl, light.frameBufferObject);
 
         //
@@ -77,14 +86,16 @@ export class ShadowRenderer
 
         castShadowsModels.forEach((renderable) =>
         {
-            this.drawGameObject(gl, renderable, scene, camera);
+            this.drawGameObject(renderer, renderable, scene, camera);
         });
 
         light.frameBufferObject.deactive(gl);
     }
 
-    private drawForPointLight(gl: GL, light: PointLight, scene: Scene, camera: Camera): any
+    private drawForPointLight(renderer: WebGLRenderer, light: PointLight, scene: Scene, camera: Camera): any
     {
+        const gl = renderer.gl;
+
         FrameBufferObject.active(gl, light.frameBufferObject);
 
         //
@@ -123,9 +134,7 @@ export class ShadowRenderer
         cube2DViewPorts[5].init(vpWidth, 0, vpWidth, vpHeight);
 
         const shadowCamera = light.shadowCamera;
-        shadowCamera.transform.localPosition.x = light.transform.localPosition.x;
-        shadowCamera.transform.localPosition.y = light.transform.localPosition.y;
-        shadowCamera.transform.localPosition.z = light.transform.localPosition.z;
+        shadowCamera.transform.position = light.transform.position;
 
         const renderAtomic = this.renderAtomic;
 
@@ -156,13 +165,13 @@ export class ShadowRenderer
 
             castShadowsModels.forEach((renderable) =>
             {
-                this.drawGameObject(gl, renderable, scene, camera);
+                this.drawGameObject(renderer, renderable, scene, camera);
             });
         }
         light.frameBufferObject.deactive(gl);
     }
 
-    private drawForDirectionalLight(gl: GL, light: DirectionalLight, scene: Scene, camera: Camera): any
+    private drawForDirectionalLight(renderer: WebGLRenderer, light: DirectionalLight, scene: Scene, camera: Camera): any
     {
         // 获取影响阴影图的渲染对象
         const models = scene.getPickByDirectionalLight(light);
@@ -171,7 +180,9 @@ export class ShadowRenderer
 
         light.updateShadowByCamera(scene, camera, models);
 
-        FrameBufferObject.active(gl, light.frameBufferObject);
+        FrameBufferObject.active(renderer.gl, light.frameBufferObject);
+
+        const gl = renderer.gl;
 
         //
         gl.viewport(0, 0, light.frameBufferObject.OFFSCREEN_WIDTH, light.frameBufferObject.OFFSCREEN_HEIGHT);
@@ -198,7 +209,7 @@ export class ShadowRenderer
         //
         castShadowsModels.forEach((renderable) =>
         {
-            this.drawGameObject(gl, renderable, scene, camera);
+            this.drawGameObject(renderer, renderable, scene, camera);
         });
 
         light.frameBufferObject.deactive(gl);
@@ -207,11 +218,11 @@ export class ShadowRenderer
     /**
      * 绘制3D对象
      */
-    private drawGameObject(gl: GL, renderable: Renderable, scene: Scene, camera: Camera)
+    private drawGameObject(gl: WebGLRenderer, renderable: Renderable, scene: Scene, camera: Camera)
     {
         const renderAtomic = renderable.renderAtomic;
         renderable.beforeRender(renderAtomic, scene, camera);
-        renderAtomic.shadowShader = renderAtomic.shadowShader || new Shader('shadow');
+        renderAtomic.shadowShader = renderAtomic.shadowShader || new Shader({ shaderName: 'shadow' });
 
         //
         this.renderAtomic.next = renderAtomic;
@@ -241,11 +252,3 @@ const cubeDirections = [
     new Vector3(1, 0, 0), new Vector3(-1, 0, 0), new Vector3(0, 0, 1),
     new Vector3(0, 0, -1), new Vector3(0, 1, 0), new Vector3(0, -1, 0)
 ];
-
-declare global
-{
-    interface MixinsRenderAtomic
-    {
-        shadowShader: Shader;
-    }
-}

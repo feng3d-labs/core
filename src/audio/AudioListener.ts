@@ -2,19 +2,24 @@ import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { Behaviour } from '../component/Behaviour';
-import { RegisterComponent } from '../ecs/Component';
+import { RegisterComponent } from '../component/Component';
 import { AddComponentMenu } from '../Menu';
+
+export let audioCtx: AudioContext;
+export let globalGain: GainNode;
 
 declare global
 {
-    interface MixinsComponentMap { AudioListener: AudioListener; }
+    export interface MixinsComponentMap
+    {
+        AudioListener: AudioListener;
+    }
 }
-
 /**
  * 声音监听器
  */
 @AddComponentMenu('Audio/AudioListener')
-@RegisterComponent({ name: 'AudioListener' })
+@RegisterComponent()
 export class AudioListener extends Behaviour
 {
     gain: GainNode;
@@ -94,34 +99,41 @@ export class AudioListener extends Behaviour
         }
     }
 
-    destroy()
+    dispose()
     {
         this.off('scenetransformChanged', this._onScenetransformChanged, this);
-        super.destroy();
+        super.dispose();
     }
 }
 
-export const audioCtx = new AudioContext();
+(() =>
+{
+    if (typeof window === 'undefined') return;
 
-export const globalGain = audioCtx.createGain();
-// 新增无音Gain，避免没有AudioListener组件时暂停声音播放进度
-const zeroGain = audioCtx.createGain();
-zeroGain.connect(audioCtx.destination);
-globalGain.connect(zeroGain);
-zeroGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.01);
-//
-const listener = audioCtx.listener;
-audioCtx.createGain();
-if (listener.forwardX)
-{
-    listener.forwardX.value = 0;
-    listener.forwardY.value = 0;
-    listener.forwardZ.value = -1;
-    listener.upX.value = 0;
-    listener.upY.value = 1;
-    listener.upZ.value = 0;
-}
-else
-{
-    listener.setOrientation(0, 0, -1, 0, 1, 0);
-}
+    window['AudioContext'] = window['AudioContext'] || window['webkitAudioContext'];
+
+    audioCtx = new AudioContext();
+    globalGain = audioCtx.createGain();
+
+    // 新增无音Gain，避免没有AudioListener组件时暂停声音播放进度
+    const zeroGain = audioCtx.createGain();
+    zeroGain.connect(audioCtx.destination);
+    globalGain.connect(zeroGain);
+    zeroGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.01);
+    //
+    const listener = audioCtx.listener;
+    audioCtx.createGain();
+    if (listener.forwardX)
+    {
+        listener.forwardX.value = 0;
+        listener.forwardY.value = 0;
+        listener.forwardZ.value = -1;
+        listener.upX.value = 0;
+        listener.upY.value = 1;
+        listener.upZ.value = 0;
+    }
+    else
+    {
+        listener.setOrientation(0, 0, -1, 0, 1, 0);
+    }
+})();

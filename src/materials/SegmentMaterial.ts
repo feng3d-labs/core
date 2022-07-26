@@ -8,11 +8,8 @@ import { Material } from './Material';
 
 declare global
 {
-    interface MixinsUniformsTypes
+    export interface MixinsUniformsTypes
     {
-        /**
-         * 线段
-         */
         segment: SegmentUniforms
     }
 

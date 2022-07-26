@@ -1,17 +1,16 @@
 import { FS } from '@feng3d/filesystem';
 import { oav } from '@feng3d/objectview';
-import { ArrayUtils, ObjectUtils } from '@feng3d/polyfill';
+import { ArrayUtils } from '@feng3d/polyfill';
 import { TextureType } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { AssetType } from '../assets/AssetType';
 import { AssetData } from '../core/AssetData';
-import { Feng3dObjectEventMap } from '../ecs/Feng3dObject';
-import { HideFlags } from '../ecs/HideFlags';
-import { ImageDatas, TextureInfo } from '../render/data/TextureInfo';
-import { Texture2D } from './Texture2D';
+import { HideFlags } from '../core/HideFlags';
+import { TextureInfo } from '../render/data/TextureInfo';
+import { ImageDatas, Texture2D } from './Texture2D';
 
-export interface TextureCubeEventMap extends Feng3dObjectEventMap
+export interface TextureCubeEventMap
 {
     /**
      * 加载完成
@@ -34,7 +33,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
 
     static ImageNames: TextureCubeImageName[] = ['positive_x_url', 'positive_y_url', 'positive_z_url', 'negative_x_url', 'negative_y_url', 'negative_z_url'];
 
-    @oav({ component: 'OAVCubeMap', priority: -1 })
+    @oav({ component: 'OAVCubeMap', priority: 1 })
     OAVCubeMap = '';
 
     /**
@@ -56,7 +55,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
 
     setTexture2D(pos: TextureCubeImageName, texture: Texture2D)
     {
-        if (ObjectUtils.objectIsEmpty(this.rawData) || this.rawData.type !== 'texture')
+        if (!this.rawData || this.rawData.type !== 'texture')
         {
             this.rawData = { type: 'texture', textures: [] };
         }
@@ -68,7 +67,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
 
     setTexture2DPath(pos: TextureCubeImageName, path: string)
     {
-        if (ObjectUtils.objectIsEmpty(this.rawData) || this.rawData.type !== 'path')
+        if (!this.rawData || this.rawData.type !== 'path')
         {
             this.rawData = { type: 'path', paths: [] };
         }
@@ -146,7 +145,7 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
      */
     private _loadItemTexture(texture: Texture2D, index: number)
     {
-        if (ObjectUtils.objectIsEmpty(texture)) return;
+        if (!texture) return;
 
         this._loading.push(texture);
         texture.onLoadCompleted(() =>
@@ -169,12 +168,12 @@ export class TextureCube<T extends TextureCubeEventMap = TextureCubeEventMap> ex
      */
     private _loadItemImagePath(imagepath: string, index: number)
     {
-        if (ObjectUtils.objectIsEmpty(imagepath)) return;
+        if (!imagepath) return;
 
         this._loading.push(imagepath);
         FS.fs.readImage(imagepath, (_err, img) =>
         {
-            if (img !== null && this.rawData.type === 'path' && this.rawData.paths[index] === imagepath)
+            if (img && this.rawData.type === 'path' && this.rawData.paths[index] === imagepath)
             {
                 this._pixels[index] = img;
                 this.invalidate();

@@ -8,10 +8,10 @@ import { Texture2D } from './Texture2D';
 export class RenderTargetTexture2D extends Texture2D
 {
     @watch('invalidate')
-        OFFSCREEN_WIDTH = 1024;
+    OFFSCREEN_WIDTH = 1024;
 
     @watch('invalidate')
-        OFFSCREEN_HEIGHT = 1024;
+    OFFSCREEN_HEIGHT = 1024;
 
     format = TextureFormat.RGBA;
 

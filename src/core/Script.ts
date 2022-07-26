@@ -1,5 +1,3 @@
-import { GameObject } from '../ecs/GameObject';
-import { Transform } from './Transform';
 import { ScriptComponent } from './ScriptComponent';
 
 /**
@@ -10,17 +8,17 @@ export class Script
     /**
      * The game object this component is attached to. A component is always attached to a game object.
      */
-    get gameObject(): GameObject
+    get gameObject()
     {
         return this.component.gameObject;
     }
 
     /**
-     * The Transform attached to this Entity (null if there is none attached).
+     * The Transform attached to this GameObject (null if there is none attached).
      */
-    get transform(): Transform
+    get transform()
     {
-        return this.component.transform;
+        return this.gameObject.transform;
     }
 
     /**
@@ -52,7 +50,7 @@ export class Script
     /**
      * 销毁
      */
-    destroy()
+    dispose()
     {
 
     }

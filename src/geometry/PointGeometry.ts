@@ -1,6 +1,4 @@
-import { Color4 } from '@feng3d/math';
-import { Vector2 } from '@feng3d/math';
-import { Vector3 } from '@feng3d/math';
+import { Color4, Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
@@ -8,7 +6,7 @@ import { Geometry } from './Geometry';
 
 declare global
 {
-    interface MixinsGeometryTypes
+    export interface MixinsGeometryTypes
     {
         PointGeometry: PointGeometry
     }
@@ -28,7 +26,7 @@ export class PointGeometry extends Geometry
     @serialize
     @oav()
     @watch('invalidateGeometry')
-        points: PointInfo[] = [];
+    points: PointInfo[] = [];
 
     /**
      * 构建几何体

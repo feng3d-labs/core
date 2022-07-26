@@ -1,4 +1,4 @@
-import { CullFace, GL, RenderAtomic, Shader } from '@feng3d/renderer';
+import { CullFace, RenderAtomic, Shader, WebGLRenderer } from '@feng3d/renderer';
 import { Camera } from '../../cameras/Camera';
 import { CartoonComponent } from '../../component/CartoonComponent';
 import { OutLineComponent } from '../../component/OutLineComponent';
@@ -20,11 +20,11 @@ export class OutlineRenderer
             renderParams.enableBlend = false;
             renderParams.cullFace = CullFace.FRONT;
 
-            this.renderAtomic.shader = new Shader('outline');
+            this.renderAtomic.shader = new Shader({ shaderName: 'outline' });
         }
     }
 
-    draw(gl: GL, scene: Scene, camera: Camera)
+    draw(gl: WebGLRenderer, scene: Scene, camera: Camera)
     {
         const unblenditems = scene.getPickCache(camera).unblenditems;
 

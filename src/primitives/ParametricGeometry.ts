@@ -1,10 +1,10 @@
+import { Vector3 } from '@feng3d/math';
 import { Geometry } from '../geometry/Geometry';
 import { geometryUtils } from '../geometry/GeometryUtils';
-import { Vector3 } from '@feng3d/math';
 
 declare global
 {
-    interface MixinsGeometryTypes
+    export interface MixinsGeometryTypes
     {
         ParametricGeometry: ParametricGeometry
     }

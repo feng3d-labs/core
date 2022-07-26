@@ -1,11 +1,9 @@
 import { Ray3, Rectangle, Vector2, Vector3 } from '@feng3d/math';
-import { GL } from '@feng3d/renderer';
+import { WebGLRenderer } from '@feng3d/renderer';
 import { serialization } from '@feng3d/serialization';
 import { windowEventProxy } from '@feng3d/shortcut';
 import { AudioListener } from '../audio/AudioListener';
 import { Camera } from '../cameras/Camera';
-import { Feng3dObject } from '../ecs/Feng3dObject';
-import { GameObject } from '../ecs/GameObject';
 import { DirectionalLight } from '../light/DirectionalLight';
 import { ShadowType } from '../light/shadow/ShadowType';
 import { forwardRenderer } from '../render/renderer/ForwardRenderer';
@@ -15,6 +13,8 @@ import { wireframeRenderer } from '../render/renderer/WireframeRenderer';
 import { Scene } from '../scene/Scene';
 import { skyboxRenderer } from '../skybox/SkyBoxRenderer';
 import { ticker } from '../utils/Ticker';
+import { Feng3dObject } from './Feng3dObject';
+import { GameObject } from './GameObject';
 import { Mouse3DManager, WindowMouseInput } from './Mouse3DManager';
 import { Renderable } from './Renderable';
 import { Transform } from './Transform';
@@ -23,7 +23,7 @@ declare global
 {
     interface HTMLCanvasElement
     {
-        gl: GL;
+        gl: WebGLRenderer;
     }
 }
 
@@ -72,13 +72,13 @@ export class View extends Feng3dObject
      */
     get root()
     {
-        return this.scene.transform;
+        return this.scene.gameObject;
     }
 
     get gl()
     {
         if (!this.canvas.gl)
-        { this.canvas.gl = GL.getGL(this.canvas, this._contextAttributes); }
+        { this.canvas.gl = new WebGLRenderer(this.canvas, this._contextAttributes); }
 
         return this.canvas.gl;
     }
@@ -86,42 +86,9 @@ export class View extends Feng3dObject
     /**
      * 鼠标在3D视图中的位置
      */
-    get mousePos()
-    {
-        const clientRect = this.canvas.getBoundingClientRect();
-        this._mousePos.x = windowEventProxy.clientX - clientRect.left;
-        this._mousePos.y = windowEventProxy.clientY - clientRect.top;
+    mousePos = new Vector2();
 
-        return this._mousePos;
-    }
-    private _mousePos = new Vector2();
-
-    /**
-     * 视窗区域
-     */
-    get viewRect()
-    {
-        const clientRect = this.canvas.getBoundingClientRect();
-        this._viewRect.x = clientRect.left;
-        this._viewRect.y = clientRect.top;
-        this._viewRect.width = clientRect.width;
-        this._viewRect.height = clientRect.height;
-
-        return this._viewRect;
-    }
-    private _viewRect = new Rectangle();
-
-    /**
-     * 获取鼠标射线（与鼠标重叠的摄像机射线）
-     */
-    get mouseRay3D()
-    {
-        const gpuPos = this.screenToGpuPosition(this.mousePos);
-        this._mouseRay3D = this.camera.getRay3D(gpuPos.x, gpuPos.y);
-
-        return this._mouseRay3D;
-    }
-    private _mouseRay3D: Ray3;
+    viewRect = new Rectangle();
 
     /**
      * 鼠标事件管理
@@ -132,9 +99,9 @@ export class View extends Feng3dObject
 
     /**
      * 构建3D视图
-     * @param canvas 画布
-     * @param scene 3D场景
-     * @param camera 摄像机
+     * @param canvas    画布
+     * @param scene     3D场景
+     * @param camera    摄像机
      */
     constructor(canvas?: HTMLCanvasElement, scene?: Scene, camera?: Camera, contextAttributes?: WebGLContextAttributes)
     {
@@ -162,13 +129,17 @@ export class View extends Feng3dObject
         {
             event.preventDefault();
             this.contextLost = true;
+            // #ifdef DEBUG
             console.log('GraphicsDevice: WebGL context lost.');
+            // #endif
         }, false);
 
         canvas.addEventListener('webglcontextrestored', () =>
         {
             this.contextLost = false;
+            // #ifdef DEBUG
             console.log('GraphicsDevice: WebGL context restored.');
+            // #endif
         }, false);
 
         this.scene = scene || serialization.setValue(new GameObject(), { name: 'scene' }).addComponent(Scene);
@@ -205,7 +176,7 @@ export class View extends Feng3dObject
     update(interval?: number)
     {
         this.render(interval);
-        this.mouse3DManager.selectedTransform = this.selectedTransform;
+        this.mouse3DManager.selectedGameObject = this.selectedObject;
     }
 
     /**
@@ -222,20 +193,36 @@ export class View extends Feng3dObject
         this.canvas.height = this.canvas.clientHeight;
         if (this.canvas.width * this.canvas.height === 0) return;
 
+        const clientRect = this.canvas.getBoundingClientRect();
+
+        this.viewRect.x = clientRect.left;
+        this.viewRect.y = clientRect.top;
+        this.viewRect.width = clientRect.width;
+        this.viewRect.height = clientRect.height;
+
+        this.mousePos.x = windowEventProxy.clientX - clientRect.left;
+        this.mousePos.y = windowEventProxy.clientY - clientRect.top;
+
         this.camera.lens.aspect = this.viewRect.width / this.viewRect.height;
 
+        // 设置鼠标射线
+        this.calcMouseRay3D();
+
         this.scene.mouseRay3D = this.mouseRay3D;
+        this.scene.camera = this.camera;
+
+        const gl = this.gl.gl;
 
         // 默认渲染
-        this.gl.colorMask(true, true, true, true);
-        this.gl.clearColor(this.scene.background.r, this.scene.background.g, this.scene.background.b, this.scene.background.a);
-        this.gl.clearStencil(0);
-        this.gl.clearDepth(1);
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT | this.gl.STENCIL_BUFFER_BIT);
-        this.gl.enable(this.gl.DEPTH_TEST);
+        gl.colorMask(true, true, true, true);
+        gl.clearColor(this.scene.background.r, this.scene.background.g, this.scene.background.b, this.scene.background.a);
+        gl.clearStencil(0);
+        gl.clearDepth(1);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+        gl.enable(gl.DEPTH_TEST);
 
         // 鼠标拾取渲染
-        this.selectedTransform = this.mouse3DManager.pick(this, this.scene, this.camera);
+        this.selectedObject = this.mouse3DManager.pick(this, this.scene, this.camera);
         // 绘制阴影图
         shadowRenderer.draw(this.gl, this.scene, this.camera);
         skyboxRenderer.draw(this.gl, this.scene, this.camera);
@@ -248,7 +235,7 @@ export class View extends Feng3dObject
     /**
      * 屏幕坐标转GPU坐标
      * @param screenPos 屏幕坐标 (x: [0-width], y: [0 - height])
-     * @returns GPU坐标 (x: [-1, 1], y: [-1, 1])
+     * @return GPU坐标 (x: [-1, 1], y: [-1, 1])
      */
     screenToGpuPosition(screenPos: Vector2): Vector2
     {
@@ -263,7 +250,7 @@ export class View extends Feng3dObject
     /**
      * 投影坐标（世界坐标转换为3D视图坐标）
      * @param point3d 世界坐标
-     * @returns 屏幕的绝对坐标
+     * @return 屏幕的绝对坐标
      */
     project(point3d: Vector3): Vector3
     {
@@ -280,7 +267,7 @@ export class View extends Feng3dObject
      * @param nY 屏幕坐标Y ([0-height])
      * @param sZ 到屏幕的距离
      * @param v 场景坐标（输出）
-     * @returns 场景坐标
+     * @return 场景坐标
      */
     unproject(sX: number, sY: number, sZ: number, v = new Vector3()): Vector3
     {
@@ -291,7 +278,7 @@ export class View extends Feng3dObject
 
     /**
      * 获取单位像素在指定深度映射的大小
-     * @param depth 深度
+     * @param   depth   深度
      */
     getScaleByDepth(depth: number, dir = new Vector2(0, 1))
     {
@@ -302,7 +289,18 @@ export class View extends Feng3dObject
     }
 
     /**
-     * 获取屏幕区域内所有实体
+     * 获取鼠标射线（与鼠标重叠的摄像机射线）
+     */
+    mouseRay3D: Ray3;
+
+    private calcMouseRay3D()
+    {
+        const gpuPos = this.screenToGpuPosition(this.mousePos);
+        this.mouseRay3D = this.camera.getRay3D(gpuPos.x, gpuPos.y);
+    }
+
+    /**
+     * 获取屏幕区域内所有游戏对象
      * @param start 起点
      * @param end 终点
      */
@@ -316,7 +314,7 @@ export class View extends Feng3dObject
         const max = s.clone().max(e);
         const rect = new Rectangle(min.x, min.y, max.x - min.x, max.y - min.y);
         //
-        const transforms = this.scene.getComponentsInChildren(Transform).filter((t) =>
+        const gs = this.scene.getComponentsInChildren(Transform).filter((t) =>
         {
             if (t === this.scene.transform) return false;
             const m = t.getComponent(Renderable);
@@ -334,12 +332,12 @@ export class View extends Feng3dObject
             const p = this.project(t.worldPosition);
 
             return rect.contains(p.x, p.y);
-        });
+        }).map((t) => t.gameObject);
 
-        return transforms;
+        return gs;
     }
 
-    protected selectedTransform: Transform;
+    protected selectedObject: GameObject;
 
     static createNewScene()
     {
@@ -347,22 +345,20 @@ export class View extends Feng3dObject
         scene.background.setTo(0.2784, 0.2784, 0.2784);
         scene.ambientColor.setTo(0.4, 0.4, 0.4);
 
-        const camera = Camera.create('Main Camera');
-        camera.gameObject.addComponent(AudioListener);
-        camera.transform.localPosition.x = 0;
-        camera.transform.localPosition.y = 1;
-        camera.transform.localPosition.z = -10;
-        scene.gameObject.addChild(camera.gameObject);
+        const camera = GameObject.createPrimitive('Camera', { name: 'Main Camera' });
+        camera.addComponent(AudioListener);
+        camera.transform.position = new Vector3(0, 1, -10);
+        scene.gameObject.addChild(camera);
 
-        const directionalLight = DirectionalLight.create('DirectionalLight');
-        directionalLight.shadowType = ShadowType.Hard_Shadows;
-        directionalLight.transform.localEulerAngles.x = 50;
-        directionalLight.transform.localEulerAngles.y = -30;
-        directionalLight.transform.localPosition.y = 3;
-        scene.gameObject.addChild(directionalLight.gameObject);
+        const directionalLight = serialization.setValue(new GameObject(), { name: 'DirectionalLight' });
+        directionalLight.addComponent(DirectionalLight).shadowType = ShadowType.Hard_Shadows;
+        directionalLight.transform.rx = 50;
+        directionalLight.transform.ry = -30;
+        directionalLight.transform.y = 3;
+        scene.gameObject.addChild(directionalLight);
 
         return scene;
     }
 }
 
-// var viewRect0 = { x: 0, y: 0, w: 400, h: 300 ;}
+// var viewRect0 = { x: 0, y: 0, w: 400, h: 300 };

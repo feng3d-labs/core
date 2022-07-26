@@ -3,9 +3,17 @@ import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { Behaviour } from '../component/Behaviour';
-import { RegisterComponent } from '../ecs/Component';
+import { RegisterComponent } from '../component/Component';
 import { AddComponentMenu } from '../Menu';
 import { audioCtx, globalGain } from './AudioListener';
+
+declare global
+{
+    export interface MixinsComponentMap
+    {
+        AudioSource: AudioSource;
+    }
+}
 
 /**
  * 音量与距离算法
@@ -29,17 +37,12 @@ export enum DistanceModelType
     exponential = 'exponential',
 }
 
-declare global
-{
-    interface MixinsComponentMap { AudioSource: AudioSource; }
-}
-
 /**
  * 声源
  * @see https://developer.mozilla.org/en-US/docs/Web/API/AudioContext
  */
 @AddComponentMenu('Audio/AudioSource')
-@RegisterComponent({ name: 'AudioSource' })
+@RegisterComponent()
 export class AudioSource extends Behaviour
 {
     private panner: PannerNode;
@@ -372,11 +375,11 @@ export class AudioSource extends Behaviour
         { this.gain.disconnect(globalGain); }
     }
 
-    destroy()
+    dispose()
     {
         this.off('scenetransformChanged', this._onScenetransformChanged, this);
         this._disconnect();
-        super.destroy();
+        super.dispose();
     }
 }
 
@@ -397,4 +400,3 @@ function createPanner()
 
     return panner;
 }
-

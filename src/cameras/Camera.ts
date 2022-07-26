@@ -1,11 +1,10 @@
 import { Frustum, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { decoratorRegisterClass } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
-import { Component, RegisterComponent } from '../ecs/Component';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
+import { Component, RegisterComponent } from '../component/Component';
+import { GameObject } from '../core/GameObject';
 import { AddComponentMenu } from '../Menu';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 import { LensBase } from './lenses/LensBase';
 import { OrthographicLens } from './lenses/OrthographicLens';
 import { PerspectiveLens } from './lenses/PerspectiveLens';
@@ -13,20 +12,19 @@ import { Projection } from './Projection';
 
 declare global
 {
-    interface MixinsEntityEventMap
+    export interface MixinsGameObjectEventMap
     {
-        /**
-         * 镜头改变事件
-         */
         lensChanged;
     }
-    interface MixinsPrimitiveEntity
-    {
-        Camera: GameObject;
-    }
-    interface MixinsComponentMap
+
+    export interface MixinsComponentMap
     {
         Camera: Camera;
+    }
+
+    export interface MixinsPrimitiveGameObject
+    {
+        Camera: GameObject;
     }
 }
 
@@ -34,19 +32,21 @@ declare global
  * 摄像机
  */
 @AddComponentMenu('Rendering/Camera')
-@RegisterComponent({ name: 'Camera', single: true })
-@decoratorRegisterClass()
+@RegisterComponent()
 export class Camera extends Component
 {
-    static create(name = 'Camera')
-    {
-        const entity = new GameObject();
-        entity.name = name;
-        const camera = entity.addComponent(Camera);
+    __class__: 'feng3d.Camera';
 
-        return camera;
-    }
-    __class__: 'Camera';
+    // /**
+    //  * How the camera clears the background.
+    //  *
+    //  * @todo
+    //  */
+    // @oav({ component: "OAVEnum", componentParam: { enumClass: CameraClearFlags }, tooltip: `What to display in empty areas of this Camera's view.\n\nChoose Skybox to display a skybox in empty areas, defaulting to a background color if no skybox is found.\n\nChoose Solid Color to display a background color in empty areas.\n\nChoose Depth Only to display nothing in empty areas.\n\nChoose Don't Clear to display whatever was displayed in the previous frame in empty areas.` })
+    // @serialize
+    // clearFlags = CameraClearFlags.Skybox;
+
+    get single() { return true; }
 
     @oav({ component: 'OAVEnum', componentParam: { enumClass: Projection } })
     get projection()
@@ -167,7 +167,7 @@ export class Camera extends Component
     /**
      * 投影坐标（世界坐标转换为3D视图坐标）
      * @param point3d 世界坐标
-     * @returns 屏幕的绝对坐标
+     * @return 屏幕的绝对坐标
      */
     project(point3d: Vector3): Vector3
     {
@@ -182,7 +182,7 @@ export class Camera extends Component
      * @param nY 屏幕坐标Y ([0-height])
      * @param sZ 到屏幕的距离
      * @param v 场景坐标（输出）
-     * @returns 场景坐标
+     * @return 场景坐标
      */
     unproject(sX: number, sY: number, sZ: number, v = new Vector3()): Vector3
     {
@@ -192,7 +192,7 @@ export class Camera extends Component
     /**
      * 获取摄像机能够在指定深度处的视野；镜头在指定深度的尺寸。
      *
-     * @param depth 深度
+     * @param   depth   深度
      */
     getScaleByDepth(depth: number, dir = new Vector2(0, 1))
     {
@@ -220,8 +220,18 @@ export class Camera extends Component
     private _frustumInvalid = true;
 }
 
-GameObjectFactory.registerPrimitive('Camera', (g) =>
+GameObject.registerPrimitive('Camera', (g) =>
 {
     g.addComponent(Camera);
 });
+
+// 在 Hierarchy 界面新增右键菜单项
+createNodeMenu.push(
+    {
+        path: 'Camera',
+        priority: -2,
+        click: () =>
+            GameObject.createPrimitive('Camera')
+    }
+);
 

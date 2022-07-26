@@ -1,16 +1,26 @@
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 
 declare global
 {
-    interface MixinsGeometryTypes
+    export interface MixinsGeometryTypes
     {
         CapsuleGeometry: CapsuleGeometry
+    }
+
+    export interface MixinsDefaultGeometry
+    {
+        Capsule: CapsuleGeometry;
+    }
+
+    export interface MixinsPrimitiveGameObject
+    {
+        Capsule: GameObject;
     }
 }
 
@@ -61,10 +71,15 @@ export class CapsuleGeometry extends Geometry
     @watch('invalidateGeometry')
     yUp = true;
 
-    protected _name = 'Capsule';
+    name = 'Capsule';
 
     /**
      * 构建几何体数据
+     * @param radius 胶囊体半径
+     * @param height 胶囊体高度
+     * @param segmentsW 横向分割数
+     * @param segmentsH 纵向分割数
+     * @param yUp 正面朝向 true:Y+ false:Z+
      */
     protected buildGeometry()
     {
@@ -162,6 +177,9 @@ export class CapsuleGeometry extends Geometry
 
     /**
      * 构建顶点索引
+     * @param segmentsW 横向分割数
+     * @param segmentsH 纵向分割数
+     * @param yUp 正面朝向 true:Y+ false:Z+
      */
     private buildIndices()
     {
@@ -208,6 +226,8 @@ export class CapsuleGeometry extends Geometry
 
     /**
      * 构建uv
+     * @param segmentsW 横向分割数
+     * @param segmentsH 纵向分割数
      */
     private buildUVs()
     {
@@ -229,19 +249,18 @@ export class CapsuleGeometry extends Geometry
 
 Geometry.setDefault('Capsule', new CapsuleGeometry());
 
-GameObjectFactory.registerPrimitive('Capsule', (g) =>
+GameObject.registerPrimitive('Capsule', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Capsule');
 });
 
-declare global
-{
-    interface MixinsPrimitiveEntity
+// 在 Hierarchy 界面新增右键菜单项
+createNodeMenu.push(
     {
-        Capsule: GameObject;
+        path: '3D Object/Capsule',
+        priority: -3,
+        click: () =>
+            GameObject.createPrimitive('Capsule')
     }
-    interface MixinsDefaultGeometry
-    {
-        Capsule: CapsuleGeometry;
-    }
-}
+);
+

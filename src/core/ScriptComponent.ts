@@ -1,18 +1,17 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { globalEmitter } from '@feng3d/event';
 import { oav } from '@feng3d/objectview';
 import { classUtils } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { Behaviour } from '../component/Behaviour';
-import { RegisterComponent } from '../ecs/Component';
+import { RegisterComponent } from '../component/Component';
 import { AddComponentMenu } from '../Menu';
 import { RunEnvironment } from './RunEnvironment';
 import { Script } from './Script';
 
 declare global
 {
-    interface MixinsComponentMap
+    export interface MixinsComponentMap
     {
         ScriptComponent: ScriptComponent;
     }
@@ -22,7 +21,7 @@ declare global
  * 3d对象脚本
  */
 @AddComponentMenu('Script/Script')
-@RegisterComponent({ name: 'ScriptComponent' })
+@RegisterComponent()
 export class ScriptComponent extends Behaviour
 {
     runEnvironment = RunEnvironment.feng3d;
@@ -73,11 +72,10 @@ export class ScriptComponent extends Behaviour
             // 如果两个类定义名称相同，则保留上个对象数据
             if (classUtils.getQualifiedClassName(oldInstance) === this.scriptName)
             {
-                // @ts-ignore
-                serialization.setValue(this._scriptInstance, oldInstance);
+                serialization.setValue(this._scriptInstance, <any>oldInstance);
             }
             oldInstance.component = null;
-            oldInstance.destroy();
+            oldInstance.dispose();
         }
         this._invalid = false;
     }
@@ -104,17 +102,17 @@ export class ScriptComponent extends Behaviour
     /**
      * 销毁
      */
-    destroy()
+    dispose()
     {
         this.enabled = false;
 
         if (this._scriptInstance)
         {
             this._scriptInstance.component = null;
-            this._scriptInstance.destroy();
+            this._scriptInstance.dispose();
             this._scriptInstance = null;
         }
-        super.destroy();
+        super.dispose();
 
         globalEmitter.off('asset.scriptChanged', this._invalidateScriptInstance, this);
     }

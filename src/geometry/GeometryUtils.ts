@@ -322,12 +322,12 @@ export class GeometryUtils
 
     /**
      * 应用变换矩阵
-     * @param matrix 变换矩阵
+     * @param transform 变换矩阵
      * @param positions 顶点数据
      * @param normals 顶点法线数据
      * @param tangents 顶点切线数据
      */
-    applyTransformation(matrix: Matrix4x4, positions: number[], normals?: number[], tangents?: number[])
+    applyTransformation(transform: Matrix4x4, positions: number[], normals?: number[], tangents?: number[])
     {
         const posStride = 3;
         const normalStride = 3;
@@ -338,13 +338,13 @@ export class GeometryUtils
             i2: number;
         let vector = new Vector3();
 
-        const bakeNormals = normals !== null;
-        const bakeTangents = tangents !== null;
+        const bakeNormals = !!normals;
+        const bakeTangents = !!tangents;
         const invTranspose = new Matrix4x4();
 
         if (bakeNormals || bakeTangents)
         {
-            invTranspose.copy(matrix);
+            invTranspose.copy(transform);
             invTranspose.invert();
             invTranspose.transpose();
         }
@@ -362,7 +362,7 @@ export class GeometryUtils
             vector.x = positions[vi0];
             vector.y = positions[i1];
             vector.z = positions[i2];
-            vector = matrix.transformPoint3(vector);
+            vector = transform.transformPoint3(vector);
             positions[vi0] = vector.x;
             positions[i1] = vector.y;
             positions[i2] = vector.z;
@@ -410,7 +410,7 @@ export class GeometryUtils
     {
         // 此处存在隐患。
         // 优化方案，遍历所有几何体，找到所有共有属性后进行合并。
-        const result: { indices: number[], positions: number[], uvs?: number[], normals?: number[], tangents?: number[] } = {} as any;
+        const result: { indices: number[], positions: number[], uvs?: number[], normals?: number[], tangents?: number[] } = <any>{};
         for (let i = 0; i < geometrys.length; i++)
         {
             const geometry = geometrys[i];
@@ -438,9 +438,9 @@ export class GeometryUtils
 
     /**
      * 射线投影几何体
-     * @param ray 射线
-     * @param shortestCollisionDistance 当前最短碰撞距离
-     * @param cullFace 裁剪面枚举
+     * @param ray                           射线
+     * @param shortestCollisionDistance     当前最短碰撞距离
+     * @param cullFace                      裁剪面枚举
      *
      * @todo
      * @see 3D数学基础：图形与游戏开发 P278 是否可用该内容优化运算效率？
@@ -481,7 +481,7 @@ export class GeometryUtils
 
         const numIndices = indices.length;
 
-        const result: { rayEntryDistance: number, localPosition: Vector3, localNormal: Vector3, uv: Vector2, index: number } = {} as any;
+        const result: { rayEntryDistance: number, localPosition: Vector3, localNormal: Vector3, uv: Vector2, index: number } = <any>{};
 
         // 遍历每个三角形 检测碰撞
         for (let index = 0; index < numIndices; index += 3)
@@ -582,7 +582,9 @@ export class GeometryUtils
          * @param v
          * @param w
          * @param u
-         * @returns 碰撞uv
+         * @param uvOffset
+         * @param uvStride
+         * @return 碰撞uv
          */
         function getCollisionUV(indices: number[], uvs: number[], triangleIndex: number, v: number, w: number, u: number)
         {

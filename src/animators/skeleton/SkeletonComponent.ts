@@ -1,17 +1,21 @@
 import { Matrix4x4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { serialize } from '@feng3d/serialization';
+import { serialization, serialize } from '@feng3d/serialization';
+import { Component, RegisterComponent } from '../../component/Component';
+import { GameObject } from '../../core/GameObject';
+import { HideFlags } from '../../core/HideFlags';
 import { Transform } from '../../core/Transform';
-import { Component, RegisterComponent } from '../../ecs/Component';
-import { GameObject } from '../../ecs/GameObject';
-import { HideFlags } from '../../ecs/HideFlags';
 import { SkeletonJoint } from './Skeleton';
 
 declare global
 {
-    interface MixinsComponentMap { SkeletonComponent: SkeletonComponent; }
+    export interface MixinsComponentMap
+    {
+        SkeletonComponent: SkeletonComponent;
+    }
 }
-@RegisterComponent({ name: 'SkeletonComponent' })
+
+@RegisterComponent()
 export class SkeletonComponent extends Component
 {
     __class__: 'feng3d.SkeletonComponent';
@@ -44,8 +48,8 @@ export class SkeletonComponent extends Component
 
     //
     private isInitJoints = false;
-    private jointNode3Ds: Transform[];
-    private jointNode3DMap: { [jointname: string]: Transform };
+    private jointGameobjects: Transform[];
+    private jointGameObjectMap: { [jointname: string]: Transform };
     private _globalPropertiesInvalid: boolean;
     private _jointsInvalid: boolean[];
     private _globalMatrixsInvalid: boolean[];
@@ -54,10 +58,10 @@ export class SkeletonComponent extends Component
 
     initSkeleton()
     {
-        this.jointNode3Ds = [];
-        this.jointNode3DMap = {};
+        this.jointGameobjects = [];
+        this.jointGameObjectMap = {};
         //
-        this.createSkeletonNode3D();
+        this.createSkeletonGameObject();
 
         //
         this._globalPropertiesInvalid = true;
@@ -83,7 +87,7 @@ export class SkeletonComponent extends Component
     {
         // 姿势变换矩阵
         const joints: SkeletonJoint[] = this.joints;
-        const jointGameobjects = this.jointNode3Ds;
+        const jointGameobjects = this.jointGameobjects;
         const globalMatrixs = this.globalMatrixs;
         const _globalMatrixsInvalid = this._globalMatrixsInvalid;
         // 遍历每个关节
@@ -107,7 +111,7 @@ export class SkeletonComponent extends Component
             const jointPose = joints[index];
 
             const jointGameobject = jointGameobjects[index];
-            globalMatrixs[index] = jointGameobject.matrix.clone();
+            globalMatrixs[index] = jointGameobject.transform.matrix.clone();
             if (jointPose.parentIndex >= 0)
             {
                 const parentGlobalMatrix = globalMatrix(jointPose.parentIndex);
@@ -132,14 +136,14 @@ export class SkeletonComponent extends Component
         });
     }
 
-    private createSkeletonNode3D()
+    private createSkeletonGameObject()
     {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const skeleton = this;
 
         const joints = skeleton.joints;
-        const jointNode3Ds = this.jointNode3Ds;
-        const jointNode3DMap = this.jointNode3DMap;
+        const jointGameobjects = this.jointGameobjects;
+        const jointGameObjectMap = this.jointGameObjectMap;
 
         for (let i = 0; i < joints.length; i++)
         {
@@ -148,49 +152,46 @@ export class SkeletonComponent extends Component
 
         function createJoint(i: number)
         {
-            if (jointNode3Ds[i])
-            { return jointNode3Ds[i]; }
+            if (jointGameobjects[i])
+            { return jointGameobjects[i].gameObject; }
 
             const skeletonJoint = joints[i];
-            let parentNode3D: Transform;
+            let parentGameobject: GameObject;
             if (skeletonJoint.parentIndex !== -1)
             {
-                parentNode3D = createJoint(skeletonJoint.parentIndex);
+                parentGameobject = createJoint(skeletonJoint.parentIndex);
                 joints[skeletonJoint.parentIndex].children.push(i);
             }
             else
             {
-                parentNode3D = skeleton.transform;
+                parentGameobject = skeleton.gameObject;
             }
 
-            let jointTransform = parentNode3D.gameObject.find(skeletonJoint.name)?.transform;
-            if (!jointTransform)
+            let jointGameobject = parentGameobject.find(skeletonJoint.name);
+            if (!jointGameobject)
             {
-                const entity = new GameObject();
-                entity.name = skeletonJoint.name;
-                entity.hideFlags = HideFlags.DontSave;
-                jointTransform = entity.addComponent(Transform);
-                parentNode3D.gameObject.addChild(jointTransform.gameObject);
+                jointGameobject = serialization.setValue(new GameObject(), { name: skeletonJoint.name, hideFlags: HideFlags.DontSave });
+                parentGameobject.addChild(jointGameobject);
             }
 
-            const node3d = jointTransform;
+            const transform = jointGameobject.transform;
 
             let matrix = skeletonJoint.matrix;
             if (skeletonJoint.parentIndex !== -1)
             {
                 matrix = matrix.clone().append(joints[skeletonJoint.parentIndex].invertMatrix);
             }
-            node3d.matrix = matrix;
+            transform.matrix = matrix;
 
-            node3d.on('transformChanged', () =>
+            transform.on('transformChanged', () =>
             {
                 skeleton.invalidjoint(i);
             });
 
-            jointNode3Ds[i] = node3d;
-            jointNode3DMap[skeletonJoint.name] = node3d;
+            jointGameobjects[i] = transform;
+            jointGameObjectMap[skeletonJoint.name] = transform;
 
-            return jointTransform;
+            return jointGameobject;
         }
     }
 }

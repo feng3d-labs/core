@@ -1,8 +1,11 @@
-import { ObjectUtils } from '@feng3d/polyfill';
 import { ticker } from './Ticker';
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
 declare global
 {
+
     interface Performance
     {
         memory: any;
@@ -58,7 +61,7 @@ export class Stats
         {
             for (let i = 0; i < container.children.length; i++)
             {
-                (container.children[i] as HTMLCanvasElement).style.display = i === id ? 'block' : 'none';
+                (<HTMLCanvasElement>container.children[i]).style.display = i === id ? 'block' : 'none';
             }
             mode = id;
         }
@@ -143,7 +146,7 @@ export class StatsPanel
         canvas.style.cssText = 'width:80px;height:48px';
 
         const context0 = canvas.getContext('2d');
-        if (ObjectUtils.objectIsEmpty(context0))
+        if (!context0)
         {
             console.log(`无法创建 CanvasRenderingContext2D `);
 

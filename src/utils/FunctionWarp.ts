@@ -3,7 +3,7 @@ import { ArrayUtils, FunctionPropertyNames } from '@feng3d/polyfill';
 import { uuid } from './Uuid';
 
 type Wraps<T, K extends keyof T> = {
-    [P in K]: { space: T, funcName: K, oldPropertyDescriptor: PropertyDescriptor, original: (...args: any[]) => any, funcs: ((...args: any[]) => any)[] };
+    [P in K]: { space: T, funcName: K, oldPropertyDescriptor: PropertyDescriptor, original: Function, funcs: Function[] };
 };
 
 /**
@@ -38,12 +38,12 @@ export class FunctionWrap
     {
         return ["polyfill", this.a, this.oldf()].join("-")
     }
-    functionwrap.extendFunction(a, "f", function (r)
+    feng3d.functionwrap.extendFunction(a, "f", function (r)
     {
         return ["polyfill", this.a, r].join("-");
     });
     // 验证 被扩展的a.f方法是否等价于 a.extendF
-    assert.ok(a.f() === a.extendF()); //true
+    assert.ok(a.f() == a.extendF()); //true
 
      * ```
      *
@@ -51,18 +51,18 @@ export class FunctionWrap
      * @param funcName 被扩展函数名称
      * @param extendFunc 在函数执行后执行的扩展函数
      */
-    extendFunction<T, K extends FunctionPropertyNames<T>, V extends (T[K] & ((...arg: any) => any))>(object: T, funcName: K, extendFunc: (this: T, r: ReturnType<V>, ...ps: Parameters<V>) => ReturnType<V>)
+    extendFunction<T, K extends FunctionPropertyNames<T>, V extends (T[K] & ((...args: any) => any))>(object: T, funcName: K, extendFunc: (this: T, r: ReturnType<V>, ...ps: Parameters<V>) => ReturnType<V>)
     {
         const oldFun = object[funcName];
-        object[funcName] = (function (...args: Parameters<V>)
+        object[funcName] = <any>(function (...args: Parameters<V>)
         {
-            let r = (oldFun as any).apply(this, args);
+            let r = (<any>oldFun).apply(this, args);
             const args1 = args.concat();
             args1.unshift(r);
             r = extendFunc.apply(this, args1);
 
             return r;
-        }) as any;
+        });
     }
 
     /**
@@ -78,7 +78,7 @@ export class FunctionWrap
      * @param beforeFunc 在函数执行前执行的函数
      * @param afterFunc 在函数执行后执行的函数
      */
-    wrap<T, K extends FunctionPropertyNames<T>, F extends (T[K] & ((...arg: any) => any))>(object: T, funcName: K, beforeFunc?: F, afterFunc?: F)
+    wrap<T, K extends FunctionPropertyNames<T>, F extends T[K] & Function>(object: T, funcName: K, beforeFunc?: F, afterFunc?: F)
     {
         if (!beforeFunc && !afterFunc) return;
 
@@ -92,10 +92,10 @@ export class FunctionWrap
         if (!info)
         {
             const oldPropertyDescriptor = Object.getOwnPropertyDescriptor(object, funcName);
-            const original: any = object[funcName];
+            const original = <any>object[funcName];
             functionwraps[funcName] = info = { space: object, funcName, oldPropertyDescriptor, original, funcs: [original] };
             //
-            object[funcName] = function ()
+            object[funcName] = <any> function ()
             {
                 // eslint-disable-next-line prefer-rest-params
                 const args = arguments;
@@ -103,7 +103,7 @@ export class FunctionWrap
                 {
                     f.apply(this, args);
                 });
-            } as any;
+            };
         }
         const funcs = info.funcs;
         if (beforeFunc)
@@ -126,8 +126,9 @@ export class FunctionWrap
      * @param object 函数所属对象或者原型
      * @param funcName 函数名称
      * @param wrapFunc 在函数执行前执行的函数
+     * @param before 运行在原函数之前
      */
-    unwrap<T, K extends FunctionPropertyNames<T>, V extends T[K]>(object: T, funcName: K, wrapFunc?: V)
+    unwrap<T, K extends FunctionPropertyNames<T>, V extends T[K] & Function>(object: T, funcName: K, wrapFunc?: V)
     {
         const functionwraps: Wraps<T, K> = object[__functionwrap__];
         const info = functionwraps[funcName];
@@ -138,7 +139,7 @@ export class FunctionWrap
         }
         else
         {
-            ArrayUtils.deleteItem(info.funcs, wrapFunc as any);
+            ArrayUtils.deleteItem(info.funcs, wrapFunc);
         }
         if (info.funcs.length === 1)
         {
@@ -164,7 +165,7 @@ export class FunctionWrap
      * @param params 函数除callback外的参数列表
      * @param callback 完成回调函数
      */
-    wrapAsyncFunc(funcHost: any, func: (...args: any[]) => any, params: any[], callback: (...args: any[]) => void)
+    wrapAsyncFunc(funcHost: Object, func: Function, params: any[], callback: (...args: any[]) => void)
     {
         // 获取唯一编号
         const cuuid = uuid.getArrayUuid([func].concat(params));

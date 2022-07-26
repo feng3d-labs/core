@@ -4,10 +4,9 @@ import { Lazy, lazy } from '@feng3d/polyfill';
 import { windowEventProxy } from '@feng3d/shortcut';
 import { watch } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
-import { MouseEventMap } from '../ecs/MouseEventMap';
 import { raycaster } from '../pick/Raycaster';
 import { Scene } from '../scene/Scene';
-import { Transform } from './Transform';
+import { GameObject } from './GameObject';
 import { View } from './View';
 
 /**
@@ -18,13 +17,13 @@ export class Mouse3DManager
     @watch('_mouseInputChanged')
     mouseInput: MouseInput;
 
-    get selectedTransform()
+    get selectedGameObject()
     {
-        return this._selectedTransform;
+        return this._selectedGameObject;
     }
-    set selectedTransform(v)
+    set selectedGameObject(v)
     {
-        this.setSelectedNode3D(v);
+        this.setSelectedGameObject(v);
     }
 
     /**
@@ -43,9 +42,9 @@ export class Mouse3DManager
         // 计算得到鼠标射线相交的物体
         const pickingCollisionVO = raycaster.pick(view.mouseRay3D, scene.mouseCheckObjects);
 
-        const node3d = pickingCollisionVO?.node3d;
+        const gameobject = pickingCollisionVO && pickingCollisionVO.gameObject;
 
-        return node3d;
+        return gameobject;
     }
 
     constructor(mouseInput: MouseInput, viewport?: Lazy<Rectangle>)
@@ -55,17 +54,17 @@ export class Mouse3DManager
         this.viewport = viewport;
     }
 
-    private _selectedTransform: Transform;
+    private _selectedGameObject: GameObject;
     private _mouseEventTypes: string[] = [];
 
     /**
      * 鼠标按下时的对象，用于与鼠标弹起时对象做对比，如果相同触发click
      */
-    private preMouseDownNode3D: Transform;
+    private preMouseDownGameObject: GameObject | null;
     /**
      * 统计处理click次数，判断是否达到dblclick
      */
-    private node3DClickNum: number;
+    private gameObjectClickNum: number;
 
     private _mouseInputChanged(_property: string, oldValue: MouseInput, newValue: MouseInput)
     {
@@ -109,52 +108,52 @@ export class Mouse3DManager
     /**
      * 设置选中对象
      */
-    private setSelectedNode3D(value: Transform)
+    private setSelectedGameObject(value: GameObject)
     {
-        if (this._selectedTransform !== value)
+        if (this._selectedGameObject !== value)
         {
-            if (this._selectedTransform)
-            { this._selectedTransform.emit('mouseout', null, true); }
+            if (this._selectedGameObject)
+            { this._selectedGameObject.emit('mouseout', null, true); }
             if (value)
             { value.emit('mouseover', null, true); }
         }
-        this._selectedTransform = value;
+        this._selectedGameObject = value;
         this._mouseEventTypes.forEach((element) =>
         {
             switch (element)
             {
                 case 'mousedown':
-                    if (this.preMouseDownNode3D !== this._selectedTransform)
+                    if (this.preMouseDownGameObject !== this._selectedGameObject)
                     {
-                        this.node3DClickNum = 0;
-                        this.preMouseDownNode3D = this._selectedTransform;
+                        this.gameObjectClickNum = 0;
+                        this.preMouseDownGameObject = this._selectedGameObject;
                     }
-                    this._selectedTransform && this._selectedTransform.emit(element, null, true);
+                    this._selectedGameObject && this._selectedGameObject.emit(element, null, true);
                     break;
                 case 'mouseup':
-                    if (this._selectedTransform === this.preMouseDownNode3D)
+                    if (this._selectedGameObject === this.preMouseDownGameObject)
                     {
-                        this.node3DClickNum++;
+                        this.gameObjectClickNum++;
                     }
                     else
                     {
-                        this.node3DClickNum = 0;
-                        this.preMouseDownNode3D = null;
+                        this.gameObjectClickNum = 0;
+                        this.preMouseDownGameObject = null;
                     }
-                    this._selectedTransform && this._selectedTransform.emit(element, null, true);
+                    this._selectedGameObject && this._selectedGameObject.emit(element, null, true);
                     break;
                 case 'mousemove':
-                    this._selectedTransform && this._selectedTransform.emit(element, null, true);
+                    this._selectedGameObject && this._selectedGameObject.emit(element, null, true);
                     break;
                 case 'click':
-                    if (this.node3DClickNum > 0)
-                    { this._selectedTransform && this._selectedTransform.emit(element, null, true); }
+                    if (this.gameObjectClickNum > 0)
+                    { this._selectedGameObject && this._selectedGameObject.emit(element, null, true); }
                     break;
                 case 'dblclick':
-                    if (this.node3DClickNum > 1)
+                    if (this.gameObjectClickNum > 1)
                     {
-                        this._selectedTransform && this._selectedTransform.emit(element, null, true);
-                        this.node3DClickNum = 0;
+                        this._selectedGameObject && this._selectedGameObject.emit(element, null, true);
+                        this.gameObjectClickNum = 0;
                     }
                     break;
             }
@@ -180,38 +179,30 @@ export class MouseInput<T = MouseEventMap> extends EventEmitter<T>
 
     /**
      * 将事件调度到事件流中. 事件目标是对其调用 dispatchEvent() 方法的 IEvent 对象。
-     * @param type 事件的类型。类型区分大小写。
-     * @param data 事件携带的自定义数据。
-     * @param bubbles 表示事件是否为冒泡事件。如果事件可以冒泡，则此值为 true；否则为 false。
+     * @param type                      事件的类型。类型区分大小写。
+     * @param data                      事件携带的自定义数据。
+     * @param bubbles                   表示事件是否为冒泡事件。如果事件可以冒泡，则此值为 true；否则为 false。
      */
     emit<K extends keyof T & string>(type: K, data?: T[K], bubbles = false)
     {
         if (!this.enable)
-        {
-            return null;
-        }
+        { return null; }
         if (!this.catchMouseMove && type === 'mousemove')
-        {
-            return null;
-        }
+        { return null; }
 
         return super.emit(type, data, bubbles);
     }
 
     /**
      * 派发事件
-     * @param event 事件对象
+     * @param event   事件对象
      */
     emitEvent<K extends keyof T & string>(event: IEvent<T[K]>)
     {
         if (!this.enable)
-        {
-            return event;
-        }
+        { return event; }
         if (!this.catchMouseMove && event.type === 'mousemove')
-        {
-            return event;
-        }
+        { return event; }
 
         return super.emitEvent(event);
     }
@@ -257,16 +248,73 @@ export class WindowMouseInput extends MouseInput
      */
     private onMouseEvent(event: IEvent<MouseEvent>)
     {
-        let type = event.type;
+        const mouseEvent = event.data;
+        let type = mouseEvent.type;
         // 处理鼠标中键与右键
-        if (event.data instanceof MouseEvent)
+        if (mouseEvent instanceof MouseEvent)
         {
-            if (['click', 'mousedown', 'mouseup'].indexOf(event.type) !== -1)
+            if (['click', 'mousedown', 'mouseup'].indexOf(mouseEvent.type) !== -1)
             {
-                type = ['', 'middle', 'right'][event.data.button] + event.type;
+                type = ['', 'middle', 'right'][mouseEvent.button] + mouseEvent.type;
             }
         }
 
-        this.emit(type as any, { mouseX: event.data.clientX, mouseY: event.data.clientY });
+        this.emit(<any>type, { mouseX: mouseEvent.clientX, mouseY: mouseEvent.clientY });
     }
+}
+
+export interface MouseEventMap
+{
+    /**
+     * 鼠标移出对象
+     */
+    mouseout: { clientX: number, clientY: number }
+    /**
+     * 鼠标移入对象
+     */
+    mouseover: { clientX: number, clientY: number }
+    /**
+     * 鼠标在对象上移动
+     */
+    mousemove: { clientX: number, clientY: number }
+    /**
+     * 鼠标左键按下
+     */
+    mousedown: { clientX: number, clientY: number }
+    /**
+     * 鼠标左键弹起
+     */
+    mouseup: { clientX: number, clientY: number }
+    /**
+     * 单击
+     */
+    click: { clientX: number, clientY: number }
+    /**
+     * 鼠标中键按下
+     */
+    middlemousedown: { clientX: number, clientY: number }
+    /**
+     * 鼠标中键弹起
+     */
+    middlemouseup: { clientX: number, clientY: number }
+    /**
+     * 鼠标中键单击
+     */
+    middleclick: { clientX: number, clientY: number }
+    /**
+     * 鼠标右键按下
+     */
+    rightmousedown: { clientX: number, clientY: number }
+    /**
+     * 鼠标右键弹起
+     */
+    rightmouseup: { clientX: number, clientY: number }
+    /**
+     * 鼠标右键单击
+     */
+    rightclick: { clientX: number, clientY: number }
+    /**
+     * 鼠标双击
+     */
+    dblclick: { clientX: number, clientY: number }
 }

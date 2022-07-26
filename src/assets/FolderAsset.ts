@@ -2,6 +2,14 @@ import { ov } from '@feng3d/objectview';
 import { AssetType } from './AssetType';
 import { FileAsset, setAssetTypeClass } from './FileAsset';
 
+declare global
+{
+    export interface MixinsAssetTypeClassMap
+    {
+        'folder': new () => FolderAsset;
+    }
+}
+
 /**
  * 文件夹资源
  */
@@ -54,4 +62,5 @@ export class FolderAsset extends FileAsset
         callback && callback(null);
     }
 }
+
 setAssetTypeClass('folder', FolderAsset);

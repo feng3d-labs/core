@@ -1,16 +1,24 @@
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 
 declare global
 {
-    interface MixinsGeometryTypes
+    export interface MixinsGeometryTypes
     {
         SphereGeometry: SphereGeometry
+    }
+    export interface MixinsDefaultGeometry
+    {
+        Sphere: SphereGeometry;
+    }
+    export interface MixinsPrimitiveGameObject
+    {
+        Sphere: GameObject;
     }
 }
 
@@ -54,10 +62,14 @@ export class SphereGeometry extends Geometry
     @watch('invalidateGeometry')
     yUp = true;
 
-    protected _name = 'Sphere';
+    name = 'Sphere';
 
     /**
      * 构建几何体数据
+     * @param this.radius 球体半径
+     * @param this.segmentsW 横向分割数
+     * @param this.segmentsH 纵向分割数
+     * @param this.yUp 正面朝向 true:Y+ false:Z+
      */
     protected buildGeometry()
     {
@@ -156,6 +168,9 @@ export class SphereGeometry extends Geometry
 
     /**
      * 构建顶点索引
+     * @param this.segmentsW 横向分割数
+     * @param this.segmentsH 纵向分割数
+     * @param this.yUp 正面朝向 true:Y+ false:Z+
      */
     private buildIndices()
     {
@@ -203,6 +218,8 @@ export class SphereGeometry extends Geometry
 
     /**
      * 构建uv
+     * @param this.segmentsW 横向分割数
+     * @param this.segmentsH 纵向分割数
      */
     private buildUVs()
     {
@@ -222,20 +239,20 @@ export class SphereGeometry extends Geometry
     }
 }
 
-declare global
-{
-    interface MixinsDefaultGeometry
-    {
-        Sphere: SphereGeometry;
-    }
-    interface MixinsPrimitiveEntity
-    {
-        Sphere: GameObject;
-    }
-}
 Geometry.setDefault('Sphere', new SphereGeometry());
 
-GameObjectFactory.registerPrimitive('Sphere', (g) =>
+GameObject.registerPrimitive('Sphere', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Sphere');
 });
+
+// 在 Hierarchy 界面新增右键菜单项
+createNodeMenu.push(
+    {
+        path: '3D Object/Sphere',
+        priority: -2,
+        click: () =>
+            GameObject.createPrimitive('Sphere')
+    }
+);
+

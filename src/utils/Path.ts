@@ -1,6 +1,3 @@
-/* eslint-disable prefer-rest-params */
-import { ObjectUtils } from '@feng3d/polyfill';
-
 /**
  * 路径
  */
@@ -178,7 +175,7 @@ const CHAR_BACKWARD_SLASH = 92;
  */
 const process = {
     platform: 'win32',
-    env: {},
+    env: <any>{},
     cwd() { return ''; },
 };
 
@@ -388,6 +385,7 @@ class Win32Path implements Path
             let path: string;
             if (i >= 0)
             {
+                // eslint-disable-next-line prefer-rest-params
                 path = arguments[i];
             }
             else if (!resolvedDevice)
@@ -468,10 +466,7 @@ class Win32Path implements Path
                                 for (; j < len; ++j)
                                 {
                                     // eslint-disable-next-line max-depth
-                                    if (isPathSeparator(path.charCodeAt(j)))
-                                    {
-                                        break;
-                                    }
+                                    if (isPathSeparator(path.charCodeAt(j))) { break; }
                                 }
                                 if (j === len)
                                 {
@@ -611,10 +606,7 @@ class Win32Path implements Path
                             for (; j < len; ++j)
                             {
                                 // eslint-disable-next-line max-depth
-                                if (isPathSeparator(path.charCodeAt(j)))
-                                {
-                                    break;
-                                }
+                                if (isPathSeparator(path.charCodeAt(j))) { break; }
                             }
                             if (j === len)
                             {
@@ -747,6 +739,7 @@ class Win32Path implements Path
         let firstPart;
         for (let i = 0; i < arguments.length; ++i)
         {
+            // eslint-disable-next-line prefer-rest-params
             const arg = arguments[i];
             validateString(arg, 'path');
             if (arg.length > 0)
@@ -1049,10 +1042,7 @@ class Win32Path implements Path
                             for (; j < len; ++j)
                             {
                                 // eslint-disable-next-line max-depth
-                                if (isPathSeparator(path.charCodeAt(j)))
-                                {
-                                    break;
-                                }
+                                if (isPathSeparator(path.charCodeAt(j))) { break; }
                             }
                             if (j === len)
                             {
@@ -1311,7 +1301,7 @@ class Win32Path implements Path
         ext: string;
     })
     {
-        if (ObjectUtils.objectIsEmpty(pathObject) || typeof pathObject !== 'object')
+        if (pathObject === null || typeof pathObject !== 'object')
         {
             throw new ERR_INVALID_ARG_TYPE('pathObject', 'Object', pathObject);
         }
@@ -1369,7 +1359,9 @@ class Win32Path implements Path
                             {
                                 // eslint-disable-next-line max-depth
                                 if (isPathSeparator(path.charCodeAt(j)))
-                                { break; }
+                                {
+                                    break;
+                                }
                             }
                             if (j === len)
                             {
@@ -1514,8 +1506,8 @@ class Win32Path implements Path
 
     sep: '\\' | '/' = '\\';
     delimiter: ';' | ':' = ';';
-    win32: Win32Path = null;
-    posix: PosixPath = null;
+    win32: Win32Path = <any>null;
+    posix: PosixPath = <any>null;
 }
 
 class PosixPath implements Path
@@ -1528,8 +1520,9 @@ class PosixPath implements Path
 
         for (let i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--)
         {
-            let path: string;
+            let path;
             if (i >= 0)
+            // eslint-disable-next-line prefer-rest-params
             { path = arguments[i]; }
             else
             {
@@ -1609,6 +1602,7 @@ class PosixPath implements Path
         let joined;
         for (let i = 0; i < arguments.length; ++i)
         {
+            // eslint-disable-next-line prefer-rest-params
             const arg = arguments[i];
             validateString(arg, 'path');
             if (arg.length > 0)
@@ -1938,7 +1932,7 @@ class PosixPath implements Path
         ext: string;
     })
     {
-        if (ObjectUtils.objectIsEmpty(pathObject) || typeof pathObject !== 'object')
+        if (pathObject === null || typeof pathObject !== 'object')
         {
             throw new ERR_INVALID_ARG_TYPE('pathObject', 'Object', pathObject);
         }
@@ -2054,8 +2048,8 @@ class PosixPath implements Path
 
     sep: '\\' | '/' = '/';
     delimiter: ';' | ':' = ':';
-    win32: Win32Path = null;
-    posix: PosixPath = null;
+    win32: Win32Path = <any>null;
+    posix: PosixPath = <any>null;
 }
 
 const win32 = new Win32Path();
@@ -2083,4 +2077,4 @@ posix.posix = win32.posix = posix;
  * @see http://nodejs.cn/api/path.html
  * @see https://github.com/nodejs/node/blob/master/lib/path.js
  */
-export const path = process.platform === 'win32' ? win32 : posix;
+export const path: Path = (process.platform === 'win32') ? win32 : posix;

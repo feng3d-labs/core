@@ -28,13 +28,12 @@ export class Debug
      */
     time(fn: Function, labal?: string)
     {
-        labal = labal || fn.name || `Anonymous function ${Math.random()}`;
+        labal = labal || fn['name'] || `Anonymous function ${Math.random()}`;
         console.time(labal);
         fn();
         console.timeEnd(labal);
     }
 }
-
 /**
  * 调试工具
  */

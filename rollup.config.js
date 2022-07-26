@@ -17,7 +17,6 @@ import pkg from './package.json';
  * @see https://github.com/lerna/lerna/issues/1848
  * @return {Promise<Package[]>} List of packages
  */
-
 async function main()
 {
     const plugins = [
@@ -46,6 +45,10 @@ async function main()
 
     const namespaces = {};
     namespaces[pkg.name] = pkg.namespace || 'feng3d';
+    for (const key in pkg.dependencies)
+    {
+        namespaces[key] = 'feng3d';
+    }
 
     let banner = [
         `/*!`,
@@ -108,7 +111,7 @@ async function main()
         plugins: [
             json(),
             typescript({ tsconfig: './tsconfig.json' }),
-            dts(),
+            dts({ respectExternal: true }),
         ],
     });
 

@@ -67,9 +67,9 @@ export enum AssetType
      */
     geometry = 'geometry',
     /**
-     * 3d节点
+     * 游戏对象
      */
-    node3d = 'node3d',
+    gameobject = 'gameobject',
     /**
      * 场景
      */
@@ -87,4 +87,3 @@ export enum AssetType
      */
     script = 'script',
 }
-

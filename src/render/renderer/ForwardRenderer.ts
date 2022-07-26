@@ -1,6 +1,6 @@
 import { Vector4 } from '@feng3d/math';
-import { lazy, LazyObject, mathUtil } from '@feng3d/polyfill';
-import { GL, Uniforms } from '@feng3d/renderer';
+import { LazyObject, lazy, mathUtil } from '@feng3d/polyfill';
+import { WebGLRenderer, Uniforms } from '@feng3d/renderer';
 import { Camera } from '../../cameras/Camera';
 import { Scene } from '../../scene/Scene';
 
@@ -12,12 +12,12 @@ export class ForwardRenderer
     /**
      * 渲染
      */
-    draw(gl: GL, scene: Scene, camera: Camera)
+    draw(gl: WebGLRenderer, scene: Scene, camera: Camera)
     {
         const blenditems = scene.getPickCache(camera).blenditems;
         const unblenditems = scene.getPickCache(camera).unblenditems;
 
-        const uniforms: LazyObject<Uniforms> = {} as any;
+        const uniforms: LazyObject<Uniforms> = <any>{};
         //
         uniforms.u_projectionMatrix = camera.lens.matrix;
         uniforms.u_viewProjection = camera.viewProjection;

@@ -5,11 +5,11 @@ import { serialize } from '@feng3d/serialization';
 import { Animation } from '../animation/Animation';
 import { Camera } from '../cameras/Camera';
 import { Behaviour } from '../component/Behaviour';
+import { Component, RegisterComponent } from '../component/Component';
+import { GameObject } from '../core/GameObject';
+import { HideFlags } from '../core/HideFlags';
 import { Renderable } from '../core/Renderable';
 import { RunEnvironment } from '../core/RunEnvironment';
-import { Component, RegisterComponent } from '../ecs/Component';
-import { GameObject } from '../ecs/GameObject';
-import { HideFlags } from '../ecs/HideFlags';
 import { DirectionalLight } from '../light/DirectionalLight';
 import { PointLight } from '../light/PointLight';
 import { SpotLight } from '../light/SpotLight';
@@ -22,19 +22,20 @@ declare global
     /**
      * 组件事件
      */
-    interface MixinsEntityEventMap
+    export interface MixinsGameObjectEventMap
     {
         addToScene: GameObject;
         removeFromScene: GameObject;
         addComponentToScene: Component;
     }
-    interface MixinsComponentMap { Scene: Scene; }
+
+    export interface MixinsComponentMap { Scene: Scene; }
 }
 
 /**
  * 3D场景
  */
-@RegisterComponent({ name: 'Scene', single: true })
+@RegisterComponent()
 export class Scene extends Component
 {
     __class__: 'feng3d.Scene';
@@ -67,20 +68,27 @@ export class Scene extends Component
      */
     mouseRay3D: Ray3;
 
+    /**
+     * 上次渲染时用的摄像机
+     */
+    camera: Camera;
+
     init()
     {
         super.init();
-        this.gameObject.hideFlags = this.gameObject.hideFlags | HideFlags.Hide;
+        this.transform.hideFlags = this.transform.hideFlags | HideFlags.Hide;
         this.gameObject.hideFlags = this.gameObject.hideFlags | HideFlags.DontTransform;
+
         //
-        this.gameObject._setScene(this);
+        this._gameObject['_scene'] = this;
+        this._gameObject['updateChildrenScene']();
     }
 
     update(interval?: number)
     {
         interval = interval || (1000 / ticker.frameRate);
 
-        this._mouseCheckGameObject = null;
+        this._mouseCheckObjects = null;
         this._models = null;
         this._visibleAndEnabledModels = null;
         this._skyBoxs = null;
@@ -111,7 +119,7 @@ export class Scene extends Component
      */
     get models()
     {
-        this._models = this._models || this.transform.getComponentsInChildren(Renderable);
+        this._models = this._models || this.getComponentsInChildren(Renderable);
 
         return this._models;
     }
@@ -121,10 +129,7 @@ export class Scene extends Component
      */
     get visibleAndEnabledModels()
     {
-        if (!this._visibleAndEnabledModels)
-        {
-            this._visibleAndEnabledModels = this.models.filter((i) => i.isVisibleAndEnabled);
-        }
+        this._visibleAndEnabledModels = this._visibleAndEnabledModels || this.models.filter((i) => i.isVisibleAndEnabled);
 
         return this._visibleAndEnabledModels;
     }
@@ -134,64 +139,49 @@ export class Scene extends Component
      */
     get skyBoxs()
     {
-        this._skyBoxs = this._skyBoxs || this.transform.getComponentsInChildren(SkyBox);
+        this._skyBoxs = this._skyBoxs || this.getComponentsInChildren(SkyBox);
 
         return this._skyBoxs;
     }
 
     get activeSkyBoxs()
     {
-        if (!this._activeSkyBoxs)
-        {
-            this._activeSkyBoxs = this.skyBoxs.filter((i) => i.gameObject.globalVisible);
-        }
+        this._activeSkyBoxs = this._activeSkyBoxs || this.skyBoxs.filter((i) => i.gameObject.activeInHierarchy);
 
         return this._activeSkyBoxs;
     }
 
     get directionalLights()
     {
-        if (!this._directionalLights)
-        {
-            this._directionalLights = this.transform.getComponentsInChildren(DirectionalLight);
-        }
+        this._directionalLights = this._directionalLights || this.getComponentsInChildren(DirectionalLight);
 
         return this._directionalLights;
     }
 
     get activeDirectionalLights()
     {
-        if (!this._activeDirectionalLights)
-        {
-            this._activeDirectionalLights = this.directionalLights.filter((i) => i.isVisibleAndEnabled);
-        }
+        this._activeDirectionalLights = this._activeDirectionalLights || this.directionalLights.filter((i) => i.isVisibleAndEnabled);
 
         return this._activeDirectionalLights;
     }
 
     get pointLights()
     {
-        if (!this._pointLights)
-        {
-            this._pointLights = this.transform.getComponentsInChildren(PointLight);
-        }
+        this._pointLights = this._pointLights || this.getComponentsInChildren(PointLight);
 
         return this._pointLights;
     }
 
     get activePointLights()
     {
-        if (!this._activePointLights)
-        {
-            this._activePointLights = this.pointLights.filter((i) => i.isVisibleAndEnabled);
-        }
+        this._activePointLights = this._activePointLights || this.pointLights.filter((i) => i.isVisibleAndEnabled);
 
         return this._activePointLights;
     }
 
     get spotLights()
     {
-        this._spotLights = this._spotLights || this.transform.getComponentsInChildren(SpotLight);
+        this._spotLights = this._spotLights || this.getComponentsInChildren(SpotLight);
 
         return this._spotLights;
     }
@@ -205,7 +195,7 @@ export class Scene extends Component
 
     get animations()
     {
-        this._animations = this._animations || this.transform.getComponentsInChildren(Animation);
+        this._animations = this._animations || this.getComponentsInChildren(Animation);
 
         return this._animations;
     }
@@ -219,7 +209,7 @@ export class Scene extends Component
 
     get behaviours()
     {
-        this._behaviours = this._behaviours || this.transform.getComponentsInChildren(Behaviour);
+        this._behaviours = this._behaviours || this.getComponentsInChildren(Behaviour);
 
         return this._behaviours;
     }
@@ -231,29 +221,29 @@ export class Scene extends Component
         return this._activeBehaviours;
     }
 
-    get mouseCheckObjects(): GameObject[]
+    get mouseCheckObjects()
     {
-        if (this._mouseCheckGameObject)
-        { return this._mouseCheckGameObject; }
+        if (this._mouseCheckObjects)
+        { return this._mouseCheckObjects; }
 
         let checkList = this.gameObject.getChildren();
-        this._mouseCheckGameObject = [];
+        this._mouseCheckObjects = [];
         let i = 0;
         // 获取所有需要拾取的对象并分层存储
         while (i < checkList.length)
         {
             const checkObject = checkList[i++];
-            if (checkObject.activeSelf)
+            if (checkObject.mouseEnabled)
             {
                 if (checkObject.getComponents(Renderable))
                 {
-                    this._mouseCheckGameObject.push(checkObject);
+                    this._mouseCheckObjects.push(checkObject);
                 }
                 checkList = checkList.concat(checkObject.getChildren());
             }
         }
 
-        return this._mouseCheckGameObject;
+        return this._mouseCheckObjects;
     }
 
     /**
@@ -281,7 +271,7 @@ export class Scene extends Component
         while (openlist.length > 0)
         {
             const item = openlist.shift();
-            if (!item.visible) continue;
+            if (!item.activeSelf) continue;
             const model = item.getComponent(Renderable);
             if (model && (model.castShadows || model.receiveShadows)
                 && !model.material.renderParams.enableBlend
@@ -323,7 +313,7 @@ export class Scene extends Component
     }
 
     //
-    private _mouseCheckGameObject: GameObject[];
+    private _mouseCheckObjects: GameObject[];
     private _models: Renderable[];
     private _visibleAndEnabledModels: Renderable[];
     private _skyBoxs: SkyBox[];

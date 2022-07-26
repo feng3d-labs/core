@@ -1,10 +1,8 @@
 import { Ray3, Vector2, Vector3 } from '@feng3d/math';
-import { ObjectUtils } from '@feng3d/polyfill';
 import { CullFace } from '@feng3d/renderer';
-import { Transform } from '../core/Transform';
+import { GameObject } from '../core/GameObject';
 import { RayCastable } from '../core/RayCastable';
 import { Geometry } from '../geometry/Geometry';
-import { GameObject } from '../ecs/GameObject';
 
 /**
  * 射线投射拾取器
@@ -14,16 +12,16 @@ export class Raycaster
     /**
      * 获取射线穿过的实体
      * @param ray3D 射线
-     * @param transforms 实体列表
+     * @param gameObjects 实体列表
      * @return
      */
-    pick(ray3D: Ray3, transforms: GameObject[])
+    pick(ray3D: Ray3, gameObjects: GameObject[])
     {
-        if (transforms.length === 0) return null;
+        if (gameObjects.length === 0) return null;
 
-        const pickingCollisionVOs = transforms.reduce((pv: PickingCollisionVO[], node3d) =>
+        const pickingCollisionVOs = gameObjects.reduce((pv: PickingCollisionVO[], gameObject) =>
         {
-            const model = node3d.getComponent(RayCastable);
+            const model = gameObject.getComponent(RayCastable);
             const pickingCollisionVO = model && model.worldRayIntersection(ray3D);
             if (pickingCollisionVO) pv.push(pickingCollisionVO);
 
@@ -42,7 +40,7 @@ export class Raycaster
         for (let i = 0; i < pickingCollisionVOs.length; ++i)
         {
             const pickingCollisionVO = pickingCollisionVOs[i];
-            if (ObjectUtils.objectIsEmpty(bestCollisionVO) || pickingCollisionVO.rayEntryDistance < bestCollisionVO.rayEntryDistance)
+            if (!bestCollisionVO || pickingCollisionVO.rayEntryDistance < bestCollisionVO.rayEntryDistance)
             {
                 const result = pickingCollisionVO.geometry.raycast(pickingCollisionVO.localRay, shortestCollisionDistance, pickingCollisionVO.cullFace);
                 if (result)
@@ -66,16 +64,16 @@ export class Raycaster
     /**
      * 获取射线穿过的实体
      * @param ray3D 射线
-     * @param node3ds 实体列表
+     * @param gameObjects 实体列表
      * @return
      */
-    pickAll(ray3D: Ray3, node3ds: Transform[])
+    pickAll(ray3D: Ray3, gameObjects: GameObject[])
     {
-        if (node3ds.length === 0) return [];
+        if (gameObjects.length === 0) return [];
 
-        const pickingCollisionVOs = node3ds.reduce((pv: PickingCollisionVO[], node3d) =>
+        const pickingCollisionVOs = gameObjects.reduce((pv: PickingCollisionVO[], gameObject) =>
         {
-            const model = node3d.getComponent(RayCastable);
+            const model = gameObject.getComponent(RayCastable);
             const pickingCollisionVO = model && model.worldRayIntersection(ray3D);
             if (pickingCollisionVO) pv.push(pickingCollisionVO);
 
@@ -118,7 +116,7 @@ export interface PickingCollisionVO
     /**
      * 第一个穿过的物体
      */
-    node3d: Transform;
+    gameObject: GameObject;
 
     /**
      * 碰撞的uv坐标

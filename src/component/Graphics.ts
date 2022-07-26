@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { dataTransform } from '@feng3d/polyfill';
-import { Component } from '../ecs/Component';
+import { Component } from './Component';
 
 /**
  * Graphics 类包含一组可用来创建矢量形状的方法。
@@ -53,8 +52,7 @@ export function watchContext2D(context2D: CanvasRenderingContext2D, watchFuncs =
         {
             oldFunc.apply(context2D, args);
             // 标记更改
-            // @ts-ignore
-            context2D.__changed = true;
+            context2D['__changed'] = true;
         };
     });
 }

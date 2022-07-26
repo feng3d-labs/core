@@ -1,22 +1,20 @@
 /* eslint-disable camelcase */
-import mouseVertex from './shaders/mouse.vertex.glsl';
 import mouseFragment from './shaders/mouse.fragment.glsl';
-import outlineVertex from './shaders/outline.vertex.glsl';
+import mouseVertex from './shaders/mouse.vertex.glsl';
 import outlineFragment from './shaders/outline.fragment.glsl';
-import Particles_AdditiveVertex from './shaders/Particles_Additive.vertex.glsl';
+import outlineVertex from './shaders/outline.vertex.glsl';
 import Particles_AdditiveFragment from './shaders/Particles_Additive.fragment.glsl';
-import Particles_AlphaBlendedPremultiplyVertex from './shaders/Particles_AlphaBlendedPremultiply.vertex.glsl';
+import Particles_AdditiveVertex from './shaders/Particles_Additive.vertex.glsl';
 import Particles_AlphaBlendedPremultiplyFragment from './shaders/Particles_AlphaBlendedPremultiply.fragment.glsl';
-import shadowVertex from './shaders/shadow.vertex.glsl';
+import Particles_AlphaBlendedPremultiplyVertex from './shaders/Particles_AlphaBlendedPremultiply.vertex.glsl';
 import shadowFragment from './shaders/shadow.fragment.glsl';
-import skyboxVertex from './shaders/skybox.vertex.glsl';
+import shadowVertex from './shaders/shadow.vertex.glsl';
 import skyboxFragment from './shaders/skybox.fragment.glsl';
-import terrainVertex from './shaders/terrain.vertex.glsl';
+import skyboxVertex from './shaders/skybox.vertex.glsl';
 import terrainFragment from './shaders/terrain.fragment.glsl';
-import waterVertex from './shaders/water.vertex.glsl';
-import waterFragment from './shaders/water.fragment.glsl';
-import wireframeVertex from './shaders/wireframe.vertex.glsl';
+import terrainVertex from './shaders/terrain.vertex.glsl';
 import wireframeFragment from './shaders/wireframe.fragment.glsl';
+import wireframeVertex from './shaders/wireframe.vertex.glsl';
 //
 import alphatest_frag from './shaders/modules/alphatest_frag.glsl';
 import alphatest_pars_frag from './shaders/modules/alphatest_pars_frag.glsl';
@@ -83,7 +81,6 @@ serialization.setValue(shaderlib.shaderConfig, {
         shadow: { fragment: shadowFragment, vertex: shadowVertex },
         skybox: { fragment: skyboxFragment, vertex: skyboxVertex },
         terrain: { fragment: terrainFragment, vertex: terrainVertex },
-        water: { fragment: waterFragment, vertex: waterVertex },
         wireframe: { fragment: wireframeFragment, vertex: wireframeVertex },
     },
     modules: {

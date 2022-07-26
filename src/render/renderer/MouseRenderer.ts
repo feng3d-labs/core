@@ -2,8 +2,8 @@ import { EventEmitter } from '@feng3d/event';
 import { Rectangle } from '@feng3d/math';
 import { GL, RenderAtomic } from '@feng3d/renderer';
 import { windowEventProxy } from '@feng3d/shortcut';
+import { GameObject } from '../../core/GameObject';
 import { Renderable } from '../../core/Renderable';
-import { GameObject } from '../../ecs/GameObject';
 
 /**
  * 鼠标拾取渲染器
@@ -47,9 +47,9 @@ export class MouseRenderer extends EventEmitter
         return this.objects[id];
     }
 
-    protected drawRenderables(gl: GL, renderable: Renderable)
+    protected drawRenderables(_gl: GL, renderable: Renderable)
     {
-        if (renderable.gameObject.activeSelf)
+        if (renderable.gameObject.mouseEnabled)
         {
             const object = renderable.gameObject;
             const uObjectID = this.objects.length;

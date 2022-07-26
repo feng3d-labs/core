@@ -1,18 +1,18 @@
-import { GameObject } from '../ecs/GameObject';
+import { GameObject } from '../core/GameObject';
 
 export class ControllerBase
 {
     /**
      * 控制对象
      */
-    protected _target: GameObject | undefined;
+    protected _targetObject: GameObject | undefined;
 
     /**
      * 控制器基类，用于动态调整3D对象的属性
      */
-    constructor(target?: GameObject)
+    constructor(targetObject?: GameObject)
     {
-        this.target = target;
+        this.targetObject = targetObject;
     }
 
     /**
@@ -23,13 +23,13 @@ export class ControllerBase
         throw new Error('Abstract method');
     }
 
-    get target()
+    get targetObject()
     {
-        return this._target;
+        return this._targetObject;
     }
 
-    set target(val)
+    set targetObject(val)
     {
-        this._target = val;
+        this._targetObject = val;
     }
 }

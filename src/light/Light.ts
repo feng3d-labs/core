@@ -1,19 +1,17 @@
-import { Color3, Vector2, Vector3 } from '@feng3d/math';
+import { Color3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { BlendFactor } from '@feng3d/renderer';
-import { serialization, serialize } from '@feng3d/serialization';
+import { serialize, serialization } from '@feng3d/serialization';
 import { Camera } from '../cameras/Camera';
 import { Behaviour } from '../component/Behaviour';
 import { BillboardComponent } from '../component/BillboardComponent';
-import { MeshRenderer } from '../core/MeshRenderer';
-import { GameObject } from '../ecs/GameObject';
-import { HideFlags } from '../ecs/HideFlags';
-import { Geometry } from '../geometry/Geometry';
+import { GameObject } from '../core/GameObject';
+import { HideFlags } from '../core/HideFlags';
+import { Renderable } from '../core/Renderable';
 import { Material } from '../materials/Material';
 import { PlaneGeometry } from '../primitives/PlaneGeometry';
 import { FrameBufferObject } from '../render/FrameBufferObject';
 import { Scene } from '../scene/Scene';
-import { RenderTargetTexture2D } from '../textures/RenderTargetTexture2D';
 import { LightType } from './LightType';
 import { ShadowType } from './shadow/ShadowType';
 
@@ -52,7 +50,7 @@ export class Light extends Behaviour
     /**
      * 光源位置
      */
-    get position(): Vector3
+    get position()
     {
         return this.transform.worldPosition;
     }
@@ -60,7 +58,7 @@ export class Light extends Behaviour
     /**
      * 光照方向
      */
-    get direction(): Vector3
+    get direction()
     {
         return this.transform.localToWorldMatrix.getAxisZ();
     }
@@ -99,12 +97,12 @@ export class Light extends Behaviour
     /**
      * 阴影图尺寸
      */
-    get shadowMapSize(): Vector2
+    get shadowMapSize()
     {
         return this.shadowMap.getSize();
     }
 
-    get shadowMap(): RenderTargetTexture2D
+    get shadowMap()
     {
         return this.frameBufferObject.texture;
     }
@@ -117,7 +115,7 @@ export class Light extends Behaviour
     @oav({ tooltip: '是否调试阴影图' })
     debugShadowMap = false;
 
-    private debugShadowMapModel: MeshRenderer;
+    private debugShadowMapObject: GameObject;
 
     constructor()
     {
@@ -127,23 +125,18 @@ export class Light extends Behaviour
 
     updateDebugShadowMap(scene: Scene, viewCamera: Camera)
     {
-        let model = this.debugShadowMapModel;
-        if (!model)
+        let gameObject = this.debugShadowMapObject;
+        if (!gameObject)
         {
-            const entity = new GameObject();
-            entity.name = 'debugShadowMapObject';
-            model = entity.addComponent(MeshRenderer);
-            model.geometry = Geometry.getDefault('Plane');
-            model.hideFlags = HideFlags.Hide | HideFlags.DontSave;
-            model.gameObject.activeSelf = false;
-            model.gameObject.addComponent(BillboardComponent);
+            gameObject = this.debugShadowMapObject = GameObject.createPrimitive('Plane', { name: 'debugShadowMapObject' });
+            gameObject.hideFlags = HideFlags.Hide | HideFlags.DontSave;
+            gameObject.mouseEnabled = false;
+            gameObject.addComponent(BillboardComponent);
 
             // 材质
+            const model = gameObject.getComponent(Renderable);
             model.geometry = serialization.setValue(new PlaneGeometry(), { width: this.lightType === LightType.Point ? 1 : 0.5, height: 0.5, segmentsW: 1, segmentsH: 1, yUp: false });
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            // eslint-disable-next-line camelcase
-            const textureMaterial = model.material = serialization.setValue(new Material(), { shaderName: 'texture', uniforms: { s_texture: this.frameBufferObject.texture } });
+            const textureMaterial = model.material = serialization.setValue(new Material(), { shaderName: 'texture', uniforms: { s_texture: this.frameBufferObject.texture as any } });
             //
             // textureMaterial.uniforms.s_texture.url = 'Assets/pz.jpg';
             // textureMaterial.uniforms.u_color.setTo(1.0, 0.0, 0.0, 1.0);
@@ -153,20 +146,17 @@ export class Light extends Behaviour
         }
 
         const depth = viewCamera.lens.near * 2;
-        const position = viewCamera.transform.worldPosition.addTo(viewCamera.transform.localToWorldMatrix.getAxisZ().scaleNumberTo(depth));
-        model.transform.localPosition.x = position.x;
-        model.transform.localPosition.y = position.y;
-        model.transform.localPosition.z = position.z;
-        const billboardComponent = model.getComponent(BillboardComponent);
+        gameObject.transform.position = viewCamera.transform.worldPosition.addTo(viewCamera.transform.localToWorldMatrix.getAxisZ().scaleNumberTo(depth));
+        const billboardComponent = gameObject.getComponent(BillboardComponent);
         billboardComponent.camera = viewCamera;
 
         if (this.debugShadowMap)
         {
-            scene.gameObject.addChild(model.gameObject);
+            scene.gameObject.addChild(gameObject);
         }
         else
         {
-            model.gameObject.remove();
+            gameObject.remove();
         }
     }
 }

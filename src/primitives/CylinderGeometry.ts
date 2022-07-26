@@ -1,16 +1,26 @@
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 
 declare global
 {
-    interface MixinsGeometryTypes
+    export interface MixinsGeometryTypes
     {
         CylinderGeometry: CylinderGeometry
+    }
+
+    export interface MixinsDefaultGeometry
+    {
+        Cylinder: CylinderGeometry;
+    }
+
+    export interface MixinsPrimitiveGameObject
+    {
+        Cylinder: GameObject;
     }
 }
 
@@ -94,19 +104,23 @@ export class CylinderGeometry extends Geometry
     @watch('invalidateGeometry')
     yUp = true;
 
-    protected _name = 'Cylinder';
+    name = 'Cylinder';
 
     /**
      * 构建几何体数据
      */
     protected buildGeometry()
     {
-        let i: number; let j: number; let index = 0;
-        let x: number; let y: number; let z: number; let radius: number; let revolutionAngle = 0;
+        let i: number; let j: number; let
+            index = 0;
+        let x: number; let y: number; let z: number; let radius: number; let
+            revolutionAngle = 0;
 
-        let comp1: number; let comp2: number;
+        let comp1: number; let
+            comp2: number;
         let startIndex = 0;
-        let t1: number; let t2: number;
+        let t1: number; let
+            t2: number;
 
         const vertexPositionData: number[] = [];
         const vertexNormalData: number[] = [];
@@ -229,7 +243,8 @@ export class CylinderGeometry extends Geometry
 
         if (this.surfaceClosed)
         {
-            let na0: number; let na1: number; let naComp1: number; let naComp2: number;
+            let na0: number; let na1: number; let naComp1: number; let
+                naComp2: number;
 
             for (j = 0; j <= this.segmentsH; ++j)
             {
@@ -311,6 +326,9 @@ export class CylinderGeometry extends Geometry
 
     /**
      * 构建顶点索引
+     * @param segmentsW 横向分割数
+     * @param segmentsH 纵向分割数
+     * @param yUp 正面朝向 true:Y+ false:Z+
      */
     private buildIndices()
     {
@@ -377,6 +395,8 @@ export class CylinderGeometry extends Geometry
 
     /**
      * 构建uv
+     * @param segmentsW 横向分割数
+     * @param segmentsH 纵向分割数
      */
     private buildUVs()
     {
@@ -441,21 +461,20 @@ export class CylinderGeometry extends Geometry
     }
 }
 
-declare global
-{
-    interface MixinsDefaultGeometry
-    {
-        Cylinder: CylinderGeometry;
-    }
-    interface MixinsPrimitiveEntity
-    {
-        Cylinder: GameObject;
-    }
-}
-
 Geometry.setDefault('Cylinder', new CylinderGeometry());
 
-GameObjectFactory.registerPrimitive('Cylinder', (g) =>
+GameObject.registerPrimitive('Cylinder', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cylinder');
 });
+
+// 在 Hierarchy 界面新增右键菜单项
+createNodeMenu.push(
+    {
+        path: '3D Object/Cylinder',
+        priority: -4,
+        click: () =>
+            GameObject.createPrimitive('Cylinder')
+    }
+);
+

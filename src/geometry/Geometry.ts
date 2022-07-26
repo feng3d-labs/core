@@ -1,19 +1,25 @@
-import { Box3, Matrix4x4, Ray3, Vector2, Vector3 } from '@feng3d/math';
+import { Box3, Matrix4x4, Ray3, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { gPartial } from '@feng3d/polyfill';
+import { Constructor, gPartial } from '@feng3d/polyfill';
 import { Attribute, Attributes, CullFace, Index, RenderAtomic } from '@feng3d/renderer';
 import { serialization, serialize } from '@feng3d/serialization';
 import { AssetType } from '../assets/AssetType';
 import { AssetData } from '../core/AssetData';
-import { Feng3dObject, Feng3dObjectEventMap } from '../ecs/Feng3dObject';
-import { HideFlags } from '../ecs/HideFlags';
+import { Feng3dObject } from '../core/Feng3dObject';
+import { HideFlags } from '../core/HideFlags';
 import { geometryUtils } from './GeometryUtils';
+
+declare global
+{
+    interface MixinsDefaultGeometry { }
+    interface MixinsGeometryTypes { }
+}
 
 export interface GeometryTypes extends MixinsGeometryTypes { }
 
 export type GeometryLike = GeometryTypes[keyof GeometryTypes];
 
-export interface GeometryEventMap extends Feng3dObjectEventMap
+export interface GeometryEventMap
 {
     /**
      * 包围盒失效
@@ -26,16 +32,11 @@ export interface GeometryEventMap extends Feng3dObjectEventMap
  */
 export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Feng3dObject<T>
 {
+    @oav({ component: 'OAVFeng3dPreView' })
+    private preview = '';
+
     @oav()
-    get name()
-    {
-        return this._name;
-    }
-    set name(v)
-    {
-        this._name = v;
-    }
-    protected _name: string = null;
+    declare name: string;
 
     /**
      * 资源编号
@@ -47,7 +48,7 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
     /**
      * 几何体信息
      */
-    @oav({ component: 'OAVMultiText', priority: 10 })
+    @oav({ component: 'OAVMultiText', priority: -10 })
     get geometryInfo()
     {
         const str = [
@@ -196,6 +197,14 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
     }
 
     /**
+     * 创建一个几何体
+     */
+    constructor()
+    {
+        super();
+    }
+
+    /**
      * 标记需要更新几何体，在更改几何体数据后需要调用该函数。
      */
     @oav({ tooltip: '标记需要更新几何体，在更改几何体数据后需要调用该函数。' })
@@ -242,19 +251,19 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
 
     /**
      * 添加几何体
-     * @param geometry 被添加的几何体
-     * @param matrix 变换矩阵，把克隆被添加几何体的数据变换后再添加到该几何体中
+     * @param geometry          被添加的几何体
+     * @param transform         变换矩阵，把克隆被添加几何体的数据变换后再添加到该几何体中
      */
-    addGeometry(geometry: Geometry, matrix?: Matrix4x4)
+    addGeometry(geometry: Geometry, transform?: Matrix4x4)
     {
         // 更新几何体
         this.updateGrometry();
         geometry.updateGrometry();
         // 变换被添加的几何体
-        if (matrix)
+        if (transform)
         {
             geometry = geometry.clone();
-            geometry.applyTransformation(matrix);
+            geometry.applyTransformation(transform);
         }
 
         // 如果自身为空几何体
@@ -279,6 +288,8 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
             totalIndices[indices.length + i] = targetIndices[i] + oldNumVertex;
         }
         this.indices = totalIndices;
+        // 合并后顶点数量
+        // const totalVertex = oldNumVertex + geometry.numVertex;
         // 合并属性数据
         for (const attributeName in attributes)
         {
@@ -291,9 +302,9 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
 
     /**
      * 应用变换矩阵
-     * @param matrix 变换矩阵
+     * @param transform 变换矩阵
      */
-    applyTransformation(matrix: Matrix4x4)
+    applyTransformation(transform: Matrix4x4)
     {
         this.updateGrometry();
 
@@ -301,7 +312,7 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
         const normals = this.normals;
         const tangents = this.tangents;
 
-        geometryUtils.applyTransformation(matrix, vertices, normals, tangents);
+        geometryUtils.applyTransformation(transform, vertices, normals, tangents);
 
         this.positions = vertices;
         this.normals = normals;
@@ -327,7 +338,7 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
      */
     invalidateBounds()
     {
-        this._bounding = null;
+        this._bounding = <any>null;
         this.emit('boundsInvalid', this);
     }
 
@@ -347,18 +358,11 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
 
     /**
      * 射线投影几何体
-     * @param ray 射线
-     * @param shortestCollisionDistance 当前最短碰撞距离
-     * @param cullFace 裁剪面枚举
+     * @param ray                           射线
+     * @param shortestCollisionDistance     当前最短碰撞距离
+     * @param cullFace                      裁剪面枚举
      */
-    raycast(ray: Ray3, shortestCollisionDistance = Number.MAX_VALUE, cullFace = CullFace.NONE):
-        {
-            rayEntryDistance: number;
-            localPosition: Vector3;
-            localNormal: Vector3;
-            uv: Vector2;
-            index: number;
-        }
+    raycast(ray: Ray3, shortestCollisionDistance = Number.MAX_VALUE, cullFace = CullFace.NONE)
     {
         const result = geometryUtils.raycast(ray, this.indices, this.positions, this.uvs, shortestCollisionDistance, cullFace);
 
@@ -397,7 +401,8 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
      */
     clone()
     {
-        const geometry = new Geometry();
+        const Cls = this.constructor as Constructor<Geometry>;
+        const geometry = new Cls();
         geometry.cloneFrom(this);
 
         return geometry;
@@ -423,7 +428,7 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
     {
         this.updateGrometry();
 
-        renderAtomic.indexBuffer = this._indexBuffer;
+        renderAtomic.index = this._indexBuffer;
 
         for (const key in this._attributes)
         {
@@ -440,21 +445,21 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
     /**
      * 顶点索引缓冲
      */
-    protected _indexBuffer = new Index();
+    private _indexBuffer = new Index();
 
     /**
      * 属性数据列表
      */
     protected _attributes: Attributes = {
-        a_position: new Attribute('a_position', [], 3),
-        a_color: new Attribute('a_color', [], 4),
-        a_uv: new Attribute('a_uv', [], 2),
-        a_normal: new Attribute('a_normal', [], 3),
-        a_tangent: new Attribute('a_tangent', [], 3),
-        a_skinIndices: new Attribute('a_skinIndices', [], 4),
-        a_skinWeights: new Attribute('a_skinWeights', [], 4),
-        a_skinIndices1: new Attribute('a_skinIndices1', [], 4),
-        a_skinWeights1: new Attribute('a_skinWeights1', [], 4),
+        a_position: new Attribute({ name: 'a_position', data: [], size: 3 }),
+        a_color: new Attribute({ name: 'a_color', data: [], size: 4 }),
+        a_uv: new Attribute({ name: 'a_uv', data: [], size: 2 }),
+        a_normal: new Attribute({ name: 'a_normal', data: [], size: 3 }),
+        a_tangent: new Attribute({ name: 'a_tangent', data: [], size: 3 }),
+        a_skinIndices: new Attribute({ name: 'a_skinIndices', data: [], size: 4 }),
+        a_skinWeights: new Attribute({ name: 'a_skinWeights', data: [], size: 4 }),
+        a_skinIndices1: new Attribute({ name: 'a_skinIndices1', data: [], size: 4 }),
+        a_skinWeights1: new Attribute({ name: 'a_skinWeights1', data: [], size: 4 }),
     };
 
     /**
@@ -470,6 +475,7 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
     }
 
     private _geometryInvalid = true;
+    private _useFaceWeights = false;
 
     private _bounding: Box3;
 
@@ -496,7 +502,7 @@ export class Geometry<T extends GeometryEventMap = GeometryEventMap> extends Fen
     {
         return this._defaultGeometry[name];
     }
-    private static _defaultGeometry: DefaultGeometry = {} as any;
+    private static _defaultGeometry: DefaultGeometry = <any>{};
 }
 
 /**

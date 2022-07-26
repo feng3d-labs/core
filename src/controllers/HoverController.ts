@@ -1,5 +1,5 @@
 import { mathUtil } from '@feng3d/polyfill';
-import { GameObject } from '../ecs/GameObject';
+import { GameObject } from '../core/GameObject';
 import { LookAtController } from './LookAtController';
 
 export class HoverController extends LookAtController
@@ -25,7 +25,9 @@ export class HoverController extends LookAtController
     {
         val = (val < 1) ? 1 : val;
         if (this._steps === val)
-        { return; }
+        {
+            return;
+        }
         this._steps = val;
         this.update();
     }
@@ -39,7 +41,9 @@ export class HoverController extends LookAtController
     {
         val = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, val));
         if (this._panAngle === val)
-        { return; }
+        {
+            return;
+        }
         this._panAngle = val;
         this.update();
     }
@@ -53,7 +57,9 @@ export class HoverController extends LookAtController
     {
         val = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, val));
         if (this._tiltAngle === val)
-        { return; }
+        {
+            return;
+        }
         this._tiltAngle = val;
         this.update();
     }
@@ -66,7 +72,9 @@ export class HoverController extends LookAtController
     set distance(val: number)
     {
         if (this._distance === val)
-        { return; }
+        {
+            return;
+        }
         this._distance = val;
         this.update();
     }
@@ -79,7 +87,9 @@ export class HoverController extends LookAtController
     set minPanAngle(val: number)
     {
         if (this._minPanAngle === val)
-        { return; }
+        {
+            return;
+        }
         this._minPanAngle = val;
         this.panAngle = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, this._panAngle));
     }
@@ -92,7 +102,9 @@ export class HoverController extends LookAtController
     set maxPanAngle(val: number)
     {
         if (this._maxPanAngle === val)
-        { return; }
+        {
+            return;
+        }
         this._maxPanAngle = val;
         this.panAngle = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, this._panAngle));
     }
@@ -105,7 +117,9 @@ export class HoverController extends LookAtController
     set minTiltAngle(val: number)
     {
         if (this._minTiltAngle === val)
-        { return; }
+        {
+            return;
+        }
         this._minTiltAngle = val;
         this.tiltAngle = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, this._tiltAngle));
     }
@@ -118,7 +132,9 @@ export class HoverController extends LookAtController
     set maxTiltAngle(val: number)
     {
         if (this._maxTiltAngle === val)
-        { return; }
+        {
+            return;
+        }
         this._maxTiltAngle = val;
         this.tiltAngle = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, this._tiltAngle));
     }
@@ -131,7 +147,9 @@ export class HoverController extends LookAtController
     set yFactor(val: number)
     {
         if (this._yFactor === val)
-        { return; }
+        {
+            return;
+        }
         this._yFactor = val;
         this.update();
     }
@@ -144,15 +162,17 @@ export class HoverController extends LookAtController
     set wrapPanAngle(val: boolean)
     {
         if (this._wrapPanAngle === val)
-        { return; }
+        {
+            return;
+        }
         this._wrapPanAngle = val;
         this.update();
     }
 
     // eslint-disable-next-line max-params
-    constructor(node3d?: GameObject, lookAtObject?: GameObject, panAngle = 0, tiltAngle = 90, distance = 1000, minTiltAngle = -90, maxTiltAngle = 90, minPanAngle = NaN, maxPanAngle = NaN, steps = 8, yFactor = 2, wrapPanAngle = false)
+    constructor(targetObject?: GameObject, lookAtObject?: GameObject, panAngle = 0, tiltAngle = 90, distance = 1000, minTiltAngle = -90, maxTiltAngle = 90, minPanAngle = NaN, maxPanAngle = NaN, steps = 8, yFactor = 2, wrapPanAngle = false)
     {
-        super(node3d, lookAtObject);
+        super(targetObject, lookAtObject);
         this.distance = distance;
         this.panAngle = panAngle;
         this.tiltAngle = tiltAngle;
@@ -204,7 +224,7 @@ export class HoverController extends LookAtController
                 this._currentPanAngle = this._panAngle;
             }
         }
-        if (!this._target)
+        if (!this._targetObject)
         { return; }
         if (this._lookAtPosition)
         {
@@ -214,18 +234,18 @@ export class HoverController extends LookAtController
         }
         else if (this._lookAtObject)
         {
-            if (this._target.parent && this._lookAtObject.parent)
+            if (this._targetObject.transform.parent && this._lookAtObject.transform.parent)
             {
-                if (this._target.parent !== this._lookAtObject.parent)
+                if (this._targetObject.transform.parent !== this._lookAtObject.transform.parent)
                 {
-                    this._pos.set(this._lookAtObject.transform.worldPosition.x,
-                        this._lookAtObject.transform.worldPosition.y,
-                        this._lookAtObject.transform.worldPosition.z);
-                    this._target.parent.transform.worldToLocalMatrix.transformPoint3(this._pos, this._pos);
+                    this._pos.x = this._lookAtObject.transform.worldPosition.x;
+                    this._pos.y = this._lookAtObject.transform.worldPosition.y;
+                    this._pos.z = this._lookAtObject.transform.worldPosition.z;
+                    this._targetObject.transform.parent.worldToLocalMatrix.transformPoint3(this._pos, this._pos);
                 }
                 else
                 {
-                    this._pos.copy(this._lookAtObject.transform.localPosition);
+                    this._pos.copy(this._lookAtObject.transform.position);
                 }
             }
             else if (this._lookAtObject.scene)
@@ -236,7 +256,7 @@ export class HoverController extends LookAtController
             }
             else
             {
-                this._pos.copy(this._lookAtObject.transform.localPosition);
+                this._pos.copy(this._lookAtObject.transform.position);
             }
         }
         else
@@ -245,10 +265,9 @@ export class HoverController extends LookAtController
             this._pos.y = this._origin.y;
             this._pos.z = this._origin.z;
         }
-        this._target.transform.localPosition.set(this._pos.x + this._distance * Math.sin(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD),
-            this._pos.y + this._distance * Math.sin(this._currentTiltAngle * mathUtil.DEG2RAD) * this._yFactor,
-            this._pos.z + this._distance * Math.cos(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD));
+        this._targetObject.transform.x = this._pos.x + this._distance * Math.sin(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD);
+        this._targetObject.transform.z = this._pos.z + this._distance * Math.cos(this._currentPanAngle * mathUtil.DEG2RAD) * Math.cos(this._currentTiltAngle * mathUtil.DEG2RAD);
+        this._targetObject.transform.y = this._pos.y + this._distance * Math.sin(this._currentTiltAngle * mathUtil.DEG2RAD) * this._yFactor;
         super.update();
     }
 }
-

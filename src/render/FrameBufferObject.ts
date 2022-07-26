@@ -1,6 +1,19 @@
-import { FrameBuffer, GL, RenderBuffer, Texture } from '@feng3d/renderer';
+import { FrameBuffer, GL, RenderBuffer, Texture, WebGLRenderer } from '@feng3d/renderer';
 import { watch } from '@feng3d/watcher';
 import { RenderTargetTexture2D } from '../textures/RenderTargetTexture2D';
+
+declare global
+{
+    export interface MixinsGLCache
+    {
+        /**
+         * 此处用于缓存，需要获取有效数据请调用 Attribute.getBuffer
+         */
+        frameBufferObjects: Map<FrameBufferObject, {
+            framebuffer: WebGLFramebuffer, texture: WebGLTexture, depthBuffer: WebGLRenderbuffer
+        }>;
+    }
+}
 
 /**
  * 帧缓冲对象
@@ -112,7 +125,7 @@ export class FrameBufferObject
 
     static clear(frameBufferObject: FrameBufferObject)
     {
-        GL.glList.forEach((gl) =>
+        WebGLRenderer.glList.forEach((gl) =>
         {
             gl.cache.frameBufferObjects = gl.cache.frameBufferObjects || new Map();
 
@@ -122,18 +135,5 @@ export class FrameBufferObject
                 gl.cache.frameBufferObjects.delete(frameBufferObject);
             }
         });
-    }
-}
-
-declare global
-{
-    interface MixinsGLCache
-    {
-        /**
-         * 此处用于缓存，需要获取有效数据请调用 Attribute.getBuffer
-         */
-        frameBufferObjects: Map<FrameBufferObject, {
-            framebuffer: WebGLFramebuffer, texture: WebGLTexture, depthBuffer: WebGLRenderbuffer
-        }>;
     }
 }

@@ -1,17 +1,20 @@
 import { Box3, Ray3 } from '@feng3d/math';
 import { Behaviour } from '../component/Behaviour';
-import { RegisterComponent } from '../ecs/Component';
+import { RegisterComponent } from '../component/Component';
 import { PickingCollisionVO } from '../pick/Raycaster';
 
 declare global
 {
-    interface MixinsComponentMap { RayCastable: RayCastable; }
+    export interface MixinsComponentMap
+    {
+        RayCastable: RayCastable;
+    }
 }
 
 /**
  * 可射线捕获
  */
-@RegisterComponent({ name: 'RayCastable' })
+@RegisterComponent()
 export class RayCastable extends Behaviour
 {
     protected _selfLocalBounds: Box3;
@@ -44,7 +47,7 @@ export class RayCastable extends Behaviour
      *
      * @param _worldRay 世界空间射线
      *
-     * @returns 相交信息
+     * @return 相交信息
      */
     worldRayIntersection(_worldRay: Ray3): PickingCollisionVO
     {

@@ -1,6 +1,6 @@
 {
   "name": "@feng3d/core",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "核心库",
   "main": "lib/index.js",
   "module": "lib/index.es.js",
@@ -11,13 +11,14 @@
   "scripts": {
     "start": "npm run watch",
     "clean": "rimraf \"{lib,dist}\"",
-    "build": "rollup -c",
-    "build:prod": "cross-env NODE_ENV=production rollup -c",
+    "build": "npm run clean && rollup -c",
+    "build:prod": "npm run clean && cross-env NODE_ENV=production rollup -c",
     "watch": "rollup -cw",
     "test": "mocha",
     "lint": "eslint --ext .js --ext .ts src test rollup.config.js --ignore-path .gitignore --max-warnings 0",
     "lintfix": "npm run lint -- --fix",
-    "docs": "typedoc"
+    "docs": "typedoc",
+    "release":"npm run build:prod && npm publish"
   },
   "repository": {
     "type": "git",
@@ -56,15 +57,15 @@
     "typescript": "4.3.5"
   },
   "dependencies": {
-    "@feng3d/event": "^0.4.2",
-    "@feng3d/math": "^0.4.1",
-    "@feng3d/objectview": "^0.4.2",
-    "@feng3d/polyfill": "^0.4.3",
-    "@feng3d/renderer": "^0.4.1",
-    "@feng3d/serialization": "^0.4.1",
-    "@feng3d/shortcut": "^0.4.1",
-    "@feng3d/task": "^0.4.1",
-    "@feng3d/filesystem": "^0.4.1",
-    "@feng3d/watcher": "^0.4.11"
+    "@feng3d/event": "^0.5.0",
+    "@feng3d/filesystem": "^0.5.0",
+    "@feng3d/math": "^0.5.0",
+    "@feng3d/objectview": "^0.5.0",
+    "@feng3d/polyfill": "^0.5.0",
+    "@feng3d/renderer": "^0.5.0",
+    "@feng3d/serialization": "^0.5.0",
+    "@feng3d/shortcut": "^0.5.0",
+    "@feng3d/task": "^0.5.0",
+    "@feng3d/watcher": "^0.5.0"
   }
 }

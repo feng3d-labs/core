@@ -1,40 +1,11 @@
-import { Color4, ColorKeywords, Vector2 } from '@feng3d/math';
+import { Vector2 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { dataTransform, mathUtil } from '@feng3d/polyfill';
-import { GL, Texture, TextureDataType, TextureFormat, TextureMagFilter, TextureMinFilter, TextureType, TextureWrap } from '@feng3d/renderer';
+import { Texture, TextureDataType, TextureFormat, TextureMagFilter, TextureMinFilter, TextureType, TextureWrap } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
-import { Feng3dObject, Feng3dObjectEventMap } from '../../ecs/Feng3dObject';
-import { ImageUtil } from '../../utils/ImageUtil';
-
-export enum ImageDatas
-{
-    black = 'black',
-    white = 'white',
-    red = 'red',
-    green = 'green',
-    blue = 'blue',
-    defaultNormal = 'defaultNormal',
-    defaultParticle = 'defaultParticle',
-}
-
-export const imageDatas: {
-    black: ImageData;
-    white: ImageData;
-    red: ImageData;
-    green: ImageData;
-    blue: ImageData;
-    defaultNormal: ImageData;
-    defaultParticle: ImageData;
-} = {
-    black: new ImageUtil(1, 1, new Color4().fromUnit24(ColorKeywords.black)).imageData,
-    white: new ImageUtil(1, 1, new Color4().fromUnit24(ColorKeywords.white)).imageData,
-    red: new ImageUtil(1, 1, new Color4().fromUnit24(ColorKeywords.red)).imageData,
-    green: new ImageUtil(1, 1, new Color4().fromUnit24(ColorKeywords.green)).imageData,
-    blue: new ImageUtil(1, 1, new Color4().fromUnit24(ColorKeywords.blue)).imageData,
-    defaultNormal: new ImageUtil(1, 1, new Color4().fromUnit24(0x8080ff)).imageData,
-    defaultParticle: new ImageUtil().drawDefaultParticle().imageData,
-};
+import { Feng3dObject, Feng3dObjectEventMap } from '../../core/Feng3dObject';
+import { imageDatas } from '../../textures/Texture2D';
 
 /**
  * 纹理信息
@@ -45,8 +16,6 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
      * 纹理类型
      */
     textureType: TextureType;
-
-    glList: GL[] = [];
 
     /**
      * 格式
@@ -174,9 +143,13 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
         if (this.isRenderTarget)
         {
             if (this.OFFSCREEN_WIDTH === 0 || !mathUtil.isPowerOfTwo(this.OFFSCREEN_WIDTH))
-            { return false; }
+            {
+                return false;
+            }
             if (this.OFFSCREEN_HEIGHT === 0 || !mathUtil.isPowerOfTwo(this.OFFSCREEN_HEIGHT))
-            { return false; }
+            {
+                return false;
+            }
 
             return true;
         }
@@ -188,9 +161,13 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
         {
             const element = pixels[i];
             if (element.width === 0 || !mathUtil.isPowerOfTwo(element.width))
-            { return false; }
+            {
+                return false;
+            }
             if (element.height === 0 || !mathUtil.isPowerOfTwo(element.height))
-            { return false; }
+            {
+                return false;
+            }
         }
 
         return true;
@@ -230,7 +207,9 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
     {
         if (!pixels) return false;
         if (!Array.isArray(pixels))
-        { pixels = [pixels]; }
+        {
+            pixels = [pixels];
+        }
 
         if (pixels.length === 0) return false;
         for (let i = 0; i < pixels.length; i++)
@@ -238,9 +217,13 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
             const element = pixels[i];
             if (!element) return false;
             if (element.width === 0)
-            { return false; }
+            {
+                return false;
+            }
             if (element.height === 0)
-            { return false; }
+            {
+                return false;
+            }
         }
 
         return true;
@@ -270,11 +253,17 @@ export abstract class TextureInfo<T extends Feng3dObjectEventMap> extends Feng3d
         if (!this._dataURL)
         {
             if (this._activePixels instanceof ImageData)
-            { this._dataURL = dataTransform.imageDataToDataURL(this._activePixels); }
+            {
+                this._dataURL = dataTransform.imageDataToDataURL(this._activePixels);
+            }
             else if (this._activePixels instanceof HTMLImageElement)
-            { this._dataURL = dataTransform.imageToDataURL(this._activePixels); }
+            {
+                this._dataURL = dataTransform.imageToDataURL(this._activePixels);
+            }
             else if (this._activePixels instanceof HTMLCanvasElement)
-            { this._dataURL = dataTransform.canvasToDataURL(this._activePixels); }
+            {
+                this._dataURL = dataTransform.canvasToDataURL(this._activePixels);
+            }
         }
 
         return this._dataURL;

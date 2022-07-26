@@ -25,9 +25,9 @@ export class SceneUtil
      * 获取需要渲染的对象
      *
      * #### 渲染需求条件
-     * 1. visible === true
+     * 1. visible == true
      * 1. 在摄像机视锥内
-     * 1. model.enabled === true
+     * 1. model.enabled == true
      *
      * @param gameObject
      * @param camera
@@ -37,16 +37,14 @@ export class SceneUtil
         const renderers: Renderable[] = [];
         const frustum = camera.frustum;
 
-        let node3ds = [scene.gameObject];
-        while (node3ds.length > 0)
+        let gameObjects = [scene.gameObject];
+        while (gameObjects.length > 0)
         {
-            const node3d = node3ds.pop();
+            const gameObject = gameObjects.pop();
 
-            if (!node3d.visible)
-            {
-                continue;
-            }
-            const renderer = node3d.getComponent(Renderable);
+            if (!gameObject.activeSelf)
+            { continue; }
+            const renderer = gameObject.getComponent(Renderable);
             if (renderer && renderer.enabled)
             {
                 if (renderer.selfWorldBounds)
@@ -55,7 +53,7 @@ export class SceneUtil
                     { renderers.push(renderer); }
                 }
             }
-            node3ds = node3ds.concat(node3d.children);
+            gameObjects = gameObjects.concat(gameObject.children);
         }
 
         return renderers;

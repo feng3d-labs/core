@@ -1,18 +1,16 @@
-import { IEventTarget } from '@feng3d/event';
 import { Box3, Matrix4x4, Quaternion, Ray3, Vector3 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { decoratorRegisterClass, mathUtil } from '@feng3d/polyfill';
+import { mathUtil } from '@feng3d/polyfill';
 import { RenderAtomic } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
 import { watcher } from '@feng3d/watcher';
 import { Camera } from '../cameras/Camera';
-import { Component, RegisterComponent } from '../ecs/Component';
+import { Component, RegisterComponent } from '../component/Component';
 import { Scene } from '../scene/Scene';
-import { BoundingBox } from './BoundingBox';
 
 declare global
 {
-    interface MixinsEntityEventMap
+    export interface MixinsGameObjectEventMap
     {
         /**
          * 变换矩阵变化
@@ -28,7 +26,11 @@ declare global
          */
         scenetransformChanged: Transform;
     }
-    interface MixinsComponentMap { Node3D: Transform; }
+
+    export interface MixinsComponentMap
+    {
+        Transform: Transform;
+    }
 }
 
 /**
@@ -38,156 +40,12 @@ declare global
  *
  * 场景中的每个对象都有一个变换。它用于存储和操作对象的位置、旋转和缩放。每个转换都可以有一个父元素，它允许您分层应用位置、旋转和缩放
  */
-@RegisterComponent({ name: 'Transform', single: true })
-@decoratorRegisterClass()
-export class Transform extends Component implements IEventTarget
+@RegisterComponent()
+export class Transform extends Component
 {
-    __class__: 'Transform';
+    __class__: 'feng3d.Transform';
 
-    /**
-     * 预设资源编号
-     */
-    @serialize
-    prefabId: string;
-
-    /**
-     * 资源编号
-     */
-    @serialize
-    assetId: string;
-
-    /**
-     * X轴坐标。
-     */
-    get x()
-    {
-        return this.localPosition.x;
-    }
-
-    set x(v)
-    {
-        this.localPosition.x = v;
-    }
-
-    /**
-     * Y轴坐标。
-     */
-    get y()
-    {
-        return this.localPosition.y;
-    }
-
-    set y(v)
-    {
-        this.localPosition.y = v;
-    }
-
-    /**
-     * Z轴坐标。
-     */
-    get z()
-    {
-        return this.localPosition.z;
-    }
-
-    set z(v)
-    {
-        this.localPosition.z = v;
-    }
-
-    /**
-     * X轴旋转角度。
-     */
-    get rx()
-    {
-        return this.localEulerAngles.x;
-    }
-
-    set rx(v)
-    {
-        this.localEulerAngles.x = v;
-    }
-
-    /**
-     * Y轴旋转角度。
-     */
-    get ry()
-    {
-        return this.localEulerAngles.y;
-    }
-
-    set ry(v)
-    {
-        this.localEulerAngles.y = v;
-    }
-
-    /**
-     * Z轴旋转角度。
-     */
-    get rz()
-    {
-        return this.localEulerAngles.z;
-    }
-    set rz(v)
-    {
-        this.localEulerAngles.z = v;
-    }
-
-    /**
-     * X轴缩放。
-     */
-    get sx()
-    {
-        return this.localScale.x;
-    }
-
-    set sx(v)
-    {
-        this.localScale.x = v;
-    }
-
-    /**
-     * Y轴缩放。
-     */
-    get sy()
-    {
-        return this.localScale.y;
-    }
-
-    set sy(v)
-    {
-        this.localScale.y = v;
-    }
-
-    /**
-     * Z轴缩放。
-     */
-    get sz()
-    {
-        return this.localScale.z;
-    }
-
-    set sz(v)
-    {
-        this.localScale.z = v;
-    }
-
-    get parent()
-    {
-        return this.gameObject.parent?.transform;
-    }
-
-    get numChildren()
-    {
-        return this.gameObject.numChilren;
-    }
-
-    get children()
-    {
-        const children = this.gameObject.children.map((v) => v.transform);
-
-        return children;
-    }
+    get single() { return true; }
 
     /**
      * 创建一个实体，该类为虚类
@@ -196,12 +54,15 @@ export class Transform extends Component implements IEventTarget
     {
         super();
 
-        // 监听位移旋转缩放变化
-        watcher.watchobject(this, {
-            localPosition: { x: 0, y: 0, z: 0 },
-            localEulerAngles: { x: 0, y: 0, z: 0 },
-            localScale: { x: 1, y: 1, z: 1 },
-        }, this._invalidateTransform, this);
+        watcher.watch(this._position, 'x', this._positionChanged, this);
+        watcher.watch(this._position, 'y', this._positionChanged, this);
+        watcher.watch(this._position, 'z', this._positionChanged, this);
+        watcher.watch(this._rotation, 'x', this._rotationChanged, this);
+        watcher.watch(this._rotation, 'y', this._rotationChanged, this);
+        watcher.watch(this._rotation, 'z', this._rotationChanged, this);
+        watcher.watch(this._scale, 'x', this._scaleChanged, this);
+        watcher.watch(this._scale, 'y', this._scaleChanged, this);
+        watcher.watch(this._scale, 'z', this._scaleChanged, this);
 
         this._renderAtomic.uniforms.u_modelMatrix = () => this.localToWorldMatrix;
         this._renderAtomic.uniforms.u_ITModelMatrix = () => this.ITlocalToWorldMatrix;
@@ -215,53 +76,111 @@ export class Transform extends Component implements IEventTarget
         return this.localToWorldMatrix.getPosition();
     }
 
-    /**
-     * Position of the transform relative to the parent transform.
-     */
-    /**
-     * 相对于父对象的位移。
-     */
-    @serialize
-    @oav()
-    localPosition = new Vector3();
+    get parent()
+    {
+        return this.gameObject.parent && this.gameObject.parent.transform;
+    }
 
     /**
-     * The rotation as Euler angles in degrees relative to the parent transform's rotation.
-     */
-    /**
-     * 相对于父对象的欧拉旋转角度。
+     * X轴坐标。
      */
     @serialize
-    @oav()
-    localEulerAngles = new Vector3();
+    get x() { return this._position.x; }
+    set x(v) { this._position.x = v; }
 
     /**
-     * The scale of the transform relative to the GameObjects parent.
-     */
-    /**
-     * 相对于父对象的缩放比例。
+     * Y轴坐标。
      */
     @serialize
-    @oav()
-    localScale = new Vector3(1, 1, 1);
+    get y() { return this._position.y; }
+    set y(v) { this._position.y = v; }
 
     /**
-     * 相对于父对象的四元素旋转。
+     * Z轴坐标。
+     */
+    @serialize
+    get z() { return this._position.z; }
+    set z(v) { this._position.z = v; }
+
+    /**
+     * X轴旋转角度。
+     */
+    @serialize
+    get rx() { return this._rotation.x; }
+    set rx(v) { this._rotation.x = v; }
+
+    /**
+     * Y轴旋转角度。
+     */
+    @serialize
+    get ry() { return this._rotation.y; }
+    set ry(v) { this._rotation.y = v; }
+
+    /**
+     * Z轴旋转角度。
+     */
+    @serialize
+    get rz() { return this._rotation.z; }
+    set rz(v) { this._rotation.z = v; }
+
+    /**
+     * X轴缩放。
+     */
+    @serialize
+    get sx() { return this._scale.x; }
+    set sx(v) { this._scale.x = v; }
+
+    /**
+     * Y轴缩放。
+     */
+    @serialize
+    get sy() { return this._scale.y; }
+    set sy(v) { this._scale.y = v; }
+
+    /**
+     * Z轴缩放。
+     */
+    @serialize
+    get sz() { return this._scale.z; }
+    set sz(v) { this._scale.z = v; }
+
+    /**
+     * 本地位移
+     */
+    @oav({ tooltip: '本地位移' })
+    get position() { return this._position; }
+    set position(v) { this._position.copy(v); }
+
+    /**
+     * 本地旋转
+     */
+    @oav({ tooltip: '本地旋转', component: 'OAVVector3', componentParam: { step: 0.001, stepScale: 30, stepDownup: 30 } })
+    get rotation() { return this._rotation; }
+    set rotation(v) { this._rotation.copy(v); }
+
+    /**
+     * 本地四元素旋转
      */
     get orientation()
     {
-        const radian = new Vector3().copy(this.localEulerAngles).scaleNumber(mathUtil.RAD2DEG);
-        const quaternion = new Quaternion().fromEuler(radian.x, radian.y, radian.z);
+        this._orientation.fromMatrix(this.matrix);
 
-        return quaternion;
+        return this._orientation;
     }
 
     set orientation(value)
     {
         const angles = value.toEulerAngles();
         angles.scaleNumber(mathUtil.RAD2DEG);
-        this.localEulerAngles = angles;
+        this.rotation = angles;
     }
+
+    /**
+     * 本地缩放
+     */
+    @oav({ tooltip: '本地缩放' })
+    get scale() { return this._scale; }
+    set scale(v) { this._scale.copy(v); }
 
     /**
      * 本地变换矩阵
@@ -279,14 +198,8 @@ export class Transform extends Component implements IEventTarget
 
     set matrix(v)
     {
-        const trs = v.toTRS();
-
-        this.localPosition = trs[0];
-        this.localEulerAngles = trs[1];
-        this.localScale = trs[2];
-
+        v.toTRS(this._position, this._rotation, this._scale);
         this._matrix.fromArray(v.elements);
-        this._invalidateTransform();
         this._matrixInvalid = false;
     }
 
@@ -297,26 +210,12 @@ export class Transform extends Component implements IEventTarget
     {
         if (this._rotationMatrixInvalid)
         {
-            this._rotationMatrix.setRotation(this.localEulerAngles);
+            this._rotationMatrix.setRotation(this._rotation);
             this._rotationMatrixInvalid = false;
         }
 
         return this._rotationMatrix;
     }
-
-    /**
-     * 轴对称包围盒
-     */
-    get boundingBox()
-    {
-        if (!this._boundingBox)
-        {
-            this._boundingBox = new BoundingBox(this);
-        }
-
-        return this._boundingBox;
-    }
-    private _boundingBox: BoundingBox;
 
     moveForward(distance: number)
     {
@@ -353,9 +252,9 @@ export class Transform extends Component implements IEventTarget
         const x = axis.x; const y = axis.y; const
             z = axis.z;
         const len = distance / Math.sqrt(x * x + y * y + z * z);
-        this.localPosition.x += x * len;
-        this.localPosition.y += y * len;
-        this.localPosition.z += z * len;
+        this.x += x * len;
+        this.y += y * len;
+        this.z += z * len;
     }
 
     translateLocal(axis: Vector3, distance: number)
@@ -366,9 +265,9 @@ export class Transform extends Component implements IEventTarget
         const matrix = this.matrix.clone();
         matrix.prependTranslation(x * len, y * len, z * len);
         const p = matrix.getPosition();
-        this.localPosition.x = p.x;
-        this.localPosition.y = p.y;
-        this.localPosition.z = p.z;
+        this.x = p.x;
+        this.y = p.y;
+        this.z = p.z;
         this._invalidateSceneTransform();
     }
 
@@ -389,29 +288,27 @@ export class Transform extends Component implements IEventTarget
 
     rotateTo(ax: number, ay: number, az: number)
     {
-        this.localEulerAngles.x = ax;
-        this.localEulerAngles.y = ay;
-        this.localEulerAngles.z = az;
+        this._rotation.set(ax, ay, az);
     }
 
     /**
      * 绕指定轴旋转，不受位移与缩放影响
-     * @param axis 旋转轴
-     * @param angle 旋转角度
-     * @param pivotPoint 旋转中心点
+     * @param    axis               旋转轴
+     * @param    angle              旋转角度
+     * @param    pivotPoint         旋转中心点
      *
      */
     rotate(axis: Vector3, angle: number, pivotPoint?: Vector3): void
     {
         // 转换位移
-        const positionMatrix = Matrix4x4.fromPosition(this.localPosition.x, this.localPosition.y, this.localPosition.z);
+        const positionMatrix = Matrix4x4.fromPosition(this.position.x, this.position.y, this.position.z);
         positionMatrix.appendRotation(axis, angle, pivotPoint);
-        const position = positionMatrix.getPosition();
+        this.position = positionMatrix.getPosition();
         // 转换旋转
-        const rotationMatrix = Matrix4x4.fromRotation(this.localEulerAngles.x, this.localEulerAngles.y, this.localEulerAngles.z);
+        const rotationMatrix = Matrix4x4.fromRotation(this.rx, this.ry, this.rz);
         rotationMatrix.appendRotation(axis, angle, pivotPoint);
         const newrotation = rotationMatrix.toTRS()[1];
-        const v = Math.round((newrotation.x - this.localEulerAngles.x) / 180);
+        const v = Math.round((newrotation.x - this.rx) / 180);
         if (v % 2 !== 0)
         {
             newrotation.x += 180;
@@ -421,32 +318,24 @@ export class Transform extends Component implements IEventTarget
         //
         const toRound = (a: number, b: number, c = 360) =>
             Math.round((b - a) / c) * c + a;
-        newrotation.x = toRound(newrotation.x, this.localEulerAngles.x);
-        newrotation.y = toRound(newrotation.y, this.localEulerAngles.y);
-        newrotation.z = toRound(newrotation.z, this.localEulerAngles.z);
-        //
-        this.localPosition = position;
-        this.localEulerAngles = newrotation;
-        //
+        newrotation.x = toRound(newrotation.x, this.rx);
+        newrotation.y = toRound(newrotation.y, this.ry);
+        newrotation.z = toRound(newrotation.z, this.rz);
+        this.rotation = newrotation;
         this._invalidateSceneTransform();
     }
 
     /**
      * 看向目标位置
      *
-     * @param target 目标位置
-     * @param upAxis 向上朝向
+     * @param target    目标位置
+     * @param upAxis    向上朝向
      */
     lookAt(target: Vector3, upAxis?: Vector3)
     {
         this._updateMatrix();
         this._matrix.lookAt(target, upAxis);
-        const trs = this._matrix.toTRS();
-        //
-        this.localPosition = trs[0];
-        this.localEulerAngles = trs[1];
-        this.localScale = trs[2];
-        //
+        this._matrix.toTRS(this._position, this._rotation, this._scale);
         this._matrixInvalid = false;
     }
 
@@ -506,9 +395,7 @@ export class Transform extends Component implements IEventTarget
         {
             this._localToWorldRotationMatrix.copy(this.rotationMatrix);
             if (this.parent)
-            {
-                this._localToWorldRotationMatrix.append(this.parent.localToWorldRotationMatrix);
-            }
+            { this._localToWorldRotationMatrix.append(this.parent.localToWorldRotationMatrix); }
 
             this._localToWorldRotationMatrixInvalid = false;
         }
@@ -693,13 +580,10 @@ export class Transform extends Component implements IEventTarget
         Object.assign(renderAtomic.uniforms, this._renderAtomic.uniforms);
     }
 
-    /**
-     * 销毁
-     */
-    destroy()
-    {
-        super.destroy();
-    }
+    private readonly _position = new Vector3();
+    private readonly _rotation = new Vector3();
+    private readonly _orientation = new Quaternion();
+    private readonly _scale = new Vector3(1, 1, 1);
 
     protected readonly _matrix = new Matrix4x4();
     protected _matrixInvalid = false;
@@ -721,32 +605,37 @@ export class Transform extends Component implements IEventTarget
 
     private _renderAtomic = new RenderAtomic();
 
-    private _onPositionChanged()
+    private _positionChanged(newValue: number, oldValue: number, _object: Vector3, _property: string)
     {
-        this._invalidateTransform();
+        if (!mathUtil.equals(newValue, oldValue))
+        { this._invalidateTransform(); }
     }
 
-    private _rotationChanged()
+    private _rotationChanged(newValue: number, oldValue: number, _object: Vector3, _property: string)
     {
-        this._invalidateTransform();
+        if (!mathUtil.equals(newValue, oldValue))
+        {
+            this._invalidateTransform();
+            this._rotationMatrixInvalid = true;
+        }
     }
 
-    private _scaleChanged()
+    private _scaleChanged(newValue: number, oldValue: number, _object: Vector3, _property: string)
     {
-        this._invalidateTransform();
+        if (!mathUtil.equals(newValue, oldValue))
+        { this._invalidateTransform(); }
     }
 
     private _invalidateTransform()
     {
         if (this._matrixInvalid) return;
         this._matrixInvalid = true;
-        this._rotationMatrixInvalid = true;
 
         this.emit('transformChanged', this);
         this._invalidateSceneTransform();
     }
 
-    _invalidateSceneTransform()
+    private _invalidateSceneTransform()
     {
         if (this._localToWorldMatrixInvalid) return;
 
@@ -759,16 +648,16 @@ export class Transform extends Component implements IEventTarget
         //
         if (this.gameObject)
         {
-            for (let i = 0, n = this.numChildren; i < n; i++)
+            for (let i = 0, n = this.gameObject.numChildren; i < n; i++)
             {
-                this.children[i]._invalidateSceneTransform();
+                this.gameObject.getChildAt(i).transform._invalidateSceneTransform();
             }
         }
     }
 
     private _updateMatrix()
     {
-        this._matrix.fromTRS(this.localPosition, this.localEulerAngles, this.localScale);
+        this._matrix.fromTRS(this._position, this._rotation, this._scale);
     }
 
     private _updateLocalToWorldMatrix()
@@ -778,10 +667,5 @@ export class Transform extends Component implements IEventTarget
         { this._localToWorldMatrix.append(this.parent.localToWorldMatrix); }
         this.emit('updateLocalToWorldMatrix', this);
         console.assert(!isNaN(this._localToWorldMatrix.elements[0]));
-    }
-
-    getBubbleTargets(): any[]
-    {
-        return [this.parent];
     }
 }

@@ -1,4 +1,4 @@
-import { Quaternion, Vector3 } from '@feng3d/math';
+import { Vector3, Quaternion } from '@feng3d/math';
 import { serialize } from '@feng3d/serialization';
 
 export class PropertyClip
@@ -25,10 +25,13 @@ export class PropertyClip
     {
         const frame = Math.round(fps * cliptime / 1000);
         if (this._cacheValues[frame] !== undefined)
-        { return this._cacheValues[frame]; }
+        {
+            return this._cacheValues[frame];
+        }
 
-        this._propertyValues = this._propertyValues || this.propertyValues.map((v) =>
+        this._propertyValues = this._propertyValues || <any> this.propertyValues.map((v) =>
             [v[0], this.getpropertyValue(v[1])]);
+
         const propertyValues = this._propertyValues;
         let propertyValue = propertyValues[0][1];
         if (cliptime <= propertyValues[0][0])
@@ -66,19 +69,19 @@ export class PropertyClip
         if (prevalue instanceof Quaternion)
         {
             propertyValue = prevalue.clone();
-            propertyValue.lerp(prevalue, nextValue as Quaternion, factor);
+            propertyValue.lerp(prevalue, <Quaternion>nextValue, factor);
         }
         else if (prevalue instanceof Vector3)
         {
             propertyValue = new Vector3(
-                prevalue.x * (1 - factor) + (nextValue as Vector3).x * factor,
-                prevalue.y * (1 - factor) + (nextValue as Vector3).y * factor,
-                prevalue.z * (1 - factor) + (nextValue as Vector3).z * factor,
+                prevalue.x * (1 - factor) + (<Vector3>nextValue).x * factor,
+                prevalue.y * (1 - factor) + (<Vector3>nextValue).y * factor,
+                prevalue.z * (1 - factor) + (<Vector3>nextValue).z * factor,
             );
         }
         else
         {
-            propertyValue = prevalue * (1 - factor) + (nextValue as number) * factor;
+            propertyValue = prevalue * (1 - factor) + <number>nextValue * factor;
         }
 
         return propertyValue;
@@ -87,11 +90,17 @@ export class PropertyClip
     private getpropertyValue(value: number[])
     {
         if (this.type === 'Number')
-        { return value[0]; }
+        {
+            return value[0];
+        }
         if (this.type === 'Vector3')
-        { return Vector3.fromArray(value); }
+        {
+            return Vector3.fromArray(value);
+        }
         if (this.type === 'Quaternion')
-        { return Quaternion.fromArray(value); }
+        {
+            return Quaternion.fromArray(value);
+        }
 
         console.error(`未处理 动画数据类型 ${this.type}`);
         console.error(``);
@@ -100,11 +109,14 @@ export class PropertyClip
     cacheIndex: number;
 }
 
+/**
+ * [time:number,value:number | Vector3 | Quaternion]
+ */
 export type ClipPropertyType = number | Vector3 | Quaternion;
 export type PropertyClipPath = [PropertyClipPathItemType, string][];
 
 export enum PropertyClipPathItemType
 {
-    Entity,
+    GameObject,
     Component,
 }

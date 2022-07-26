@@ -1,7 +1,8 @@
-import { classUtils, MapUtils, ObjectUtils, __class__ } from '@feng3d/polyfill';
+import { classUtils, MapUtils, __class__ } from '@feng3d/polyfill';
 import { serialization, serialize } from '@feng3d/serialization';
 import { AssetType } from '../assets/AssetType';
-import { Feng3dObject } from '../ecs/Feng3dObject';
+import { ReadRS } from '../assets/rs/ReadRS';
+import { Feng3dObject } from './Feng3dObject';
 
 /**
  * 资源数据
@@ -14,12 +15,16 @@ export class AssetData extends Feng3dObject
      * 资源名称
      */
     @serialize
-    get name()
+    get assetName(): string
     {
-        return this._name;
+        const asset = ReadRS.rs.getAssetById(this.assetId);
+        if (asset)
+        {
+            return asset.fileName;
+        }
+
+        return null;
     }
-    set name(v) { this._name = v; }
-    protected _name: string = null;
 
     /**
      * 资源编号
@@ -102,9 +107,10 @@ export class AssetData extends Feng3dObject
      */
     static isAssetData(asset: any): asset is AssetData
     {
-        if (!asset || asset.assetId === undefined) return false;
+        if (this.assetMap.has(asset)) return true;
         if (asset instanceof AssetData) return true;
-        if (classUtils.getDefaultInstanceByName(asset[__class__]) instanceof AssetData) return true;
+
+        return false;
     }
 
     /**
@@ -119,7 +125,7 @@ export class AssetData extends Feng3dObject
      */
     static serialize(asset: AssetData)
     {
-        const obj = {} as any;
+        const obj = <any>{};
         obj[__class__] = classUtils.getQualifiedClassName(asset);
         obj.assetId = asset.assetId;
 
@@ -168,6 +174,9 @@ export class AssetData extends Feng3dObject
     static idAssetMap = new Map<string, any>();
 }
 
+/**
+ * 设置函数列表
+ */
 serialization.setValueHandlers.push(
     // 处理资源
     {
@@ -190,7 +199,7 @@ serialization.setValueHandlers.push(
             }
             if (AssetData.isAssetData(tpv))
             {
-                if (ObjectUtils.objectIsEmpty(spv.__class__))
+                if (spv.__class__ === null)
                 {
                     const className = classUtils.getQualifiedClassName(tpv);
                     const inst = classUtils.getInstanceByName(className);
@@ -224,7 +233,7 @@ serialization.serializeHandlers.push(
                 {
                     return false;
                 }
-                target[property] = AssetData.serialize(spv);
+                target[property] = AssetData.serialize(<any>spv);
 
                 return true;
             }

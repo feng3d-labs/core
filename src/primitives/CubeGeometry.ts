@@ -1,16 +1,22 @@
 import { oav } from '@feng3d/objectview';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
+import { GameObject } from '../core/GameObject';
 import { MeshRenderer } from '../core/MeshRenderer';
-import { GameObject } from '../ecs/GameObject';
-import { GameObjectFactory } from '../GameObjectFactory';
 import { Geometry } from '../geometry/Geometry';
+import { createNodeMenu } from '../menu/CreateNodeMenu';
 
 declare global
 {
-    interface MixinsGeometryTypes
+    export interface MixinsGeometryTypes { CubeGeometry: CubeGeometry }
+
+    export interface MixinsDefaultGeometry
     {
-        CubeGeometry: CubeGeometry
+        Cube: CubeGeometry;
+    }
+    export interface MixinsPrimitiveGameObject
+    {
+        Cube: GameObject;
     }
 }
 
@@ -21,7 +27,7 @@ export class CubeGeometry extends Geometry
 {
     __class__: 'feng3d.CubeGeometry';
 
-    protected _name = 'Cube';
+    name = 'Cube';
 
     /**
      * 宽度
@@ -95,12 +101,19 @@ export class CubeGeometry extends Geometry
 
     /**
      * 构建坐标
+     * @param   width           宽度
+     * @param   height          高度
+     * @param   depth           深度
+     * @param   segmentsW       宽度方向分割
+     * @param   segmentsH       高度方向分割
+     * @param   segmentsD       深度方向分割
      */
     private buildPosition()
     {
         const vertexPositionData: number[] = [];
 
-        let i: number; let j: number;
+        let i: number; let
+            j: number;
 
         let outerPos: number;
 
@@ -176,6 +189,9 @@ export class CubeGeometry extends Geometry
 
     /**
      * 构建法线
+     * @param   segmentsW       宽度方向分割
+     * @param   segmentsH       高度方向分割
+     * @param   segmentsD       深度方向分割
      */
     private buildNormal()
     {
@@ -240,6 +256,9 @@ export class CubeGeometry extends Geometry
 
     /**
      * 构建切线
+     * @param   segmentsW       宽度方向分割
+     * @param   segmentsH       高度方向分割
+     * @param   segmentsD       深度方向分割
      */
     private buildTangent()
     {
@@ -304,6 +323,9 @@ export class CubeGeometry extends Geometry
 
     /**
      * 构建索引
+     * @param   segmentsW       宽度方向分割
+     * @param   segmentsH       高度方向分割
+     * @param   segmentsD       深度方向分割
      */
     private buildIndices()
     {
@@ -413,6 +435,10 @@ export class CubeGeometry extends Geometry
 
     /**
      * 构建uv
+     * @param   segmentsW       宽度方向分割
+     * @param   segmentsH       高度方向分割
+     * @param   segmentsD       深度方向分割
+     * @param   tile6           是否为6块贴图
      */
     private buildUVs()
     {
@@ -420,11 +446,16 @@ export class CubeGeometry extends Geometry
             uidx: number;
         const data: number[] = [];
 
-        let uTileDim: number; let vTileDim: number;
-        let uTileStep: number; let vTileStep: number;
-        let tl0u: number; let tl0v: number;
-        let tl1u: number; let tl1v: number;
-        let du: number; let dv: number;
+        let uTileDim: number; let
+            vTileDim: number;
+        let uTileStep: number; let
+            vTileStep: number;
+        let tl0u: number; let
+            tl0v: number;
+        let tl1u: number; let
+            tl1v: number;
+        let du: number; let
+            dv: number;
 
         if (this.tile6)
         {
@@ -509,21 +540,20 @@ export class CubeGeometry extends Geometry
     }
 }
 
-declare global
-{
-    interface MixinsDefaultGeometry
-    {
-        Cube: CubeGeometry;
-    }
-    interface MixinsPrimitiveEntity
-    {
-        Cube: GameObject;
-    }
-}
-
 Geometry.setDefault('Cube', new CubeGeometry());
 
-GameObjectFactory.registerPrimitive('Cube', (g) =>
+GameObject.registerPrimitive('Cube', (g) =>
 {
     g.addComponent(MeshRenderer).geometry = Geometry.getDefault('Cube');
 });
+
+// 在 Hierarchy 界面新增右键菜单项
+createNodeMenu.push(
+    {
+        path: '3D Object/Cube',
+        priority: -1,
+        click: () =>
+            GameObject.createPrimitive('Cube')
+    }
+);
+

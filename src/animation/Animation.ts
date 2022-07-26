@@ -1,20 +1,19 @@
 import { oav } from '@feng3d/objectview';
-import { ObjectUtils } from '@feng3d/polyfill';
 import { serialize } from '@feng3d/serialization';
 import { watch } from '@feng3d/watcher';
 import { Behaviour } from '../component/Behaviour';
-import { getComponentType, RegisterComponent } from '../ecs/Component';
+import { getComponentType, RegisterComponent } from '../component/Component';
 import { AddComponentMenu } from '../Menu';
 import { AnimationClip } from './AnimationClip';
 import { PropertyClip, PropertyClipPathItemType } from './PropertyClip';
 
 declare global
 {
-    interface MixinsComponentMap { Animation: Animation; }
+    export interface MixinsComponentMap { Animation: Animation; }
 }
 
 @AddComponentMenu('Animator/Animation')
-@RegisterComponent({ name: 'Animation' })
+@RegisterComponent()
 export class Animation extends Behaviour
 {
     @oav({ component: 'OAVDefault', componentParam: { dragparam: { accepttype: 'animationclip', datatype: 'animationclip' } } })
@@ -67,11 +66,11 @@ export class Animation extends Behaviour
         if (this.isplaying) this.time += interval * this.playspeed;
     }
 
-    destroy()
+    dispose()
     {
         this.animation = null;
         this.animations = null;
-        super.destroy();
+        super.dispose();
     }
 
     private num = 0;
@@ -108,7 +107,7 @@ export class Animation extends Behaviour
         if (!propertyClip.cacheIndex)
         { propertyClip.cacheIndex = autoobjectCacheID++; }
 
-        let propertyHost: any = this.transform;
+        let propertyHost = this.gameObject;
         const path = propertyClip.path;
 
         for (let i = 0; i < path.length; i++)
@@ -116,18 +115,20 @@ export class Animation extends Behaviour
             const element = path[i];
             switch (element[0])
             {
-                case PropertyClipPathItemType.Entity:
+                case PropertyClipPathItemType.GameObject:
                     propertyHost = propertyHost.find(element[1]);
                     break;
                 case PropertyClipPathItemType.Component:
-                    const componentCls = getComponentType(element[1] as any);
-                    propertyHost = propertyHost.getComponent(componentCls);
+                    const componentClass = getComponentType(element[1] as any);
+                    propertyHost = propertyHost.getComponent(componentClass);
                     break;
                 default:
                     console.error(`无法获取 PropertyHost ${element}`);
             }
-            if (ObjectUtils.objectIsEmpty(propertyHost))
-            { return null; }
+            if (!propertyHost)
+            {
+                return null;
+            }
         }
         this._objectCache[propertyClip.cacheIndex] = propertyHost;
 

@@ -1,16 +1,19 @@
 import { Color4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
-import { Component, RegisterComponent } from '../ecs/Component';
+import { RegisterComponent, Component } from './Component';
 
 declare global
 {
-    interface MixinsComponentMap { WireframeComponent: WireframeComponent; }
+    export interface MixinsComponentMap
+    {
+        WireframeComponent: WireframeComponent;
+    }
 }
 
 /**
  * 线框组件，将会对拥有该组件的对象绘制线框
  */
-@RegisterComponent({ name: 'WireframeComponent' })
+@RegisterComponent()
 export class WireframeComponent extends Component
 {
     __class__: 'feng3d.WireframeComponent';

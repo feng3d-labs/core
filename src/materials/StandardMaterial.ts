@@ -2,22 +2,23 @@ import { Color3, Color4 } from '@feng3d/math';
 import { oav } from '@feng3d/objectview';
 import { shaderlib } from '@feng3d/renderer';
 import { serialize } from '@feng3d/serialization';
-import { Texture2D, Texture2DEventMap } from '../textures/Texture2D';
-import { TextureCube, TextureCubeEventMap } from '../textures/TextureCube';
+import { Texture2D } from '../textures/Texture2D';
+import { TextureCube } from '../textures/TextureCube';
 import { Material } from './Material';
+
 import standardFragment from '../shaders/standard.fragment.glsl';
 import standardVertex from '../shaders/standard.vertex.glsl';
 
 declare global
 {
-    interface MixinsUniformsTypes
-    {
-        standard: StandardUniforms
-    }
-
-    interface MixinsDefaultMaterial
+    export interface MixinsDefaultMaterial
     {
         'Default-Material': Material;
+    }
+
+    export interface MixinsUniformsTypes
+    {
+        standard: StandardUniforms
     }
 }
 
@@ -34,7 +35,7 @@ export enum FogMode
 
 export class StandardUniforms
 {
-    __class__: 'StandardUniforms';
+    __class__: 'feng3d.StandardUniforms' | 'feng3d.TerrainUniforms' | 'feng3d.ParticleUniforms';
     /**
      * 点绘制时点的尺寸
      */
@@ -47,7 +48,7 @@ export class StandardUniforms
      */
     @serialize
     @oav({ block: 'diffuse' })
-    s_diffuse: Texture2D<Texture2DEventMap> = Texture2D.default;
+    s_diffuse = Texture2D.default;
 
     /**
      * 基本颜色
@@ -110,7 +111,7 @@ export class StandardUniforms
      */
     @serialize
     @oav({ component: 'OAVPick', block: 'envMap', componentParam: { accepttype: 'texturecube', datatype: 'texturecube' } })
-    s_envMap: TextureCube<TextureCubeEventMap> = TextureCube.default;
+    s_envMap = TextureCube.default;
 
     /**
      * 反射率

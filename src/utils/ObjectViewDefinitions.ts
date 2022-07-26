@@ -1,20 +1,17 @@
-export { };
-
 declare global
 {
-    interface MixinsOAVComponentParamMap
+    export interface MixinsOAVComponentParamMap
     {
         OAVDefault: OAVDefaultParam;
         OAVArray: OAVArrayParam;
         OAVPick: OAVPickParam;
-        OAVEnum: OAVEnumParam;
 
         OAVCubeMap: { component: 'OAVCubeMap', componentParam: Object };
         OAVImage: { component: 'OAVImage', componentParam: Object };
         OAVObjectView: { component: 'OAVObjectView', componentParam: Object };
         OAVParticleComponentList: { component: 'OAVParticleComponentList', componentParam: Object };
         OAVComponentList: { component: 'OAVComponentList', componentParam: Object };
-        OAVEntityName: { component: 'OAVEntityName', componentParam: Object };
+        OAVGameObjectName: { component: 'OAVGameObjectName', componentParam: Object };
         OAVMaterialName: { component: 'OAVMaterialName', componentParam: Object };
         OAVMultiText: { component: 'OAVMultiText', componentParam: Object };
         OAVFeng3dPreView: { component: 'OAVFeng3dPreView', componentParam: Object };
@@ -128,19 +125,5 @@ export interface OAVPickParam
          * 提供数据类型
          */
         datatype?: string,
-    }
-}
-/**
- * OAVEnum 组件参数
- */
-interface OAVEnumParam
-{
-    component: 'OAVEnum';
-
-    componentParam: {
-        /**
-         * 枚举类型
-         */
-        enumClass: any,
     }
 }
